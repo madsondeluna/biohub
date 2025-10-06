@@ -6,6 +6,26 @@
 **BioHub** é uma ferramenta de linha de comando leve e de dependência zero, escrita em Python puro, para realizar análises bioinformáticas fundamentais a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
 
 ---
+```
+
+./biohub.py
+
+
+█████████████████████████████████████████████████████████████████████
+█▌                                                                 ▐█
+█▌                                                                 ▐█
+█▌    .______    __    ______    __    __   __    __  .______      ▐█
+█▌    |   _  \  |  |  /  __  \  |  |  |  | |  |  |  | |   _  \     ▐█
+█▌    |  |_)  | |  | |  |  |  | |  |__|  | |  |  |  | |  |_)  |    ▐█
+█▌    |   _  <  |  | |  |  |  | |   __   | |  |  |  | |   _  <     ▐█
+█▌    |  |_)  | |  | |  `--'  | |  |  |  | |  `--'  | |  |_)  |    ▐█
+█▌    |______/  |__|  \______/  |__|  |__|  \______/  |______/     ▐█
+█▌                                                                 ▐█
+█▌                                                                 ▐█
+█████████████████████████████████████████████████████████████████████
+
+```
+---
 
 ## Equipe Desenvolvedora (Bioinformática - UFMG)
 
