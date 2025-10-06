@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.x-brightgreen.svg)](https://www.python.org/)
 
-**BioHub** é uma ferramenta de linha de comando leve e de dependência zero, escrita em Python puro, para realizar análises bioinformáticas fundamentais a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
+**BioHub** é uma ferramenta de linha de comando leve e livre de dependências, escrita em Python, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
 
 ---
 ```
