@@ -7,6 +7,16 @@
 
 ---
 
+## Equipe Desenvolvedora (Bioinformática - UFMG)
+
+- Alisson Clementino da Silva 
+- Ana Karoline da Nóbrega Nunes Alves
+- Laura da Silva Ribeiro de Souza
+- Leonardo Henrique da Silva
+- Madson Allan de Luna Aragão
+
+---
+
 ## Visão Geral
 
 Este projeto foi desenvolvido com o objetivo de fornecer uma solução simples, rápida e altamente portátil para tarefas comuns de análise de proteínas. É ideal para:
