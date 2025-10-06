@@ -280,3 +280,14 @@ Uma versão beta está disponível em: https://madsondeluna.github.io/biohub-bet
 ## Licença
 
 Este projeto está licenciado sob a **Licença MIT**. Veja o arquivo `LICENSE` para mais detalhes.
+
+---
+
+```
+
+      |\      _,,,---,,_
+ZZZzz /,`.-'`'    -.  ;-;;,_
+     |,4-  ) )-,_. ,\ (  `'-'
+    '---''(_/--'  `-'\_)
+
+```
