@@ -65,6 +65,12 @@ Identifica e lista contatos intramoleculares com base na distância entre os át
 
 Prevê regiões potencialmente expostas ao solvente ou enterradas no interior da proteína. Utiliza a **escala de hidropatia de Kyte-Doolittle** com um método de janela deslizante. Para cada resíduo, calcula-se a média de hidropatia dos resíduos vizinhos. Pontuações altas indicam regiões hidrofóbicas (provavelmente internas), enquanto pontuações baixas indicam regiões hidrofílicas (provavelmente na superfície).
 
+### 5. `sasa`
+Calcula a Área de Superfície Acessível ao Solvente (SASA). Esta funcionalidade implementa o algoritmo de Shrake-Rupley em Python puro para estimar a área da superfície da proteína que está em contato com o solvente. É uma métrica fundamental para estudos de enovelamento, estabilidade e interações moleculares.
+
+### 6. `apbs`
+Calcula a energia de solvatação eletrostática. Este comando atua como um wrapper, automatizando a execução dos softwares PDB2PQR e APBS. Ele prepara os arquivos necessários, executa os cálculos de Poisson-Boltzmann e extrai o valor final da energia, simplificando uma análise computacionalmente complexa.
+
 ---
 
 ## Requisitos
@@ -181,6 +187,35 @@ Usar uma janela maior (ex.: 19) para suavizar o perfil e identificar regiões ex
 ```bash
 python biohub.py exposure proteina.pdb -w 19
 ```
+
+#### 5) Calcular SASA (Área de Superfície Acessível ao Solvente)
+
+Executar com parâmetros padrão (sonda de 1.4 Å, 960 pontos):
+
+```bash
+python biohub.py sasa proteina.pdb
+```
+
+Ajustar a precisão e o raio da sonda:
+
+```bash
+python biohub.py sasa proteina.pdb --probe-radius 1.5 --num-points 2000
+```
+
+#### 6) Calcular Energia de Solvatação (APBS)
+
+Executar a análise padrão (arquivos temporários são removidos):
+
+```bash
+python biohub.py apbs proteina.pdb
+```
+
+Executar e manter os arquivos intermediários (PQR, apbs.in, etc.) para depuração:
+
+```bash
+python biohub.py apbs proteina.pdb --no-cleanup
+```
+
 
 ---
 
