@@ -106,6 +106,28 @@ Ou, se o arquivo for executável:
 ./biohub.py [COMANDO] [ARGUMENTOS] [OPÇÕES]
 ```
 
+### Ajuda (ou `biohub.py -h`)
+
+```bash
+usage: biohub.py [-h] {fasta,physchem,contacts,exposure} ...
+
+Ferramenta de bioinformática para análise de PDB e sequências.
+
+positional arguments:
+  {fasta,physchem,contacts,exposure}
+                        Função a ser executada
+    fasta               Converte um arquivo PDB em uma sequência FASTA.
+    physchem            Calcula propriedades físico-químicas de uma
+                        sequência.
+    contacts            Calcula contatos intramoleculares a partir de um
+                        arquivo PDB.
+    exposure            Prevê a exposição ao solvente com a escala Kyte-
+                        Doolittle.
+
+optional arguments:
+  -h, --help            show this help message and exit
+```
+
 ### Exemplos Detalhados
 
 Suponha que você tenha um arquivo `proteina.pdb`.
