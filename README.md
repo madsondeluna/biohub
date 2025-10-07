@@ -94,6 +94,12 @@ Calcula a energia de solvatação eletrostática. Este comando atua como um wrap
 
 ---
 
+<p align="center">
+  <img src="/img/workflow.jpeg" alt="Workflow" width="100%"/>
+</p>
+
+---
+
 ## Requisitos
 
 * Python 3.x
