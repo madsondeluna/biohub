@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.x-brightgreen.svg)](https://www.python.org/)
 
-**BioHub** é uma ferramenta de linha de comando leve e livre de dependências, escrita em Python, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
+**BioHub** é uma ferramenta de linha de comando leve, prática e centralizadora, escrita em Python puro, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
 
 ---
 ```
@@ -87,7 +87,7 @@ Identifica e lista contatos intramoleculares com base na distância entre os át
 Prevê regiões potencialmente expostas ao solvente ou enterradas no interior da proteína. Utiliza a **escala de hidropatia de Kyte-Doolittle** com um método de janela deslizante. Para cada resíduo, calcula-se a média de hidropatia dos resíduos vizinhos. Pontuações altas indicam regiões hidrofóbicas (provavelmente internas), enquanto pontuações baixas indicam regiões hidrofílicas (provavelmente na superfície).
 
 ### 5. `sasa`
-Calcula a Área de Superfície Acessível ao Solvente (SASA). Esta funcionalidade implementa o algoritmo de Shrake-Rupley em Python puro para estimar a área da superfície da proteína que está em contato com o solvente. É uma métrica fundamental para estudos de enovelamento, estabilidade e interações moleculares.
+Calcula a Área de Superfície Acessível ao Solvente (SASA). Esta funcionalidade implementa o algoritmo de Shrake-Rupley para estimar a área da superfície da proteína que está em contato com o solvente. É uma métrica fundamental para estudos de enovelamento, estabilidade e interações moleculares.
 
 ### 6. `apbs`
 Calcula a energia de solvatação eletrostática. Este comando atua como um wrapper, automatizando a execução dos softwares PDB2PQR e APBS. Ele prepara os arquivos necessários, executa os cálculos de Poisson-Boltzmann e extrai o valor final da energia, simplificando uma análise computacionalmente complexa.
@@ -104,7 +104,18 @@ Calcula a energia de solvatação eletrostática. Este comando atua como um wrap
 
 * Python 3.x
 
-Nenhuma outra biblioteca é necessária.
+1. Verifique a instalação:
+
+```
+python3 --version
+```
+```
+python --version
+```
+
+2. Instale python3 caso o comando não retorne a versão.
+
+Com exceção do comando apbs que exige as dependências pdb2pqr e apbs, nenhuma outra biblioteca é necessária. 
 
 ---
 
@@ -113,7 +124,7 @@ Nenhuma outra biblioteca é necessária.
 1. Clone este repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/biohub.git
+   git clone https://github.com/madsondeluna/biohub.git
    cd biohub
    ```
 
