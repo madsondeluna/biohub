@@ -28,7 +28,7 @@
 ```
 ---
 
-## Equipe Desenvolvedora (Bioinformática - UFMG)
+## Equipe Desenvolvedora (Programa de Pós Graduação em Bioinformática - UFMG)
 
 - Alisson Clementino da Silva 
 - Ana Karoline da Nóbrega Nunes Alves
@@ -40,7 +40,7 @@
 
 ## Visão Geral
 
-Este projeto foi desenvolvido com o objetivo de fornecer uma solução simples, rápida e altamente portátil para tarefas comuns de análise de proteínas. É ideal para:
+Este projeto foi desenvolvido com o objetivo de fornecer uma solução simples, rápida e altamente portátil para tarefas comuns na análise de proteínas. É ideal para:
 
 * **Fins educacionais**: Demonstra a implementação de algoritmos bioinformáticos fundamentais sem a abstração de bibliotecas complexas.
 * **Integração em pipelines**: A natureza leve e a interface de linha de comando facilitam a automação de análises em scripts de shell.
@@ -52,7 +52,7 @@ Este projeto foi desenvolvido com o objetivo de fornecer uma solução simples, 
 
 A BioHub foi intencionalmente construída utilizando apenas a biblioteca padrão do Python. Constantes físico-químicas, como pesos moleculares e escalas de hidropatia, são armazenadas localmente em dicionários.
 
-**Justificativa**: Esta abordagem garante a máxima portabilidade e simplicidade. Embora o uso de bancos de dados externos ou pacotes especializados pudesse oferecer maior precisão ou dados mais atualizados, a implementação atual é suficiente para fins demonstrativos e educacionais, focando na lógica algorítmica.
+**Justificativa**: Esta abordagem garante a portabilidade e simplicidade para análise de estrutura de proteínas. Embora o uso de bancos de dados externos ou pacotes especializados pudesse oferecer maior precisão ou dados mais atualizados, a implementação atual é suficiente para fins demonstrativos e educacionais, focando na lógica algorítmica.
 
 ---
 
