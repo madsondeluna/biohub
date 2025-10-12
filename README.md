@@ -188,7 +188,7 @@ Com exceção do comando apbs que exige as dependências pdb2pqr e apbs, nenhuma
 A ferramenta é executada a partir do terminal, seguindo o padrão:
 
 ```bash
-python biohub.py [COMANDO] [ARGUMENTOS] [OPÇÕES]
+python3 biohub.py [COMANDO] [ARGUMENTOS] [OPÇÕES]
 ```
 
 Ou, se o arquivo for executável:
@@ -210,7 +210,7 @@ Ou, se o arquivo for executável:
 ### Ajuda (ou `biohub.py -h`)
 
 ```bash
-python biohub.py -h
+python3 biohub.py -h
 ```
 
 **Saída:**
@@ -246,18 +246,18 @@ Use biohub.py COMANDO -h para ajuda detalhada sobre um comando.
 Baixar a estrutura 1A2B com o nome padrão:
 
 ```bash
-python biohub.py fetchpdb 1A2B
+python3 biohub.py fetchpdb 1A2B
 ```
 
 Baixar e salvar com nome customizado:
 
 ```bash
-python biohub.py fetchpdb 1A2B -o minha_proteina.pdb
+python3 biohub.py fetchpdb 1A2B -o minha_proteina.pdb
 ```
 
 **Ajuda do comando:**
 ```bash
-python biohub.py fetchpdb -h
+python3 biohub.py fetchpdb -h
 ```
 
 **Opções disponíveis:**
@@ -271,18 +271,18 @@ python biohub.py fetchpdb -h
 Exibir a sequência no terminal:
 
 ```bash
-python biohub.py fasta proteina.pdb
+python3 biohub.py fasta proteina.pdb
 ```
 
 Salvar a sequência em um arquivo:
 
 ```bash
-python biohub.py fasta proteina.pdb -o proteina.fasta
+python3 biohub.py fasta proteina.pdb -o proteina.fasta
 ```
 
 **Ajuda do comando:**
 ```bash
-python biohub.py fasta -h
+python3 biohub.py fasta -h
 ```
 
 **Opções disponíveis:**
@@ -296,24 +296,24 @@ python biohub.py fasta -h
 Converter com configurações padrão (colunas 0 e 1, sem cabeçalho):
 
 ```bash
-python biohub.py csv2fasta sequencias.csv
+python3 biohub.py csv2fasta sequencias.csv
 ```
 
 Converter especificando colunas por nome (com cabeçalho):
 
 ```bash
-python biohub.py csv2fasta sequencias.csv --header --id-col "ID" --seq-col "Sequencia" -o saida.fasta
+python3 biohub.py csv2fasta sequencias.csv --header --id-col "ID" --seq-col "Sequencia" -o saida.fasta
 ```
 
 Converter com delimitador customizado (ponto-e-vírgula):
 
 ```bash
-python biohub.py csv2fasta dados.csv --delimiter ";" --header --id-col 0 --seq-col 2
+python3 biohub.py csv2fasta dados.csv --delimiter ";" --header --id-col 0 --seq-col 2
 ```
 
 **Ajuda do comando:**
 ```bash
-python biohub.py csv2fasta -h
+python3 biohub.py csv2fasta -h
 ```
 
 **Opções disponíveis:**
@@ -331,18 +331,18 @@ python biohub.py csv2fasta -h
 Analisar uma sequência fornecida diretamente:
 
 ```bash
-python biohub.py physchem "MKTAYIAKQRQISFVKSHFSRQLEERLGLIEVQAPILSRVGDGTQDNLSGAEKAVQVKVKALPDAQFEVVHSLAKWKRQTLGQHDFSAGEGLYTHMKALRPDEDRLSPLHSVYVDQWDWERVMGDGERQFSTLKSTVEAIWAGIKATEAAVSEEFGLAPFLPDQIHFVHSQELLSRYPDLDAKGRERAIAKDLGAVFLVGIGGKLSDGHRHDVRAPDYDDWSTPSELGHAGLNGDILVWNPVLEDAFELSSMGIRVDADTLKHQLALTGDEDRLELEWHQALLRGEMPQTIGGGIGQSRLTMLLLQLPHIGQVQAGVWPAAVRESVPSLL"
+python3 biohub.py physchem "MKTAYIAKQRQISFVKSHFSRQLEERLGLIEVQAPILSRVGDGTQDNLSGAEKAVQVKVKALPDAQFEVVHSLAKWKRQTLGQHDFSAGEGLYTHMKALRPDEDRLSPLHSVYVDQWDWERVMGDGERQFSTLKSTVEAIWAGIKATEAAVSEEFGLAPFLPDQIHFVHSQELLSRYPDLDAKGRERAIAKDLGAVFLVGIGGKLSDGHRHDVRAPDYDDWSTPSELGHAGLNGDILVWNPVLEDAFELSSMGIRVDADTLKHQLALTGDEDRLELEWHQALLRGEMPQTIGGGIGQSRLTMLLLQLPHIGQVQAGVWPAAVRESVPSLL"
 ```
 
 Salvar resultados em CSV:
 
 ```bash
-python biohub.py physchem "MKTAYIAKQ" -o propriedades.csv
+python3 biohub.py physchem "MKTAYIAKQ" -o propriedades.csv
 ```
 
 **Ajuda do comando:**
 ```bash
-python biohub.py physchem -h
+python3 biohub.py physchem -h
 ```
 
 **Opções disponíveis:**
@@ -370,24 +370,24 @@ python biohub.py physchem -h
 Encontrar contatos com o limiar padrão (8.0 Å):
 
 ```bash
-python biohub.py contacts proteina.pdb
+python3 biohub.py contacts proteina.pdb
 ```
 
 Ajustar o limiar de distância para 10.5 Å:
 
 ```bash
-python biohub.py contacts proteina.pdb -t 10.5
+python3 biohub.py contacts proteina.pdb -t 10.5
 ```
 
 Salvar resultados em CSV:
 
 ```bash
-python biohub.py contacts proteina.pdb -t 8.0 -o contatos.csv
+python3 biohub.py contacts proteina.pdb -t 8.0 -o contatos.csv
 ```
 
 **Ajuda do comando:**
 ```bash
-python biohub.py contacts -h
+python3 biohub.py contacts -h
 ```
 
 **Opções disponíveis:**
@@ -402,24 +402,24 @@ python biohub.py contacts -h
 Executar com a janela padrão (9 resíduos):
 
 ```bash
-python biohub.py exposure proteina.pdb
+python3 biohub.py exposure proteina.pdb
 ```
 
 Usar uma janela maior (19 resíduos) para suavizar o perfil:
 
 ```bash
-python biohub.py exposure proteina.pdb -w 19
+python3 biohub.py exposure proteina.pdb -w 19
 ```
 
 Salvar resultados em CSV:
 
 ```bash
-python biohub.py exposure proteina.pdb -w 9 -o exposicao.csv
+python3 biohub.py exposure proteina.pdb -w 9 -o exposicao.csv
 ```
 
 **Ajuda do comando:**
 ```bash
-python biohub.py exposure -h
+python3 biohub.py exposure -h
 ```
 
 **Opções disponíveis:**
@@ -438,24 +438,24 @@ python biohub.py exposure -h
 Executar com parâmetros padrão (sonda de 1.4 Å, 960 pontos):
 
 ```bash
-python biohub.py sasa proteina.pdb
+python3 biohub.py sasa proteina.pdb
 ```
 
 Ajustar a precisão e o raio da sonda:
 
 ```bash
-python biohub.py sasa proteina.pdb --probe-radius 1.5 --num-points 2000
+python3 biohub.py sasa proteina.pdb --probe-radius 1.5 --num-points 2000
 ```
 
 Salvar resultados por resíduo em CSV:
 
 ```bash
-python biohub.py sasa proteina.pdb -o sasa_resultados.csv
+python3 biohub.py sasa proteina.pdb -o sasa_resultados.csv
 ```
 
 **Ajuda do comando:**
 ```bash
-python biohub.py sasa -h
+python3 biohub.py sasa -h
 ```
 
 **Opções disponíveis:**
@@ -476,18 +476,18 @@ python biohub.py sasa -h
 Executar a análise padrão (arquivos temporários são removidos):
 
 ```bash
-python biohub.py apbs proteina.pdb
+python3 biohub.py apbs proteina.pdb
 ```
 
 Executar e manter os arquivos intermediários:
 
 ```bash
-python biohub.py apbs proteina.pdb --no-cleanup
+python3 biohub.py apbs proteina.pdb --no-cleanup
 ```
 
 **Ajuda do comando:**
 ```bash
-python biohub.py apbs -h
+python3 biohub.py apbs -h
 ```
 
 **Opções disponíveis:**
@@ -524,13 +524,13 @@ for pdb in *.pdb; do
     echo "Processando ${base_name}..."
 
     # Gera o arquivo de contatos
-    python biohub.py contacts "$pdb" -o "${OUTPUT_DIR}/${base_name}_contacts.csv"
+    python3 biohub.py contacts "$pdb" -o "${OUTPUT_DIR}/${base_name}_contacts.csv"
 
     # Gera o perfil de exposição ao solvente
-    python biohub.py exposure "$pdb" -o "${OUTPUT_DIR}/${base_name}_exposure.csv"
+    python3 biohub.py exposure "$pdb" -o "${OUTPUT_DIR}/${base_name}_exposure.csv"
 
     # Calcula SASA
-    python biohub.py sasa "$pdb" -o "${OUTPUT_DIR}/${base_name}_sasa.csv"
+    python3 biohub.py sasa "$pdb" -o "${OUTPUT_DIR}/${base_name}_sasa.csv"
 
 done
 
@@ -549,14 +549,14 @@ for pdb_id in "${PDB_IDS[@]}"; do
     echo "Processando ${pdb_id}..."
 
     # Baixa o arquivo PDB
-    python biohub.py fetchpdb "$pdb_id"
+    python3 biohub.py fetchpdb "$pdb_id"
 
     # Converte para FASTA
-    python biohub.py fasta "${pdb_id}.pdb" -o "${pdb_id}.fasta"
+    python3 biohub.py fasta "${pdb_id}.pdb" -o "${pdb_id}.fasta"
 
     # Calcula propriedades físico-químicas
     sequence=$(tail -n 1 "${pdb_id}.fasta")
-    python biohub.py physchem "$sequence" -o "${pdb_id}_physchem.csv"
+    python3 biohub.py physchem "$sequence" -o "${pdb_id}_physchem.csv"
 
     echo "Concluído: ${pdb_id}"
 done
@@ -568,14 +568,14 @@ done
 #!/bin/bash
 
 # Converte CSV para FASTA
-python biohub.py csv2fasta sequencias.csv --header --id-col "ProteinID" --seq-col "Sequence" -o todas_sequencias.fasta
+python3 biohub.py csv2fasta sequencias.csv --header --id-col "ProteinID" --seq-col "Sequence" -o todas_sequencias.fasta
 
 # Extrai cada sequência e calcula propriedades
 grep -A1 "^>" todas_sequencias.fasta | while read header; do
     read sequence
     if [[ $header == ">"* ]]; then
         id=$(echo $header | sed 's/>//')
-        python biohub.py physchem "$sequence" -o "${id}_properties.csv"
+        python3 biohub.py physchem "$sequence" -o "${id}_properties.csv"
     fi
 done
 ```
