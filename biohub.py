@@ -75,7 +75,7 @@ def print_exit_message():
     """Exibe uma mensagem de agradecimento ao final da execução."""
     # Adicionado \n para criar um espaço antes da mensagem
     print("\n" + "=" * 65, file=sys.stderr)
-    print("Obrigado por usar o BioHub!", file=sys.stderr)
+    print("Obrigado por usar o BioHub! Essa aplicação foi feita com <3 e cafê..." + "\n Ah, se vocè ver um gatinho carente no ICB, faça carinho nele!", file=sys.stderr)
     print("=" * 65, file=sys.stderr)
 
 # --- Funções Auxiliares (mantidas) ---
