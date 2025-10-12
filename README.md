@@ -142,7 +142,7 @@ Calcula a **energia de solvatação eletrostática** através da resolução da 
 ---
 
 <p align="center">
-  <img src="/img/workflow2.jpeg" alt="Workflow" width="100%"/>
+  <img src="/img/img/9FC335A9-F378-42B4-80D8-35A8A3F61FF1_1_201_a.jpeg" alt="Workflow" width="100%"/>
 </p>
 
 ---
