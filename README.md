@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.x-brightgreen.svg)](https://www.python.org/)
 
-**BioHub** é uma ferramenta de linha de comando leve e livre de dependências, escrita em Python, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
+**BioHub** é uma ferramenta de linha de comando leve, prática e centralizadora, escrita em Python puro, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
 
 ---
 
@@ -109,9 +109,8 @@ Identifica e lista contatos intramoleculares com base na distância entre os át
 
 Prevê regiões potencialmente expostas ao solvente ou enterradas no interior da proteína. Utiliza a **escala de hidropatia de Kyte-Doolittle** com um método de janela deslizante. Para cada resíduo, calcula-se a média de hidropatia dos resíduos vizinhos. Pontuações altas indicam regiões hidrofóbicas (provavelmente internas), enquanto pontuações baixas indicam regiões hidrofílicas (provavelmente na superfície).
 
-**Parâmetros ajustáveis:**
-* Tamanho da janela deslizante (padrão: 9 resíduos, deve ser ímpar)
-* Janelas maiores (ex.: 19) suavizam o perfil e identificam regiões extensas como hélices transmembrana
+### 5. `sasa`
+Calcula a Área de Superfície Acessível ao Solvente (SASA). Esta funcionalidade implementa o algoritmo de Shrake-Rupley para estimar a área da superfície da proteína que está em contato com o solvente. É uma métrica fundamental para estudos de enovelamento, estabilidade e interações moleculares.
 
 ### 7. `sasa`
 
@@ -143,7 +142,7 @@ Calcula a **energia de solvatação eletrostática** através da resolução da 
 ---
 
 <p align="center">
-  <img src="/img/workflow.jpeg" alt="Workflow" width="100%"/>
+  <img src="/img/workflow2.jpeg" alt="Workflow" width="100%"/>
 </p>
 
 ---
@@ -152,11 +151,18 @@ Calcula a **energia de solvatação eletrostática** através da resolução da 
 
 * Python 3.x (biblioteca padrão)
 
-Para as funcionalidades `apbs`:
-* PDB2PQR (https://pdb2pqr.readthedocs.io/)
-* APBS (https://apbs.readthedocs.io/)
+1. Verifique a instalação:
 
-Nenhuma outra biblioteca Python é necessária para as demais funcionalidades.
+```
+python3 --version
+```
+```
+python --version
+```
+
+2. Instale python3 caso o comando não retorne a versão.
+
+Com exceção do comando apbs que exige as dependências pdb2pqr e apbs, nenhuma outra biblioteca é necessária. 
 
 ---
 
@@ -165,7 +171,7 @@ Nenhuma outra biblioteca Python é necessária para as demais funcionalidades.
 1. Clone este repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/biohub.git
+   git clone https://github.com/madsondeluna/biohub.git
    cd biohub
    ```
 
@@ -191,7 +197,17 @@ Ou, se o arquivo for executável:
 ./biohub.py [COMANDO] [ARGUMENTOS] [OPÇÕES]
 ```
 
-### Ajuda Geral
+---
+
+> Exemplo de tela do BioHub em uso via CLI:
+
+<p align="center">
+  <img src="/img/example.jpeg" alt="Workflow" width="100%"/>
+</p>
+
+---
+
+### Ajuda (ou `biohub.py -h`)
 
 ```bash
 python biohub.py -h
