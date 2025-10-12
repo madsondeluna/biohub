@@ -357,6 +357,10 @@ python biohub.py physchem -h
 * Índice alifático
 * Índice de instabilidade
 * Meia-vida estimada (mamíferos, in vitro)
+* Total de resíduos ácidos (Asp+Glu)
+* Total de resíduos básicos (Arg+Lys+His)
+* Total de resíduos polares
+* Total de resíduos apolares
 * Composição completa de aminoácidos (contagem e percentual)
 
 ---
