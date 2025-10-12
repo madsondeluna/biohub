@@ -95,7 +95,7 @@ Calcula a energia de solvatação eletrostática. Este comando atua como um wrap
 ---
 
 <p align="center">
-  <img src="/img/workflow.jpeg" alt="Workflow" width="100%"/>
+  <img src="/img/workflow2.jpeg" alt="Workflow" width="100%"/>
 </p>
 
 ---
