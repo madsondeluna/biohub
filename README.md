@@ -2,6 +2,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.x-brightgreen.svg)](https://www.python.org/)
+[![CLI](https://img.shields.io/badge/Interface-CLI-orange.svg)](#)
+[![PDB](https://img.shields.io/badge/Format-PDB-blue)](https://www.wwpdb.org/)
+[![CSV](https://img.shields.io/badge/Format-CSV-yellow)](https://en.wikipedia.org/wiki/Comma-separated_values)
+[![FASTA](https://img.shields.io/badge/Format-FASTA-lightgrey)](https://en.wikipedia.org/wiki/FASTA_format)
+
 
 **BioHub** é uma ferramenta de linha de comando leve, prática e centralizadora, escrita em Python puro, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
 
