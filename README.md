@@ -139,6 +139,14 @@ Ou, se o arquivo for executável:
 ./biohub.py [COMANDO] [ARGUMENTOS] [OPÇÕES]
 ```
 
+---
+
+<p align="center">
+  <img src="/img/example.jpeg" alt="Workflow" width="100%"/>
+</p>
+
+---
+
 ### Ajuda (ou `biohub.py -h`)
 
 ```bash
