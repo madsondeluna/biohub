@@ -297,3 +297,7 @@ ZZZzz /,`.-'`'    -.  ;-;;,_
     '---''(_/--'  `-'\_)
 
 ```
+
+---
+
+***Made with ❤️ and countless cups of coffee!***
