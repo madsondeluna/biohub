@@ -141,6 +141,8 @@ Ou, se o arquivo for executável:
 
 ---
 
+> Exemplo de tela do BioHub em uso via CLI:
+
 <p align="center">
   <img src="/img/example.jpeg" alt="Workflow" width="100%"/>
 </p>
