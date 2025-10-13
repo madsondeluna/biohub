@@ -8,6 +8,12 @@
 [![PDB](https://img.shields.io/badge/Protein%20Data%20Bank-PDB-0052CC?logo=databricks&logoColor=white)](https://www.wwpdb.org/)
 [![CSV](https://img.shields.io/badge/Data-CSV-FFD700?logo=files&logoColor=black)](https://en.wikipedia.org/wiki/Comma-separated_values)
 [![FASTA](https://img.shields.io/badge/Sequence-FASTA-808080?logo=dna&logoColor=white)](https://en.wikipedia.org/wiki/FASTA_format)
+![physchem](https://img.shields.io/badge/physchem-Physicochemical%20Properties-4682B4?logo=atom&logoColor=white)
+![contacts](https://img.shields.io/badge/contacts-Intramolecular%20Contacts-008080?logo=structure&logoColor=white)
+![exposure](https://img.shields.io/badge/exposure-Solvent%20Exposure-20B2AA?logo=dropbox&logoColor=white)
+![sasa](https://img.shields.io/badge/sasa-Accessible%20Surface%20Area-1E90FF?logo=wave&logoColor=white)
+![apbs](https://img.shields.io/badge/apbs%20%5BBETA%5D-Electrostatic%20Solvation-800080?logo=lightning&logoColor=white)
+
 
 
 **BioHub** é uma ferramenta de linha de comando leve, prática e centralizadora, escrita em Python puro, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
