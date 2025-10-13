@@ -220,7 +220,7 @@ python3 biohub.py -h
 
 **Saída:**
 ```
-usage: biohub.py [-h] {fetchpdb,fasta,csv2fasta,physchem,contacts,exposure,sasa,apbs} ...
+biohub.py [-h] {fetchpdb,fasta,csv2fasta,physchem,contacts,exposure,sasa,apbs} ...
 
 BioHub: Uma ferramenta CLI para análise de proteínas.
 
