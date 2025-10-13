@@ -127,7 +127,7 @@ Calcula a **Área de Superfície Acessível ao Solvente (SASA)** usando o algori
 * Cálculo por resíduo e SASA total da molécula
 * Uso de raios de Van der Waals específicos para cada tipo de átomo
 
-### 8. `apbs` [BETA]
+### 8. `apbs` [BETA, ainda em validação]
 
 Calcula a **energia de solvatação eletrostática** através da resolução da equação de Poisson-Boltzmann. Este comando atua como um wrapper que automatiza todo o fluxo de trabalho:
 
@@ -476,7 +476,7 @@ python3 biohub.py sasa -h
 
 ---
 
-### 8) Calcular Energia de Solvatação (APBS) [BETA]
+### 8) Calcular Energia de Solvatação (APBS) [BETA, ainda em validação]
 
 Executar a análise padrão (arquivos temporários são removidos):
 
@@ -617,7 +617,7 @@ done
 * **Terminal**: SASA total + tabela com SASA por resíduo
 * **Arquivo CSV**: Duas colunas (Residuo, SASA_A2)
 
-### apbs [BETA]
+### apbs [BETA, ainda em validação]
 * **Terminal**: Progresso da execução e energia de solvatação final em kJ/mol
 * **Arquivos** (com `--no-cleanup`): PQR, apbs.in, mapas de potencial eletrostático
 
