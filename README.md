@@ -1,11 +1,13 @@
 # BioHub: Uma Plataforma para Análise de Sequências e Estruturas de Proteínas
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python Version](https://img.shields.io/badge/python-3.x-brightgreen.svg)](https://www.python.org/)
-[![CLI](https://img.shields.io/badge/Interface-CLI-orange.svg)](#)
-[![PDB](https://img.shields.io/badge/Format-PDB-blue)](https://www.wwpdb.org/)
-[![CSV](https://img.shields.io/badge/Format-CSV-yellow)](https://en.wikipedia.org/wiki/Comma-separated_values)
-[![FASTA](https://img.shields.io/badge/Format-FASTA-lightgrey)](https://en.wikipedia.org/wiki/FASTA_format)
+[![License](https://img.shields.io/badge/License-MIT-blue?logo=open-source-initiative&logoColor=white)](https://opensource.org/licenses/MIT)
+![UFMG](https://img.shields.io/badge/UFMG-Academic-800000?style=flat&logo=gradle&logoColor=white)
+![Bioinformatics](https://img.shields.io/badge/Bioinformatics-Research-006699?logo=google-scholar&logoColor=white)
+[![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![CLI](https://img.shields.io/badge/Command%20Line-CLI-orange?logo=gnometerminal&logoColor=white)](#)
+[![PDB](https://img.shields.io/badge/Protein%20Data%20Bank-PDB-0052CC?logo=databricks&logoColor=white)](https://www.wwpdb.org/)
+[![CSV](https://img.shields.io/badge/Data-CSV-FFD700?logo=files&logoColor=black)](https://en.wikipedia.org/wiki/Comma-separated_values)
+[![FASTA](https://img.shields.io/badge/Sequence-FASTA-808080?logo=dna&logoColor=white)](https://en.wikipedia.org/wiki/FASTA_format)
 
 
 **BioHub** é uma ferramenta de linha de comando leve, prática e centralizadora, escrita em Python puro, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
