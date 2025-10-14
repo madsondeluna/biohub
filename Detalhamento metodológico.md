@@ -33,6 +33,23 @@ As funções integradas foram representadas em oito módulos, cada um responsáv
 
 **Módulo apbs:** Funciona como wrapper automatizado para o pipeline completo de cálculo eletrostático através da equação de Poisson-Boltzmann. O módulo integra PDB2PQR para adição de hidrogênios e atribuição de cargas parciais baseadas em campo de força AMBER; gera arquivos de configuração APBS com parâmetros de grid otimizados; executa cálculos de energia de solvatação em meio aquoso e meio de referência; extrai diferenças de energia através de parsing da saída; e fornece valor final de energia de solvatação eletrostática em kJ/mol, com opção de preservação de arquivos intermediários para análises adicionais ou depuração.
 
+# IV. Referências
+GASTEIGER, Elisabeth et al. ExPASy: the proteomics server for in-depth protein knowledge and analysis. Nucleic Acids Research, v. 31, n. 13, p. 3784–3788, 1 jul. 2003.
+
+GASTEIGER, Elisabeth et al. Protein Identification and Analysis Tools on the ExPASy Server. In: WALKER, John M. (Org.). The Proteomics Protocols Handbook. Totowa, NJ: Humana Press, 2005. p. 571–607.
+
+JURRUS, Elizabeth et al. Improvements to the APBS biomolecular solvation software suite. Protein Science, v. 27, n. 1, p. 112–128, 2018.
+
+KABSCH, Wolfgang; SANDER, Christian. Dictionary of protein secondary structure: Pattern recognition of hydrogen-bonded and geometrical features. Biopolymers, v. 22, n. 12, p. 2577–2637, 1983.
+
+KYTE, Jack; DOOLITTLE, Russell F. A simple method for displaying the hydropathic character of a protein. Journal of Molecular Biology, v. 157, n. 1, p. 105–132, 5 maio 1982.
+
+LEE, B.; RICHARDS, F. M. The interpretation of protein structures: Estimation of static accessibility. Journal of Molecular Biology, v. 55, n. 3, p. 379-IN4, 14 fev. 1971.
+
+SCHRÖDINGER, L.; DELANO, W. PyMOL. Disponível em: https://www.scirp.org/reference/referencespapers?referenceid=3860375. Acesso em: 14 set. 2025.
+
+SHRAKE, A.; RUPLEY, J. A. Environment and exposure to solvent of protein atoms. Lysozyme and insulin. Journal of Molecular Biology, v. 79, n. 2, p. 351–371, 1973.
+ 
 
 
 
