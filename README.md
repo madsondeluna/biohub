@@ -82,7 +82,7 @@ Converte um arquivo PDB em uma sequência no formato FASTA. O processo foca nos 
 
 ### 3. `csv2fasta`
 
-Converte arquivos CSV contendo sequências de aminoácidos para o formato FASTA. Esta funcionalidade é especialmente útil para processar grandes volumes de sequências armazenadas em planilhas ou bancos de dados tabulares.
+Converte arquivos CSV contendo sequências de aminoácidos para o formato FASTA. Esta funcionalidade é especialmente útil para processar grandes volumes de sequências armazenadas em planilhas ou bancos de dados tabulares. O CSV input deve conter apenas duas colunas com as variáveis "ID" e "sequência de aminoácidos".
 
 **Recursos configuráveis:**
 * Suporte para delimitadores customizados (vírgula, ponto-e-vírgula, tabulação, etc.)
