@@ -102,7 +102,7 @@ def print_banner():
     print(banner, file=sys.stderr)
     print("Uma Plataforma para Análise de Sequências e Estruturas de Proteínas", file=sys.stderr)
     print("Versão: 1.9.0 | UFMG - Bioinformática", file=sys.stderr)
-    print("Autores: ACDS, AKNNA, LSRS, LHDS & MADLA", file=sys.stderr)
+    print("Autores: ACDS, AKNNA, LSRS, LHS & MADLA", file=sys.stderr)
     print("-" * 65, file=sys.stderr)
 
 def print_exit_message():
