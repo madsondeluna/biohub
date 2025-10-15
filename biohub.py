@@ -101,7 +101,7 @@ def print_banner():
     # Uso sys.stderr para que a interface não seja misturada com a saída de dados (stdout).
     print(banner, file=sys.stderr)
     print("Uma Plataforma para Análise de Sequências e Estruturas de Proteínas", file=sys.stderr)
-    print("Versão: 1.9.0 | UFMG - Bioinformática", file=sys.stderr)
+    print("Versão: 0.2.0 | UFMG - Bioinformática", file=sys.stderr)
     print("Autores: ACDS, AKNNA, LSRS, LHS & MADLA", file=sys.stderr)
     print("-" * 65, file=sys.stderr)
 
