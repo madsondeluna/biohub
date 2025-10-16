@@ -116,9 +116,6 @@ Identifica e lista contatos intramoleculares com base na distância entre os át
 
 Prevê regiões potencialmente expostas ao solvente ou enterradas no interior da proteína. Utiliza a **escala de hidropatia de Kyte-Doolittle** com um método de janela deslizante. Para cada resíduo, calcula-se a média de hidropatia dos resíduos vizinhos. Pontuações altas indicam regiões hidrofóbicas (provavelmente internas), enquanto pontuações baixas indicam regiões hidrofílicas (provavelmente na superfície).
 
-### 5. `sasa`
-Calcula a Área de Superfície Acessível ao Solvente (SASA). Esta funcionalidade implementa o algoritmo de Shrake-Rupley para estimar a área da superfície da proteína que está em contato com o solvente. É uma métrica fundamental para estudos de enovelamento, estabilidade e interações moleculares.
-
 ### 7. `sasa`
 
 Calcula a **Área de Superfície Acessível ao Solvente (SASA)** usando o algoritmo de Shrake-Rupley implementado em Python puro. Esta métrica é fundamental para estudos de enovelamento, estabilidade e interações moleculares.
