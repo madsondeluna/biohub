@@ -454,7 +454,7 @@ def calculate_sasa(args):
         print("Resíduo   | SASA (Å²)")
         for row in results_data: print(f"{row[0]:<8} | {row[1]}")
 
-def run_apbs_analysis(args):
+def run_apbs_analysis(args): #BETA, TALVEZ SERÁ DESCONTINUADO
     """Executa PDB2PQR e APBS para calcular a energia de solvatação eletrostática."""
     # Verifico se os programas externos necessários estão instalados e no PATH do sistema.
     for exe in ["pdb2pqr", "apbs"]:
