@@ -378,7 +378,7 @@ def calculate_intramolecular_contacts(args):
                     ca_atoms[int(line[22:26])] = tuple(float(line[i:i+8]) for i in [30, 38, 46])
     
     residues = sorted(ca_atoms.keys())
-    # Calculo a distância euclidiana entre todos os pares de C-alfa.
+    # Calculo a distância euclidiana entre todos os pares de C-alfa. Essa função pode ser otimizada para avaliar todos os átomos, mas aqui foco apenas nos C-alfa para simplicidade.
     contacts = [(r1, r2, round(math.sqrt(sum((c1-c2)**2 for c1,c2 in zip(ca_atoms[r1], ca_atoms[r2]))), 3))
                 for i, r1 in enumerate(residues) for r2 in residues[i+1:]
                 # Filtro: ignoro vizinhos diretos e mantenho apenas distâncias abaixo do limiar.
