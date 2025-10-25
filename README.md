@@ -432,7 +432,7 @@ python3 biohub.py contacts -h
 
 ---
 
-### 6) Calcular Hidrofobicidade (Exposure)
+### 6) Calcular Hidrofobicidade (ou Exposure)
 
 Executar análise de hidrofobicidade por átomo:
 
@@ -843,83 +843,6 @@ save estrutura.wrl
 
 ---
 
-## Automação com Scripts
-
-A BioHub é ideal para uso em scripts de shell para processar múltiplos arquivos em lote.
-
-### Exemplo 1: Análise em Lote de Múltiplos PDBs
-
-```bash
-#!/bin/bash
-
-# Define o diretório de saída
-OUTPUT_DIR="analise_resultados"
-mkdir -p "$OUTPUT_DIR"
-
-# Itera sobre todos os arquivos PDB no diretório atual
-for pdb in *.pdb; do
-    base_name=$(basename "$pdb" .pdb)
-    echo "Processando ${base_name}..."
-
-    # Gera o arquivo de contatos
-    python3 biohub.py contacts "$pdb" -o "${OUTPUT_DIR}/${base_name}_contacts.csv"
-
-    # Gera o perfil de exposição ao solvente
-    python3 biohub.py exposure "$pdb" -o "${OUTPUT_DIR}/${base_name}_exposure.csv"
-
-    # Calcula SASA
-    python3 biohub.py sasa "$pdb" -o "${OUTPUT_DIR}/${base_name}_sasa.csv"
-
-done
-
-echo "Análise concluída. Resultados em ${OUTPUT_DIR}/"
-```
-
-### Exemplo 2: Download e Análise Automatizada
-
-```bash
-#!/bin/bash
-
-# Lista de códigos PDB para analisar
-PDB_IDS=("1A2B" "2GHI" "3JKL" "4MNO")
-
-for pdb_id in "${PDB_IDS[@]}"; do
-    echo "Processando ${pdb_id}..."
-
-    # Baixa o arquivo PDB
-    python3 biohub.py fetchpdb "$pdb_id"
-
-    # Converte para FASTA
-    python3 biohub.py fasta "${pdb_id}.pdb" -o "${pdb_id}.fasta"
-
-    # Calcula propriedades físico-químicas
-    sequence=$(tail -n 1 "${pdb_id}.fasta")
-    python3 biohub.py physchem "$sequence" -o "${pdb_id}_physchem.csv"
-
-    echo "Concluído: ${pdb_id}"
-done
-```
-
-### Exemplo 3: Processamento de Sequências de CSV
-
-```bash
-#!/bin/bash
-
-# Converte CSV para FASTA
-python3 biohub.py csv2fasta sequencias.csv --header --id-col "ProteinID" --seq-col "Sequence" -o todas_sequencias.fasta
-
-# Extrai cada sequência e calcula propriedades
-grep -A1 "^>" todas_sequencias.fasta | while read header; do
-    read sequence
-    if [[ $header == ">"* ]]; then
-        id=$(echo $header | sed 's/>//')
-        python3 biohub.py physchem "$sequence" -o "${id}_properties.csv"
-    fi
-done
-```
-
----
-
 ## Visualização com PyMOL
 
 O BioHub pode gerar arquivos otimizados para visualização no PyMOL, incluindo PDBs anotados com propriedades no B-factor e scripts de visualização pré-configurados.
@@ -1214,7 +1137,7 @@ print "Átomos hidrofóbicos:", cmd.count_atoms("high_hydro")
 
 Está em planejamento o desenvolvimento de uma versão web da BioHub. A aplicação web terá uma interface gráfica intuitiva para realizar as mesmas análises, com visualizações interativas dos resultados, tornando os outputs acessíveis a um público mais amplo. A lógica de cálculo será portada para JavaScript, permitindo análises rápidas diretamente no navegador.
 
-Uma versão beta está disponível em: [https://madsondeluna.github.io/biohub-beta/](https://madsondeluna.github.io/biohub-beta/)
+Uma versão beta está disponível em: [(https://madsondeluna.github.io/biohub-beta/)](https://madsondeluna.github.io/apps/biohub/index.html)
 
 ---
 
