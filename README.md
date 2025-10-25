@@ -525,7 +525,8 @@ Salvar resultados por átomo em CSV:
 python3 biohub.py sasa proteina.pdb -o sasa_resultados.csv
 ```
 
-**Gerar arquivo PDB anotado com SASA no B-factor:**
+
+**Gerar arquivo PDB anotado com SASA (média por resíduo) no B-factor:**
 
 ```bash
 python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb
@@ -537,14 +538,14 @@ python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb
 python3 biohub.py sasa proteina.pdb -o sasa_resultados.csv --write-pdb proteina_sasa.pdb
 ```
 
-**Gerar visualização PyMOL:**
+**Gerar visualização PyMOL (média por resíduo, gradiente invertido):**
 
 ```bash
 python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb --pymol proteina_sasa.pse
 ```
 
 Este comando gera:
-- `proteina_sasa.pdb`: PDB com SASA no B-factor
+- `proteina_sasa.pdb`: PDB com SASA médio por resíduo no B-factor
 - `proteina_sasa.pml`: Script PyMOL com visualização pré-configurada
 - `proteina_sasa.pse`: Sessão PyMOL (se PyMOL estiver instalado)
 
@@ -560,16 +561,17 @@ python3 biohub.py sasa -h
 - `--probe-radius FLOAT`: Raio da sonda do solvente em Angstroms (padrão: 1.4 para água)
 - `--num-points INT`: Número de pontos na superfície de cada átomo (padrão: 960)
 - `-o, --output ARQUIVO_CSV`: Salva os resultados por átomo em CSV (Chain, ResNum, ResName, AtomNum, AtomName, SASA_A2)
-- `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com o SASA escrito no B-factor de cada átomo
+- `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com o SASA médio por resíduo escrito no B-factor
 - `--pymol ARQUIVO_PSE`: Gera script PyMOL (.pml) e sessão (.pse) para visualização interativa
 
-**Observações:**
+**Novidades e Observações:**
 
-- Valores mais altos de `--num-points` aumentam a precisão mas também o tempo de processamento
-- O raio de 1.4 Å é o padrão para moléculas de água
+- O valor do B-factor para SASA agora é a **média por resíduo** (mais relevante biologicamente)
+- O gradiente de cores para SASA foi **invertido**: vermelho = enterrado, azul = exposto
+- O range de visualização é ajustado automaticamente (percentil 70 dos resíduos expostos) para maior sensibilidade
 - A SASA total da molécula é sempre exibida no terminal
-- Átomos completamente enterrados terão SASA = 0.00 Ų
-- Átomos completamente expostos podem ter SASA > 50 Ų dependendo do tamanho
+- Resíduos completamente enterrados terão SASA ≈ 0.00 Ų
+- Resíduos totalmente expostos podem ter SASA > 10 Ų (ajustado pelo percentil)
 
 **Formato de saída CSV:**
 
@@ -587,8 +589,21 @@ O arquivo PDB gerado com `--write-pdb` permite visualizar a acessibilidade ao so
 ```bash
 # No PyMOL:
 load proteina_sasa.pdb
-spectrum b, blue_white_red, minimum=0, maximum=60
+spectrum b, red_white_blue, minimum=0, maximum=10.8
+# (range ajustado automaticamente)
 ```
+
+**Exemplo prático:**
+
+```bash
+# Gerar SASA por resíduo e visualização
+python3 biohub.py sasa 4HHB.pdb --write-pdb 4HHB_sasa.pdb --pymol 4HHB_sasa.pse --num-points 300
+
+# Abrir no PyMOL
+pymol 4HHB_sasa.pml
+```
+
+No PyMOL, resíduos enterrados aparecerão em vermelho, parcialmente expostos em branco, e totalmente expostos em azul.
 
 ---
 
