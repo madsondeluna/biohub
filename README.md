@@ -674,7 +674,7 @@ python3 biohub.py apbs -h
 * **Arquivo CSV**: Seis colunas (Chain, ResNum, ResName, AtomNum, AtomName, SASA_A2)
 * **Arquivo PDB** (com `--write-pdb`): Estrutura 3D com SASA no B-factor
 
-### apbs [BETA, ainda em validação]
+### apbs [DESCONTINUADO]
 * **Terminal**: Progresso da execução e energia de solvatação final em kJ/mol
 * **Arquivos** (com `--no-cleanup`): PQR, apbs.in, mapas de potencial eletrostático
 
