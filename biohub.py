@@ -577,15 +577,16 @@ def generate_pymol_session(pdb_path, output_pse, property_type="hydrophobicity",
             script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
             
         elif property_type == "sasa":
-            # Esquema de cores: azul (enterrado) -> branco -> vermelho (exposto)
+            # Esquema de cores INVERTIDO: vermelho (enterrado) -> branco -> azul (exposto)
+            # Invertemos porque alto SASA = exposto ao solvente (água) = deve ser azul
             script_content.append(f"# === SASA (Acessibilidade ao Solvente) ===")
-            script_content.append(f"# Azul = Enterrado ({min_val:.1f} Ų), Vermelho = Exposto ({max_val:.1f} Ų)")
+            script_content.append(f"# Vermelho = Enterrado ({min_val:.1f} Ų), Azul = Exposto ({max_val:.1f} Ų)")
             script_content.append(f"")
             script_content.append(f"# Representação Cartoon (fita)")
             script_content.append(f"show cartoon, {pdb_name}")
             script_content.append(f"cartoon automatic, {pdb_name}")
             script_content.append(f"set cartoon_fancy_helices, 1")
-            script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
+            script_content.append(f"spectrum b, red_white_blue, {pdb_name}, minimum={min_val}, maximum={max_val}")
             script_content.append(f"")
             script_content.append(f"# Representação Sticks (bastões)")
             script_content.append(f"show sticks, {pdb_name}")
@@ -599,7 +600,7 @@ def generate_pymol_session(pdb_path, output_pse, property_type="hydrophobicity",
             script_content.append(f"set transparency, 0.5, {pdb_name}")
             script_content.append(f"# Aplica gradiente de SASA na superfície")
             script_content.append(f"set surface_color, white, {pdb_name}")
-            script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
+            script_content.append(f"spectrum b, red_white_blue, {pdb_name}, minimum={min_val}, maximum={max_val}")
         
         script_content.append(f"")
         script_content.append(f"# === Configurações Gerais de Qualidade ===")
@@ -797,32 +798,90 @@ def calculate_sasa(args):
     
     # Gera PDB anotado se solicitado
     if args.write_pdb:
-        # Prepara dados para escrita no B-factor
-        atom_values = [{'atom_num': atom['atom_num'], 'value': atom['sasa']} for atom in sasa_per_atom]
-        write_pdb_with_bfactor(args.pdb_file, args.write_pdb, atom_values, "SASA")
+        # Calcula SASA MÉDIO POR RESÍDUO para visualização mais biologicamente relevante
+        from collections import defaultdict
+        residue_sasa = defaultdict(list)
+        
+        # Agrupa SASA por resíduo (chain + res_num)
+        for atom in sasa_per_atom:
+            residue_key = (atom['chain_id'], atom['res_num'])
+            residue_sasa[residue_key].append(atom['sasa'])
+        
+        # Calcula média por resíduo
+        residue_avg_sasa = {}
+        for residue_key, sasa_list in residue_sasa.items():
+            residue_avg_sasa[residue_key] = sum(sasa_list) / len(sasa_list)
+        
+        # Atribui a média do resíduo a todos os átomos daquele resíduo
+        atom_values = []
+        for atom in sasa_per_atom:
+            residue_key = (atom['chain_id'], atom['res_num'])
+            avg_sasa = residue_avg_sasa[residue_key]
+            atom_values.append({'atom_num': atom['atom_num'], 'value': avg_sasa})
+        
+        write_pdb_with_bfactor(args.pdb_file, args.write_pdb, atom_values, "SASA (média por resíduo)")
         
         # Gera sessão PyMOL se solicitado
         if args.pymol:
-            # Para SASA, usa percentil 90 como máximo para melhor distribuição de cores
-            # (a maioria dos átomos tem SASA baixo, então isso cria melhor contraste)
-            sasa_values = sorted([atom['sasa'] for atom in sasa_per_atom])
-            min_sasa = 0.0  # SASA mínimo é sempre 0 (completamente enterrado)
-            # Usa percentil 90 ao invés do máximo absoluto para melhor distribuição
-            percentil_90_idx = int(len(sasa_values) * 0.90)
-            max_sasa = sasa_values[percentil_90_idx] if percentil_90_idx < len(sasa_values) else sasa_values[-1]
-            print(f"Range de visualização SASA: 0.00 - {max_sasa:.2f} Ų (percentil 90)", file=sys.stderr)
+            # Para SASA, usa a média por resíduo para definir o range
+            avg_sasa_values = sorted(list(residue_avg_sasa.values()))
+            
+            # Remove valores muito baixos para análise (resíduos quase completamente enterrados)
+            non_zero_sasa = [v for v in avg_sasa_values if v > 0.5]
+            
+            if len(non_zero_sasa) > 0:
+                # Usa percentil 70 dos valores não-zero para melhor sensibilidade
+                percentil_70_idx = int(len(non_zero_sasa) * 0.70)
+                max_sasa = non_zero_sasa[percentil_70_idx]
+                min_sasa = 0.0
+            else:
+                min_sasa = 0.0
+                max_sasa = max(avg_sasa_values) if avg_sasa_values else 1.0
+            
+            print(f"Range de visualização SASA (média por resíduo): 0.00 - {max_sasa:.2f} Ų (percentil 70)", file=sys.stderr)
+            print(f"  Resíduos totais: {len(residue_avg_sasa)}", file=sys.stderr)
+            print(f"  Resíduos enterrados (SASA<0.5): {len(avg_sasa_values) - len(non_zero_sasa)}", file=sys.stderr)
+            print(f"  Resíduos expostos (SASA≥0.5): {len(non_zero_sasa)}", file=sys.stderr)
             generate_pymol_session(args.write_pdb, args.pymol, property_type="sasa", min_val=min_sasa, max_val=max_sasa)
     elif args.pymol:
         # Se --pymol foi especificado mas --write-pdb não, avisa o usuário
         print("Aviso: --pymol requer --write-pdb. Gerando PDB temporário...", file=sys.stderr)
+        
+        # Calcula média por resíduo também para o caso temporário
+        from collections import defaultdict
+        residue_sasa = defaultdict(list)
+        for atom in sasa_per_atom:
+            residue_key = (atom['chain_id'], atom['res_num'])
+            residue_sasa[residue_key].append(atom['sasa'])
+        
+        residue_avg_sasa = {}
+        for residue_key, sasa_list in residue_sasa.items():
+            residue_avg_sasa[residue_key] = sum(sasa_list) / len(sasa_list)
+        
+        atom_values = []
+        for atom in sasa_per_atom:
+            residue_key = (atom['chain_id'], atom['res_num'])
+            avg_sasa = residue_avg_sasa[residue_key]
+            atom_values.append({'atom_num': atom['atom_num'], 'value': avg_sasa})
+        
         temp_pdb = "temp_sasa.pdb"
-        atom_values = [{'atom_num': atom['atom_num'], 'value': atom['sasa']} for atom in sasa_per_atom]
-        write_pdb_with_bfactor(args.pdb_file, temp_pdb, atom_values, "SASA")
-        sasa_values = sorted([atom['sasa'] for atom in sasa_per_atom])
-        min_sasa = 0.0
-        percentil_90_idx = int(len(sasa_values) * 0.90)
-        max_sasa = sasa_values[percentil_90_idx] if percentil_90_idx < len(sasa_values) else sasa_values[-1]
-        print(f"Range de visualização SASA: 0.00 - {max_sasa:.2f} Ų (percentil 90)", file=sys.stderr)
+        write_pdb_with_bfactor(args.pdb_file, temp_pdb, atom_values, "SASA (média por resíduo)")
+        
+        avg_sasa_values = sorted(list(residue_avg_sasa.values()))
+        non_zero_sasa = [v for v in avg_sasa_values if v > 0.5]
+        
+        if len(non_zero_sasa) > 0:
+            percentil_70_idx = int(len(non_zero_sasa) * 0.70)
+            max_sasa = non_zero_sasa[percentil_70_idx]
+            min_sasa = 0.0
+        else:
+            min_sasa = 0.0
+            max_sasa = max(avg_sasa_values) if avg_sasa_values else 1.0
+        
+        print(f"Range de visualização SASA (média por resíduo): 0.00 - {max_sasa:.2f} Ų (percentil 70)", file=sys.stderr)
+        print(f"  Resíduos totais: {len(residue_avg_sasa)}", file=sys.stderr)
+        print(f"  Resíduos enterrados (SASA<0.5): {len(avg_sasa_values) - len(non_zero_sasa)}", file=sys.stderr)
+        print(f"  Resíduos expostos (SASA≥0.5): {len(non_zero_sasa)}", file=sys.stderr)
         generate_pymol_session(temp_pdb, args.pymol, property_type="sasa", min_val=min_sasa, max_val=max_sasa)
 
 def run_apbs_analysis(args): #BETA, TALVEZ SERÁ DESCONTINUADO
