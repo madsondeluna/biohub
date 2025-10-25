@@ -121,9 +121,14 @@ def parse_pdb_atoms(pdb_filepath: str):
                 if line.startswith("ATOM") or line.startswith("HETATM"):
                     # Extraio as informações de cada coluna, convertendo para o tipo correto.
                     atoms.append({
-                        "x": float(line[30:38]), "y": float(line[38:46]), "z": float(line[46:54]),
-                        "res_name": line[17:20].strip(), "res_num": int(line[22:26]),
+                        "atom_num": int(line[6:11]),  # Número serial do átomo
+                        "atom_name": line[12:16].strip(),  # Nome do átomo (ex: CA, CB, N)
+                        "res_name": line[17:20].strip(), 
                         "chain_id": line[21],
+                        "res_num": int(line[22:26]),
+                        "x": float(line[30:38]), 
+                        "y": float(line[38:46]), 
+                        "z": float(line[46:54]),
                         # Tento pegar o elemento da coluna 76-78; se não tiver, pego da 12-14.
                         "element": line[76:78].strip().upper() or line[12:14].strip().upper()
                     })
@@ -207,6 +212,63 @@ def generate_sphere_points(n_points: int):
 
 # Funções de Download, Conversão e Análise (o coração da ferramenta)
 
+def filter_pdb_content(pdb_filepath, chains=None, protein_only=False):
+    """
+    Filtra o conteúdo de um arquivo PDB baseado em critérios especificados.
+    
+    Args:
+        pdb_filepath: Caminho para o arquivo PDB
+        chains: Lista de IDs de cadeias a manter (ex: ['A', 'B']). Se None, mantém todas.
+        protein_only: Se True, remove água (HOH), ligantes e heteroátomos (mantém apenas ATOM)
+    
+    Returns:
+        Número de átomos mantidos após filtragem
+    """
+    filtered_lines = []
+    atoms_kept = 0
+    atoms_removed = 0
+    
+    with open(pdb_filepath, 'r') as f:
+        for line in f:
+            keep_line = True
+            
+            # Processa linhas ATOM e HETATM
+            if line.startswith("ATOM") or line.startswith("HETATM"):
+                # Se protein_only, mantém apenas linhas ATOM
+                if protein_only and line.startswith("HETATM"):
+                    keep_line = False
+                    atoms_removed += 1
+                
+                # Se protein_only, remove água (HOH)
+                if protein_only and line[17:20].strip() == "HOH":
+                    keep_line = False
+                    atoms_removed += 1
+                
+                # Filtra por chains se especificado
+                if keep_line and chains is not None:
+                    chain_id = line[21]
+                    if chain_id not in chains:
+                        keep_line = False
+                        atoms_removed += 1
+                
+                if keep_line:
+                    atoms_kept += 1
+            
+            # Mantém todas as outras linhas (HEADER, TITLE, etc.) exceto HETATM se protein_only
+            elif not (protein_only and line.startswith("HETATM")):
+                pass  # Mantém a linha
+            else:
+                keep_line = False
+            
+            if keep_line:
+                filtered_lines.append(line)
+    
+    # Reescreve o arquivo com conteúdo filtrado
+    with open(pdb_filepath, 'w') as f:
+        f.writelines(filtered_lines)
+    
+    return atoms_kept, atoms_removed
+
 def handle_fetch_pdb(args):
     """Baixa um arquivo PDB do banco de dados RCSB PDB."""
     pdb_id = args.pdb_id.upper()
@@ -224,6 +286,21 @@ def handle_fetch_pdb(args):
             if not data: raise ValueError("Arquivo PDB recebido está vazio.") # Checa se o download não falhou silenciosamente.
             out_file.write(data)
         print(f"Arquivo PDB salvo com sucesso em '{output_file}'", file=sys.stderr)
+        
+        # Aplica filtros se especificados
+        chains_list = None
+        if args.chains:
+            chains_list = [c.strip().upper() for c in args.chains.split(',')]
+        
+        if chains_list or args.protein_only:
+            print("\n--- Aplicando Filtros ---", file=sys.stderr)
+            if chains_list:
+                print(f"  Cadeias selecionadas: {', '.join(chains_list)}", file=sys.stderr)
+            if args.protein_only:
+                print(f"  Modo: Apenas proteína (removendo água e ligantes)", file=sys.stderr)
+            
+            atoms_kept, atoms_removed = filter_pdb_content(output_file, chains_list, args.protein_only)
+            print(f"  ✓ Filtragem concluída: {atoms_kept} átomos mantidos, {atoms_removed} removidos", file=sys.stderr)
         
         # Após o download, exibo algumas informações úteis do cabeçalho.
         info = extract_pdb_header_info(output_file)
@@ -392,25 +469,271 @@ def calculate_intramolecular_contacts(args):
         else:
             for c in contacts: print(f"Res {c[0]} - Res {c[1]}: {c[2]:.3f} Å")
 
+def write_pdb_with_bfactor(input_pdb_path, output_pdb_path, atom_values, property_name="Property"):
+    """
+    Reescreve um arquivo PDB substituindo os valores do B-factor por valores calculados.
+    
+    Args:
+        input_pdb_path: Caminho do PDB original
+        output_pdb_path: Caminho para salvar o PDB anotado
+        atom_values: Lista de dicionários com 'atom_num' e 'value'
+        property_name: Nome da propriedade sendo escrita (para mensagens)
+    """
+    # Cria um dicionário para lookup rápido por número de átomo
+    value_by_atom = {atom['atom_num']: atom['value'] for atom in atom_values}
+    
+    # Calcula min/max para estatísticas
+    values_list = [atom['value'] for atom in atom_values]
+    min_val = min(values_list)
+    max_val = max(values_list)
+    
+    atoms_updated = 0
+    
+    try:
+        with open(input_pdb_path, 'r') as infile, open(output_pdb_path, 'w') as outfile:
+            for line in infile:
+                if line.startswith("ATOM") or line.startswith("HETATM"):
+                    # Extrai o número do átomo
+                    atom_num = int(line[6:11].strip())
+                    
+                    if atom_num in value_by_atom:
+                        # Pega o valor calculado
+                        new_bfactor = value_by_atom[atom_num]
+                        
+                        # Reconstrói a linha com novo B-factor (colunas 61-66)
+                        # Formato: %6.2f (6 caracteres, 2 decimais)
+                        new_line = line[:60] + f"{new_bfactor:6.2f}" + line[66:]
+                        outfile.write(new_line)
+                        atoms_updated += 1
+                    else:
+                        # Átomo não encontrado nos valores calculados, mantém original
+                        outfile.write(line)
+                else:
+                    # Linhas que não são ATOM/HETATM, mantém inalteradas
+                    outfile.write(line)
+        
+        print(f"PDB anotado salvo em '{output_pdb_path}'", file=sys.stderr)
+        print(f"  {atoms_updated} átomos tiveram o B-factor atualizado com {property_name}", file=sys.stderr)
+        print(f"  Range de valores: {min_val:.2f} - {max_val:.2f}", file=sys.stderr)
+        
+    except Exception as e:
+        print(f"Erro ao escrever PDB anotado: {e}", file=sys.stderr)
+
+def generate_pymol_session(pdb_path, output_pse, property_type="hydrophobicity", min_val=-4.5, max_val=4.5):
+    """
+    Gera um arquivo de sessão PyMOL (.pse) com visualização configurada.
+    Se PyMOL não estiver disponível, gera um script .pml que pode ser executado manualmente.
+    
+    Args:
+        pdb_path: Caminho do PDB anotado (com B-factor modificado)
+        output_pse: Caminho para salvar o arquivo .pse
+        property_type: Tipo de propriedade ('hydrophobicity' ou 'sasa')
+        min_val: Valor mínimo para o gradiente de cores
+        max_val: Valor máximo para o gradiente de cores
+    """
+    try:
+        # Gera também um script .pml independente do resultado
+        pml_script = output_pse.replace('.pse', '.pml')
+        
+        # Cria um script PyMOL
+        script_content = []
+        
+        # Carrega o PDB
+        pdb_name = os.path.splitext(os.path.basename(pdb_path))[0]
+        script_content.append(f"# Script PyMOL gerado pelo BioHub")
+        script_content.append(f"# Propriedade: {property_type}")
+        script_content.append(f"")
+        script_content.append(f"# Carrega a estrutura")
+        script_content.append(f"load {os.path.abspath(pdb_path)}, {pdb_name}")
+        script_content.append(f"")
+        script_content.append(f"# Remove todas as representações padrão")
+        script_content.append(f"hide everything, {pdb_name}")
+        script_content.append(f"")
+        
+        # Configurações de visualização baseadas no tipo de propriedade
+        if property_type == "hydrophobicity":
+            # Esquema de cores: azul (hidrofílico) -> branco -> vermelho (hidrofóbico)
+            script_content.append(f"# === HIDROFOBICIDADE ===")
+            script_content.append(f"# Azul = Hidrofílico ({min_val}), Vermelho = Hidrofóbico ({max_val})")
+            script_content.append(f"")
+            script_content.append(f"# Representação Cartoon (fita)")
+            script_content.append(f"show cartoon, {pdb_name}")
+            script_content.append(f"cartoon automatic, {pdb_name}")
+            script_content.append(f"set cartoon_fancy_helices, 1")
+            script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
+            script_content.append(f"")
+            script_content.append(f"# Representação Sticks (bastões)")
+            script_content.append(f"show sticks, {pdb_name}")
+            script_content.append(f"set stick_radius, 0.2, {pdb_name}")
+            script_content.append(f"set stick_color, gray, {pdb_name}")
+            script_content.append(f"util.cbag {pdb_name}")  # Cores por átomo (C=cinza, N=azul, O=vermelho)
+            script_content.append(f"")
+            script_content.append(f"# Representação Surface (superfície)")
+            script_content.append(f"show surface, {pdb_name}")
+            script_content.append(f"set surface_quality, 1")
+            script_content.append(f"set transparency, 0.5, {pdb_name}")
+            script_content.append(f"# Aplica gradiente de hidrofobicidade na superfície")
+            script_content.append(f"set surface_color, white, {pdb_name}")
+            script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
+            
+        elif property_type == "sasa":
+            # Esquema de cores: azul (enterrado) -> branco -> vermelho (exposto)
+            script_content.append(f"# === SASA (Acessibilidade ao Solvente) ===")
+            script_content.append(f"# Azul = Enterrado ({min_val:.1f} Ų), Vermelho = Exposto ({max_val:.1f} Ų)")
+            script_content.append(f"")
+            script_content.append(f"# Representação Cartoon (fita)")
+            script_content.append(f"show cartoon, {pdb_name}")
+            script_content.append(f"cartoon automatic, {pdb_name}")
+            script_content.append(f"set cartoon_fancy_helices, 1")
+            script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
+            script_content.append(f"")
+            script_content.append(f"# Representação Sticks (bastões)")
+            script_content.append(f"show sticks, {pdb_name}")
+            script_content.append(f"set stick_radius, 0.2, {pdb_name}")
+            script_content.append(f"set stick_color, gray, {pdb_name}")
+            script_content.append(f"util.cbag {pdb_name}")  # Cores por átomo
+            script_content.append(f"")
+            script_content.append(f"# Representação Surface (superfície)")
+            script_content.append(f"show surface, {pdb_name}")
+            script_content.append(f"set surface_quality, 1")
+            script_content.append(f"set transparency, 0.5, {pdb_name}")
+            script_content.append(f"# Aplica gradiente de SASA na superfície")
+            script_content.append(f"set surface_color, white, {pdb_name}")
+            script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
+        
+        script_content.append(f"")
+        script_content.append(f"# === Configurações Gerais de Qualidade ===")
+        script_content.append(f"bg_color white")
+        script_content.append(f"set ray_shadow, 0")
+        script_content.append(f"set antialias, 2")
+        script_content.append(f"set orthoscopic, 0")
+        script_content.append(f"set valence, 0")
+        script_content.append(f"")
+        script_content.append(f"# Centra e ajusta visualização")
+        script_content.append(f"center {pdb_name}")
+        script_content.append(f"zoom {pdb_name}")
+        script_content.append(f"orient {pdb_name}")
+        script_content.append(f"")
+        script_content.append(f"# Comandos úteis:")
+        script_content.append(f"# hide surface - ocultar superfície")
+        script_content.append(f"# hide sticks - ocultar bastões")
+        script_content.append(f"# hide cartoon - ocultar cartoon")
+        script_content.append(f"# set transparency, 0.7 - aumentar transparência")
+        script_content.append(f"")
+        script_content.append(f"# Para salvar a sessão, use:")
+        script_content.append(f"# save {os.path.abspath(output_pse)}")
+        
+        # Salva o script .pml
+        with open(pml_script, 'w') as f:
+            f.write('\n'.join(script_content))
+        
+        print(f"Script PyMOL salvo em '{pml_script}'", file=sys.stderr)
+        print(f"  Execute com: pymol {pml_script}", file=sys.stderr)
+        
+        # Tenta gerar o .pse automaticamente se PyMOL estiver disponível
+        if shutil.which('pymol'):
+            # Adiciona comandos para salvar sessão e sair
+            save_script_content = script_content + [
+                f"",
+                f"save {os.path.abspath(output_pse)}",
+                f"quit"
+            ]
+            
+            # Escreve script temporário
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.pml', delete=False) as f:
+                script_path = f.name
+                f.write('\n'.join(save_script_content))
+            
+            try:
+                result = subprocess.run(
+                    ['pymol', '-c', '-q', script_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=30
+                )
+                
+                if result.returncode == 0:
+                    print(f"Sessão PyMOL salva em '{output_pse}'", file=sys.stderr)
+                    print(f"  Abra com: pymol {output_pse}", file=sys.stderr)
+                else:
+                    print(f"Aviso: Não foi possível gerar o arquivo .pse automaticamente.", file=sys.stderr)
+                    print(f"  Use o script .pml manualmente: pymol {pml_script}", file=sys.stderr)
+            
+            except subprocess.TimeoutExpired:
+                print(f"Aviso: Timeout ao executar PyMOL.", file=sys.stderr)
+            finally:
+                # Remove script temporário
+                if os.path.exists(script_path):
+                    os.remove(script_path)
+        else:
+            print(f"  Nota: PyMOL não está no PATH. Instale-o para gerar o arquivo .pse automaticamente.", file=sys.stderr)
+        
+    except Exception as e:
+        print(f"Erro ao gerar script PyMOL: {e}", file=sys.stderr)
+
 def predict_solvent_exposure(args):
-    """Prevê a exposição ao solvente usando a média de hidropaticidade em uma janela deslizante."""
-    sequence = get_sequence_from_pdb(args.pdb_file)
-    if not sequence: return
+    """Prevê a exposição ao solvente usando hidrofobicidade (Kyte-Doolittle) por átomo."""
+    atoms = parse_pdb_atoms(args.pdb_file)
+    if not atoms: return
+    
     results = []
-    half_window = args.window // 2
-    for i in range(len(sequence)):
-        # Defino a janela de resíduos ao redor do resíduo 'i'.
-        window_seq = sequence[max(0, i - half_window) : min(len(sequence), i + half_window + 1)]
-        # Calculo a pontuação média de Kyte-Doolittle para a janela.
-        score = sum(KYTE_DOOLITTLE.get(aa, 0) for aa in window_seq) / len(window_seq)
-        results.append([i + 1, sequence[i], f"{score:.3f}"])
+    
+    # Para cada átomo, atribui a hidrofobicidade do seu resíduo
+    for atom in atoms:
+        res_name = atom["res_name"]
+        # Converte nome de 3 letras para 1 letra
+        aa_code = THREE_TO_ONE.get(res_name, None)
+        
+        if aa_code:
+            # Pega o score de hidrofobicidade do aminoácido
+            hydro_score = KYTE_DOOLITTLE.get(aa_code, 0.0)
+        else:
+            # Se não for aminoácido padrão (ex: ligante), define como 0
+            hydro_score = 0.0
+        
+        results.append({
+            "chain_id": atom["chain_id"],
+            "res_num": atom["res_num"],
+            "res_name": atom["res_name"],
+            "atom_num": atom["atom_num"],
+            "atom_name": atom["atom_name"],
+            "hydrophobicity": hydro_score
+        })
+    
+    print(f"Total de átomos analisados: {len(results)}", file=sys.stderr)
+    
+    # Gera dados para saída
+    results_data = [
+        [atom["chain_id"], atom["res_num"], atom["res_name"], atom["atom_num"], atom["atom_name"], f"{atom['hydrophobicity']:.3f}"]
+        for atom in results
+    ]
     
     if args.output:
-        write_csv(args.output, ["Posicao", "Residuo", "Score_Hidropatia"], results)
+        write_csv(args.output, ["Chain", "ResNum", "ResName", "AtomNum", "AtomName", "Hydrophobicity"], results_data)
     else:
-        print(f"--- Predição de Exposição (Kyte-Doolittle, Janela={args.window}) ---")
-        print("Pos. | Res. | Score de Hidropatia")
-        for row in results: print(f"{row[0]:<4} | {row[1]:<4} | {row[2]}")
+        print(f"--- Hidrofobicidade por Átomo (Escala Kyte-Doolittle) ---")
+        print("Chain | ResNum | ResName | AtomNum | AtomName | Hydrophobicity")
+        for row in results_data[:20]:  # Mostra apenas os primeiros 20
+            print(f"{row[0]:<5} | {row[1]:<6} | {row[2]:<7} | {row[3]:<7} | {row[4]:<8} | {row[5]}")
+        if len(results_data) > 20:
+            print(f"... e mais {len(results_data) - 20} átomos. Use -o para salvar todos os dados.")
+    
+    # Gera PDB anotado se solicitado
+    if args.write_pdb:
+        # Prepara dados para escrita no B-factor
+        atom_values = [{'atom_num': atom['atom_num'], 'value': atom['hydrophobicity']} for atom in results]
+        write_pdb_with_bfactor(args.pdb_file, args.write_pdb, atom_values, "Hydrophobicity")
+        
+        # Gera sessão PyMOL se solicitado
+        if args.pymol:
+            generate_pymol_session(args.write_pdb, args.pymol, property_type="hydrophobicity", min_val=-4.5, max_val=4.5)
+    elif args.pymol:
+        # Se --pymol foi especificado mas --write-pdb não, avisa o usuário
+        print("Aviso: --pymol requer --write-pdb. Gerando PDB temporário...", file=sys.stderr)
+        temp_pdb = "temp_hydro.pdb"
+        atom_values = [{'atom_num': atom['atom_num'], 'value': atom['hydrophobicity']} for atom in results]
+        write_pdb_with_bfactor(args.pdb_file, temp_pdb, atom_values, "Hydrophobicity")
+        generate_pymol_session(temp_pdb, args.pymol, property_type="hydrophobicity", min_val=-4.5, max_val=4.5)
 
 def calculate_sasa(args):
     """Calcula a Área de Superfície Acessível ao Solvente (SASA) usando o método de Shrake-Rupley."""
@@ -419,7 +742,7 @@ def calculate_sasa(args):
     # Gero os pontos na esfera que serão usados para testar a acessibilidade de cada átomo.
     sphere_points = generate_sphere_points(args.num_points)
     total_sasa = 0.0
-    sasa_per_residue = {}
+    sasa_per_atom = []  # Lista para armazenar SASA de cada átomo
     
     # Para cada átomo...
     for i, atom_i in enumerate(atoms):
@@ -442,17 +765,65 @@ def calculate_sasa(args):
         # O SASA do átomo é a proporção de pontos acessíveis multiplicada pela área da esfera estendida.
         atom_sasa = (accessible_points / args.num_points) * 4.0 * math.pi * extended_radius**2 if args.num_points > 0 else 0
         total_sasa += atom_sasa
-        res_id = (atom_i["res_num"], atom_i["res_name"])
-        sasa_per_residue[res_id] = sasa_per_residue.get(res_id, 0) + atom_sasa
+        
+        # Armazena dados do átomo com SASA
+        sasa_per_atom.append({
+            "chain_id": atom_i["chain_id"],
+            "res_num": atom_i["res_num"],
+            "res_name": atom_i["res_name"],
+            "atom_num": atom_i["atom_num"],
+            "atom_name": atom_i["atom_name"],
+            "sasa": atom_sasa
+        })
         
     print(f"SASA Total da Molécula: {total_sasa:.2f} Å²", file=sys.stderr)
-    results_data = [[f"{res_id[1]} {res_id[0]}", f"{sasa:.2f}"] for res_id, sasa in sorted(sasa_per_residue.items())]
+    print(f"Total de átomos analisados: {len(sasa_per_atom)}", file=sys.stderr)
+    
+    # Gera dados para saída
+    results_data = [
+        [atom["chain_id"], atom["res_num"], atom["res_name"], atom["atom_num"], atom["atom_name"], f"{atom['sasa']:.2f}"]
+        for atom in sasa_per_atom
+    ]
+    
     if args.output:
-        write_csv(args.output, ["Residuo", "SASA_A2"], results_data)
+        write_csv(args.output, ["Chain", "ResNum", "ResName", "AtomNum", "AtomName", "SASA_A2"], results_data)
     else:
-        print("--- SASA por Resíduo ---")
-        print("Resíduo   | SASA (Å²)")
-        for row in results_data: print(f"{row[0]:<8} | {row[1]}")
+        print("--- SASA por Átomo ---")
+        print("Chain | ResNum | ResName | AtomNum | AtomName | SASA (Å²)")
+        for row in results_data[:20]:  # Mostra apenas os primeiros 20 para não poluir o terminal
+            print(f"{row[0]:<5} | {row[1]:<6} | {row[2]:<7} | {row[3]:<7} | {row[4]:<8} | {row[5]}")
+        if len(results_data) > 20:
+            print(f"... e mais {len(results_data) - 20} átomos. Use -o para salvar todos os dados.")
+    
+    # Gera PDB anotado se solicitado
+    if args.write_pdb:
+        # Prepara dados para escrita no B-factor
+        atom_values = [{'atom_num': atom['atom_num'], 'value': atom['sasa']} for atom in sasa_per_atom]
+        write_pdb_with_bfactor(args.pdb_file, args.write_pdb, atom_values, "SASA")
+        
+        # Gera sessão PyMOL se solicitado
+        if args.pymol:
+            # Para SASA, usa percentil 90 como máximo para melhor distribuição de cores
+            # (a maioria dos átomos tem SASA baixo, então isso cria melhor contraste)
+            sasa_values = sorted([atom['sasa'] for atom in sasa_per_atom])
+            min_sasa = 0.0  # SASA mínimo é sempre 0 (completamente enterrado)
+            # Usa percentil 90 ao invés do máximo absoluto para melhor distribuição
+            percentil_90_idx = int(len(sasa_values) * 0.90)
+            max_sasa = sasa_values[percentil_90_idx] if percentil_90_idx < len(sasa_values) else sasa_values[-1]
+            print(f"Range de visualização SASA: 0.00 - {max_sasa:.2f} Ų (percentil 90)", file=sys.stderr)
+            generate_pymol_session(args.write_pdb, args.pymol, property_type="sasa", min_val=min_sasa, max_val=max_sasa)
+    elif args.pymol:
+        # Se --pymol foi especificado mas --write-pdb não, avisa o usuário
+        print("Aviso: --pymol requer --write-pdb. Gerando PDB temporário...", file=sys.stderr)
+        temp_pdb = "temp_sasa.pdb"
+        atom_values = [{'atom_num': atom['atom_num'], 'value': atom['sasa']} for atom in sasa_per_atom]
+        write_pdb_with_bfactor(args.pdb_file, temp_pdb, atom_values, "SASA")
+        sasa_values = sorted([atom['sasa'] for atom in sasa_per_atom])
+        min_sasa = 0.0
+        percentil_90_idx = int(len(sasa_values) * 0.90)
+        max_sasa = sasa_values[percentil_90_idx] if percentil_90_idx < len(sasa_values) else sasa_values[-1]
+        print(f"Range de visualização SASA: 0.00 - {max_sasa:.2f} Ų (percentil 90)", file=sys.stderr)
+        generate_pymol_session(temp_pdb, args.pymol, property_type="sasa", min_val=min_sasa, max_val=max_sasa)
 
 def run_apbs_analysis(args): #BETA, TALVEZ SERÁ DESCONTINUADO
     """Executa PDB2PQR e APBS para calcular a energia de solvatação eletrostática."""
@@ -515,6 +886,8 @@ def main():
     parser_fetch = subparsers.add_parser("fetchpdb", help="Baixa um arquivo PDB do RCSB.", formatter_class=argparse.RawTextHelpFormatter)
     parser_fetch.add_argument("pdb_id", metavar="PDB_ID", help="O ID de 4 caracteres do PDB a ser baixado (ex: 1A2B).")
     parser_fetch.add_argument("-o", "--output", metavar="ARQUIVO", help="Nome do arquivo de saída (padrão: [PDB_ID].pdb).")
+    parser_fetch.add_argument("--chains", metavar="CHAINS", help="Cadeias a serem mantidas, separadas por vírgula (ex: A,B). Se omitido, mantém todas.")
+    parser_fetch.add_argument("--protein-only", action="store_true", help="Mantém apenas átomos de proteína (remove água, ligantes e heteroátomos).")
 
     # Comando fasta 
     parser_fasta = subparsers.add_parser("fasta", help="Converte um arquivo PDB em uma sequência FASTA.", formatter_class=argparse.RawTextHelpFormatter)
@@ -542,17 +915,20 @@ def main():
     parser_contacts.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
 
     # Comando exposure 
-    parser_exposure = subparsers.add_parser("exposure", help="Prevê regiões de exposição ao solvente com a escala Kyte-Doolittle.", formatter_class=argparse.RawTextHelpFormatter)
+    parser_exposure = subparsers.add_parser("exposure", help="Calcula hidrofobicidade por átomo (escala Kyte-Doolittle).", formatter_class=argparse.RawTextHelpFormatter)
     parser_exposure.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
-    parser_exposure.add_argument("-w", "--window", metavar="INT", type=int, default=9, help="Tamanho da janela deslizante para o cálculo da média. Deve ser ímpar. Padrão: 9.")
     parser_exposure.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
+    parser_exposure.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com a hidrofobicidade escrita no B-factor.")
+    parser_exposure.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de hidrofobicidade.")
     
     # Comando sasa 
     parser_sasa = subparsers.add_parser("sasa", help="Calcula a Área de Superfície Acessível ao Solvente (SASA).", formatter_class=argparse.RawTextHelpFormatter)
     parser_sasa.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
     parser_sasa.add_argument("--probe-radius", metavar="FLOAT", type=float, default=1.4, help="Raio da sonda do solvente em Angstroms (padrão: 1.4 para água).")
     parser_sasa.add_argument("--num-points", metavar="INT", type=int, default=960, help="Número de pontos na superfície de cada átomo para o cálculo. Padrão: 960.")
-    parser_sasa.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados por resíduo em um arquivo CSV.")
+    parser_sasa.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados por átomo em um arquivo CSV.")
+    parser_sasa.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com o SASA escrito no B-factor.")
+    parser_sasa.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de SASA.")
 
     # Comando apbs 
     parser_apbs = subparsers.add_parser("apbs", help="Calcula a energia de solvatação eletrostática (requer PDB2PQR e APBS).", formatter_class=argparse.RawTextHelpFormatter)
