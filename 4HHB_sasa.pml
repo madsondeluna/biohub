@@ -8,13 +8,13 @@ load /Users/madsonluna/Documents/biohub-1/4HHB_sasa.pdb, 4HHB_sasa
 hide everything, 4HHB_sasa
 
 # === SASA (Acessibilidade ao Solvente) ===
-# Azul = Enterrado (0.0 Ų), Vermelho = Exposto (25.4 Ų)
+# Vermelho = Enterrado (0.0 Ų), Azul = Exposto (10.8 Ų)
 
 # Representação Cartoon (fita)
 show cartoon, 4HHB_sasa
 cartoon automatic, 4HHB_sasa
 set cartoon_fancy_helices, 1
-spectrum b, blue_white_red, 4HHB_sasa, minimum=0.0, maximum=25.35786356948438
+spectrum b, red_white_blue, 4HHB_sasa, minimum=0.0, maximum=10.788427721083055
 
 # Representação Sticks (bastões)
 show sticks, 4HHB_sasa
@@ -28,7 +28,7 @@ set surface_quality, 1
 set transparency, 0.5, 4HHB_sasa
 # Aplica gradiente de SASA na superfície
 set surface_color, white, 4HHB_sasa
-spectrum b, blue_white_red, 4HHB_sasa, minimum=0.0, maximum=25.35786356948438
+spectrum b, red_white_blue, 4HHB_sasa, minimum=0.0, maximum=10.788427721083055
 
 # === Configurações Gerais de Qualidade ===
 bg_color white
