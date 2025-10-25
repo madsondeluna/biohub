@@ -4,7 +4,6 @@
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![CLI](https://img.shields.io/badge/Command%20Line-CLI-orange?logo=gnometerminal&logoColor=white)](#)
 [![PDB](https://img.shields.io/badge/Protein%20Data%20Bank-PDB-0052CC?logo=databricks&logoColor=white)](https://www.wwpdb.org/)
-[![PyMOL](https://img.shields.io/badge/Molecular%20Visualization-PyMOL-8A2BE2?logo=pymol&logoColor=white)](https://pymol.org/)
 [![CSV](https://img.shields.io/badge/Data-CSV-FFD700?logo=files&logoColor=black)](https://en.wikipedia.org/wiki/Comma-separated_values)
 [![FASTA](https://img.shields.io/badge/Sequence-FASTA-808080?logo=dna&logoColor=white)](https://en.wikipedia.org/wiki/FASTA_format)
 
