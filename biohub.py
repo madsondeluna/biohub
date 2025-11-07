@@ -79,11 +79,7 @@ DIWV = {
 def print_banner():
     """Esta função simplesmente exibe a arte ASCII e informações da ferramenta no início da execução."""
     banner = r"""
-
- _._     _,-'""`-._
-(,-.`._,'(       |\`-/|
-    `-.-' \ )-`( , o o)
-          `-    \`_`"'-
+    
 █████████████████████████████████████████████████████████████████████
 █▌                                                                 ▐█
 █▌                                                                 ▐█
