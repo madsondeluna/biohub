@@ -830,6 +830,25 @@ python3 -c "import matplotlib, numpy, squarify; print('Todas as dependências OK
 
 ---
 
+## Prova de Conceito: Análise Completa do DNA Binding Domain da p53 (1TUP)
+
+Uma demonstração completa de todas as funcionalidades do BioHub está disponível em **[demoday-biohub/](demoday-biohub/)**. Este tutorial apresenta um workflow ponta a ponta utilizando a estrutura do **domínio de ligação ao DNA da proteína supressora de tumor p53** (PDB: 1TUP).
+
+**O que está incluído:**
+- Download e limpeza estrutural do PDB 1TUP (cadeia A, sem heteroátomos)
+- Conversão da estrutura tridimensional para sequência primária (PDB → FASTA)
+- Análises físico-químicas completas da sequência
+- Demonstração de conversão CSV → FASTA com análises subsequentes
+- Análises estruturais: contatos intramoleculares, exposição ao solvente, SASA
+- Geração de visualizações PyMOL e gráficos científicos
+- Comandos prontos para copiar e executar
+
+**Acesse o tutorial completo:** [demoday-biohub/README.md](demoday-biohub/README.md)
+
+Este roteiro serve como referência para aplicar o BioHub em suas próprias proteínas de interesse, demonstrando o uso integrado de estrutura 3D e sequência primária.
+
+---
+
 ## Expansão Futura
 
 Está em planejamento o desenvolvimento de uma versão web da BioHub. A aplicação web terá uma interface gráfica intuitiva para realizar as mesmas análises, com visualizações interativas dos resultados, tornando os outputs acessíveis a um público mais amplo. A lógica de cálculo será portada para JavaScript, permitindo análises rápidas diretamente no navegador.
