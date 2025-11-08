@@ -62,7 +62,7 @@ def check_dependencies(require_numpy=False, require_squarify=False):
 
 def plot_aa_composition_treemap(aa_composition, sequence_length, output_file='aa_composition_treemap.png'):
     """
-    Plota a composição de aminoácidos como um treemap hierárquico.
+    Plota a composição de aminoácidos como um treemap hierárquico usando squarify.
 
     Args:
         aa_composition: Dicionário {aa: count}
@@ -104,8 +104,8 @@ def plot_aa_composition_treemap(aa_composition, sequence_length, output_file='aa
         print("Erro: Nenhum aminoácido encontrado na sequência.", file=sys.stderr)
         return
 
-    # Ordena por grupo e depois por contagem
-    sorted_aa = sorted(present_aa.items(), key=lambda x: (get_group(x[0]), -x[1]))
+    # Ordena por contagem decrescente
+    sorted_aa = sorted(present_aa.items(), key=lambda x: -x[1])
 
     # Prepara dados para o treemap
     sizes = [count for aa, count in sorted_aa]
@@ -114,13 +114,13 @@ def plot_aa_composition_treemap(aa_composition, sequence_length, output_file='aa
     colors = [group_colors.get(get_group(aa), '#888888') for aa, count in sorted_aa]
 
     # Cria o gráfico
-    fig = plt.figure(figsize=(14, 10))
-    ax = fig.add_subplot(111)
+    fig, ax = plt.subplots(figsize=(14, 10))
 
     if HAS_SQUARIFY:
-        # Usa squarify para treemap otimizado
+        # Usa squarify para treemap com quadrados
         squarify.plot(sizes=sizes, label=labels, color=colors,
-                     alpha=0.8, ax=ax, text_kwargs={'fontsize': 10, 'weight': 'bold'})
+                     alpha=0.8, ax=ax, text_kwargs={'fontsize': 10, 'weight': 'bold'},
+                     edgecolor='white', linewidth=2)
     else:
         # Fallback: gráfico de barras hierárquico
         y_pos = range(len(sorted_aa))
@@ -132,29 +132,29 @@ def plot_aa_composition_treemap(aa_composition, sequence_length, output_file='aa
     ax.axis('off')
 
     # Título
-    plt.suptitle('Composição de Aminoácidos', fontsize=16, fontweight='bold', y=0.98)
+    plt.suptitle('Composição de Aminoácidos - Treemap', fontsize=16, fontweight='bold', y=0.98)
 
-    # Legenda de grupos
+    # Legenda de grupos - FORA do gráfico
     legend_elements = [mpatches.Patch(facecolor=color, edgecolor='black', label=group)
                       for group, color in group_colors.items()]
-    plt.legend(handles=legend_elements, loc='lower right', fontsize=11,
-              frameon=True, shadow=True, fancybox=True)
+    plt.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.02, 0.5),
+              fontsize=11, frameon=True, shadow=True, fancybox=True, title='Grupos')
 
-    # Informações estatísticas
+    # Informações estatísticas - FORA do gráfico
     total_hydrophobic = sum(aa_composition.get(aa, 0) for aa in groups['Hidrofóbico'])
     total_polar = sum(aa_composition.get(aa, 0) for aa in groups['Polar'])
     total_charged = sum(aa_composition.get(aa, 0) for aa in groups['Ácido'] + groups['Básico'])
 
-    textstr = f'Total de resíduos: {sequence_length}\n'
-    textstr += f'Hidrofóbicos: {total_hydrophobic} ({total_hydrophobic/sequence_length*100:.1f}%)\n'
-    textstr += f'Polares: {total_polar} ({total_polar/sequence_length*100:.1f}%)\n'
-    textstr += f'Carregados: {total_charged} ({total_charged/sequence_length*100:.1f}%)'
+    textstr = f'Total: {sequence_length} resíduos\n'
+    textstr += f'Hidrofóbicos: {total_hydrophobic/sequence_length*100:.1f}%\n'
+    textstr += f'Polares: {total_polar/sequence_length*100:.1f}%\n'
+    textstr += f'Carregados: {total_charged/sequence_length*100:.1f}%'
 
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.7, edgecolor='black', linewidth=1.5)
-    ax.text(0.02, 0.98, textstr, transform=ax.transAxes, fontsize=11,
-            verticalalignment='top', bbox=props, family='monospace')
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.9, edgecolor='black', linewidth=1.5)
+    fig.text(0.02, 0.02, textstr, fontsize=10, verticalalignment='bottom',
+            bbox=props, family='monospace')
 
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.05, 0.85, 1])
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Treemap de composição salvo em '{output_file}'", file=sys.stderr)
     plt.close()
@@ -213,7 +213,7 @@ def plot_aa_composition_bar(aa_composition, sequence_length, output_file='aa_com
     ax.grid(axis='y', alpha=0.3, linestyle=':')
     ax.set_ylim(0, max(aa_percentages) * 1.15)
 
-    # Legenda
+    # Legenda - FORA do gráfico
     legend_elements = [
         mpatches.Patch(facecolor='#E63946', label='Hidrofóbico', edgecolor='black'),
         mpatches.Patch(facecolor='#2A9D8F', label='Polar', edgecolor='black'),
@@ -221,9 +221,10 @@ def plot_aa_composition_bar(aa_composition, sequence_length, output_file='aa_com
         mpatches.Patch(facecolor='#F77F00', label='Ácido', edgecolor='black'),
         mpatches.Patch(facecolor='#9D4EDD', label='Glicina', edgecolor='black')
     ]
-    ax.legend(handles=legend_elements, loc='upper right', frameon=True, shadow=True)
+    ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.02, 0.5),
+             frameon=True, shadow=True, fancybox=True, title='Grupos')
 
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0, 0.85, 1])
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Gráfico de composição salvo em '{output_file}'", file=sys.stderr)
     plt.close()
@@ -273,34 +274,37 @@ def plot_hydropathy_profile(sequence, kyte_doolittle_scale, output_file='hydropa
     ax.set_xlabel('Posição na Sequência', fontsize=12, fontweight='bold')
     ax.set_ylabel('Hidrofobicidade (Kyte-Doolittle)', fontsize=12, fontweight='bold')
     ax.set_title(f'Perfil de Hidrofobicidade (janela = {window} resíduos)', fontsize=14, fontweight='bold')
-    ax.legend(loc='upper right', frameon=True, shadow=True, fontsize=10)
-    ax.grid(True, alpha=0.3, linestyle=':', zorder=0)
-    ax.set_xlim(positions[0], positions[-1])
 
-    # Estatísticas
+    # Estatísticas - calculadas primeiro
     avg_score = sum(scores) / len(scores)
     max_score = max(scores)
     min_score = min(scores)
     max_pos = positions[scores.index(max_score)]
     min_pos = positions[scores.index(min_score)]
 
-    textstr = f'Média: {avg_score:.3f}\n'
-    textstr += f'Máx: {max_score:.3f} (pos {max_pos})\n'
-    textstr += f'Mín: {min_score:.3f} (pos {min_pos})'
+    # Legenda - FORA do gráfico
+    legend_items = ax.legend(loc='center left', bbox_to_anchor=(1.02, 0.65),
+                            frameon=True, shadow=True, fontsize=10, fancybox=True)
 
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.7, edgecolor='black', linewidth=1.5)
-    ax.text(0.02, 0.98, textstr, transform=ax.transAxes, fontsize=10,
-            verticalalignment='top', bbox=props, family='monospace')
-
-    # Nota sobre regiões transmembrana
+    # Nota sobre regiões transmembrana - alinhada com a legenda
     if max_score > 1.6:
-        note = "Nota: Picos > 1.6 sugerem possíveis\ndomínios transmembrana"
-        ax.text(0.98, 0.02, note, transform=ax.transAxes, fontsize=9,
-                verticalalignment='bottom', horizontalalignment='right',
-                bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8, edgecolor='orange'),
+        note = "Nota: Picos > 1.6 sugerem\npossíveis domínios\ntransmembrana"
+        ax.text(1.02, 0.35, note, transform=ax.transAxes, fontsize=9,
+                verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9, edgecolor='orange', linewidth=1.5),
                 style='italic')
 
-    plt.tight_layout()
+    ax.grid(True, alpha=0.3, linestyle=':', zorder=0)
+    ax.set_xlim(positions[0], positions[-1])
+
+    # Estatísticas - FORA do gráfico (parte inferior)
+    textstr = f'Média: {avg_score:.3f}  |  Máx: {max_score:.3f} (pos {max_pos})  |  Mín: {min_score:.3f} (pos {min_pos})'
+
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.9, edgecolor='black', linewidth=1.5)
+    fig.text(0.5, 0.01, textstr, fontsize=10, ha='center',
+            bbox=props, family='monospace')
+
+    plt.tight_layout(rect=[0, 0.05, 0.85, 1])
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Perfil de hidrofobicidade salvo em '{output_file}'", file=sys.stderr)
     plt.close()
@@ -356,30 +360,33 @@ def plot_sasa_profile(sasa_per_atom, output_file='sasa_profile.png'):
     ax.set_ylabel('SASA Médio (Ų)', fontsize=12, fontweight='bold')
     ax.set_title('Perfil de Acessibilidade ao Solvente (SASA)', fontsize=14, fontweight='bold')
     ax.grid(True, alpha=0.3, linestyle=':')
-    ax.legend(loc='upper right', frameon=True, shadow=True, fontsize=10)
 
-    # Colorbar
-    cbar = plt.colorbar(scatter, ax=ax)
+    # Legenda - FORA do gráfico
+    ax.legend(loc='center left', bbox_to_anchor=(1.18, 0.5),
+             frameon=True, shadow=True, fontsize=10, fancybox=True)
+
+    # Colorbar - ao lado da legenda
+    cbar = plt.colorbar(scatter, ax=ax, pad=0.18)
     cbar.set_label('SASA (Ų)', fontsize=10, fontweight='bold')
 
-    # Estatísticas
+    # Estatísticas - FORA do gráfico (parte inferior)
     num_exposed = sum(1 for s in avg_sasa if s > threshold)
     num_buried = len(avg_sasa) - num_exposed
     mean_sasa = sum(avg_sasa) / len(avg_sasa)
     max_sasa = max(avg_sasa)
     max_pos = residue_numbers[avg_sasa.index(max_sasa)]
 
-    textstr = f'Total de resíduos: {len(avg_sasa)}\n'
-    textstr += f'Expostos (>{threshold:.0f} Ų): {num_exposed}\n'
-    textstr += f'Enterrados (≤{threshold:.0f} Ų): {num_buried}\n'
-    textstr += f'SASA médio: {mean_sasa:.2f} Ų\n'
+    textstr = f'Total: {len(avg_sasa)} resíduos  |  '
+    textstr += f'Expostos (>{threshold:.0f} Ų): {num_exposed}  |  '
+    textstr += f'Enterrados (≤{threshold:.0f} Ų): {num_buried}  |  '
+    textstr += f'SASA médio: {mean_sasa:.2f} Ų  |  '
     textstr += f'SASA máx: {max_sasa:.2f} Ų (res {max_pos})'
 
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.7, edgecolor='black', linewidth=1.5)
-    ax.text(0.02, 0.98, textstr, transform=ax.transAxes, fontsize=10,
-            verticalalignment='top', bbox=props, family='monospace')
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.9, edgecolor='black', linewidth=1.5)
+    fig.text(0.5, 0.01, textstr, fontsize=9, ha='center',
+            bbox=props, family='monospace')
 
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.05, 0.82, 1])
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Perfil de SASA salvo em '{output_file}'", file=sys.stderr)
     plt.close()
@@ -432,20 +439,20 @@ def plot_contact_map(contacts, max_residue, output_file='contact_map.png', thres
     # Grade
     ax.grid(True, which='both', alpha=0.2, linestyle=':', color='gray')
 
-    # Estatísticas
+    # Estatísticas - FORA do gráfico (parte inferior)
     total_possible = (max_residue * (max_residue - 1)) // 2
     contact_density = (len(contacts) / total_possible) * 100 if total_possible > 0 else 0
 
-    textstr = f'Resíduos totais: {max_residue}\n'
-    textstr += f'Contatos: {len(contacts)}\n'
-    textstr += f'Densidade: {contact_density:.2f}%\n'
+    textstr = f'Resíduos totais: {max_residue}  |  '
+    textstr += f'Contatos: {len(contacts)}  |  '
+    textstr += f'Densidade: {contact_density:.2f}%  |  '
     textstr += f'Threshold: {threshold:.1f} Å'
 
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.7, edgecolor='black', linewidth=1.5)
-    ax.text(0.02, 0.98, textstr, transform=ax.transAxes, fontsize=11,
-            verticalalignment='top', bbox=props, family='monospace')
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.9, edgecolor='black', linewidth=1.5)
+    fig.text(0.5, 0.01, textstr, fontsize=10, ha='center',
+            bbox=props, family='monospace')
 
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Mapa de contatos salvo em '{output_file}'", file=sys.stderr)
     plt.close()
