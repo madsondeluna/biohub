@@ -1,0 +1,18 @@
+# BioHub - Dependências Opcionais para Visualizações
+#
+# O BioHub funciona sem essas dependências, mas as visualizações
+# gráficas requerem os pacotes abaixo.
+#
+# Para instalar todas as dependências de visualização:
+#   pip install -r requirements.txt
+#
+# Ou instale individualmente conforme necessidade:
+#   pip install matplotlib numpy        # Para a maioria dos gráficos
+#   pip install squarify                # Para treemaps (opcional)
+
+# Dependências principais para visualização
+matplotlib>=3.5.0
+numpy>=1.21.0
+
+# Dependência opcional para treemaps
+squarify>=0.4.3
