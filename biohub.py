@@ -19,6 +19,13 @@ import csv          # Para ler e escrever arquivos no formato CSV.
 import urllib.request # Para baixar arquivos da internet, especificamente os PDBs do RCSB.
 from collections import defaultdict # Um tipo de dicionário que cria um valor padrão para chaves que ainda não existem.
 
+# Importação opcional do módulo de visualização
+try:
+    import biohub_viz
+    HAS_VIZ = True
+except ImportError:
+    HAS_VIZ = False
+
 # Constantes e Dicionários de Dados 
 # Dicionário para converter o código de 3 letras de aminoácidos para 1 letra.
 THREE_TO_ONE = {
@@ -428,6 +435,26 @@ def calculate_physicochemical_properties(args):
             if count > 0: print(f"{aa}: {count:<5} ({(count/length)*100:.2f}%)", end="  ")
         print()
 
+    # Gera visualizações se solicitado
+    if hasattr(args, 'plot_treemap') and args.plot_treemap:
+        if HAS_VIZ:
+            biohub_viz.plot_aa_composition_treemap(aa_composition, length, args.plot_treemap)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib, numpy e squarify.", file=sys.stderr)
+
+    if hasattr(args, 'plot_composition') and args.plot_composition:
+        if HAS_VIZ:
+            biohub_viz.plot_aa_composition_bar(aa_composition, length, args.plot_composition)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib.", file=sys.stderr)
+
+    if hasattr(args, 'plot_hydro') and args.plot_hydro:
+        if HAS_VIZ:
+            window = args.window if hasattr(args, 'window') else 9
+            biohub_viz.plot_hydropathy_profile(sequence, KYTE_DOOLITTLE, args.plot_hydro, window)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib.", file=sys.stderr)
+
 def calculate_intramolecular_contacts(args):
     """Calcula contatos entre resíduos com base na distância entre seus carbonos alfa."""
     ca_atoms = {}
@@ -458,6 +485,14 @@ def calculate_intramolecular_contacts(args):
         if not contacts: print("Nenhum contato encontrado.")
         else:
             for c in contacts: print(f"Res {c[0]} - Res {c[1]}: {c[2]:.3f} Å")
+
+    # Gera visualização se solicitado
+    if hasattr(args, 'plot') and args.plot and contacts:
+        if HAS_VIZ:
+            max_res = max(max(c[0], c[1]) for c in contacts) if contacts else 1
+            biohub_viz.plot_contact_map(contacts, max_res, args.plot, args.threshold)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib e numpy.", file=sys.stderr)
 
 def write_pdb_with_bfactor(input_pdb_path, output_pdb_path, atom_values, property_name="Property"):
     """
@@ -785,7 +820,14 @@ def calculate_sasa(args):
             print(f"{row[0]:<5} | {row[1]:<6} | {row[2]:<7} | {row[3]:<7} | {row[4]:<8} | {row[5]}")
         if len(results_data) > 20:
             print(f"... e mais {len(results_data) - 20} átomos. Use -o para salvar todos os dados.")
-    
+
+    # Gera visualização se solicitado
+    if hasattr(args, 'plot_profile') and args.plot_profile:
+        if HAS_VIZ:
+            biohub_viz.plot_sasa_profile(sasa_per_atom, args.plot_profile)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib e numpy.", file=sys.stderr)
+
     # Gera PDB anotado se solicitado
     if args.write_pdb:
         # Calcula SASA MÉDIO POR RESÍDUO para visualização mais biologicamente relevante
@@ -952,16 +994,21 @@ def main():
     parser_csv.add_argument("--header", action="store_true", help="Flag para indicar que a primeira linha do CSV é um cabeçalho.")
     parser_csv.add_argument("--delimiter", metavar="CHAR", default=",", help="Caractere usado como delimitador no CSV. Padrão: ','.")
 
-    # Comando physchem 
+    # Comando physchem
     parser_physchem = subparsers.add_parser("physchem", help="Calcula um conjunto expandido de propriedades físico-químicas.", formatter_class=argparse.RawTextHelpFormatter)
     parser_physchem.add_argument("sequence", metavar="SEQUENCIA", help="A sequência de aminoácidos a ser analisada.")
     parser_physchem.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
+    parser_physchem.add_argument("--plot-treemap", metavar="ARQUIVO_PNG", help="Gera treemap de composição de aminoácidos (requer matplotlib, numpy, squarify).")
+    parser_physchem.add_argument("--plot-composition", metavar="ARQUIVO_PNG", help="Gera gráfico de barras de composição de aminoácidos (requer matplotlib).")
+    parser_physchem.add_argument("--plot-hydro", metavar="ARQUIVO_PNG", help="Gera perfil de hidrofobicidade Kyte-Doolittle (requer matplotlib).")
+    parser_physchem.add_argument("--window", metavar="INT", type=int, default=9, help="Tamanho da janela para perfil de hidrofobicidade (padrão: 9).")
 
-    # Comando contacts 
+    # Comando contacts
     parser_contacts = subparsers.add_parser("contacts", help="Calcula contatos intramoleculares com base na distância entre C-Alfas.", formatter_class=argparse.RawTextHelpFormatter)
     parser_contacts.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
     parser_contacts.add_argument("-t", "--threshold", metavar="FLOAT", type=float, default=8.0, help="Distância máxima em Angstroms para considerar um contato. Padrão: 8.0.")
     parser_contacts.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
+    parser_contacts.add_argument("--plot", metavar="ARQUIVO_PNG", help="Gera mapa de contatos (contact map) (requer matplotlib e numpy).")
 
     # Comando exposure 
     parser_exposure = subparsers.add_parser("exposure", help="Calcula hidrofobicidade por átomo (escala Kyte-Doolittle).", formatter_class=argparse.RawTextHelpFormatter)
@@ -970,7 +1017,7 @@ def main():
     parser_exposure.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com a hidrofobicidade escrita no B-factor.")
     parser_exposure.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de hidrofobicidade.")
     
-    # Comando sasa 
+    # Comando sasa
     parser_sasa = subparsers.add_parser("sasa", help="Calcula a Área de Superfície Acessível ao Solvente (SASA).", formatter_class=argparse.RawTextHelpFormatter)
     parser_sasa.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
     parser_sasa.add_argument("--probe-radius", metavar="FLOAT", type=float, default=1.4, help="Raio da sonda do solvente em Angstroms (padrão: 1.4 para água).")
@@ -978,6 +1025,7 @@ def main():
     parser_sasa.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados por átomo em um arquivo CSV.")
     parser_sasa.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com o SASA escrito no B-factor.")
     parser_sasa.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de SASA.")
+    parser_sasa.add_argument("--plot-profile", metavar="ARQUIVO_PNG", help="Gera perfil de SASA por resíduo (requer matplotlib e numpy).")
 
     # Comando apbs 
     parser_apbs = subparsers.add_parser("apbs", help="Calcula a energia de solvatação eletrostática (requer PDB2PQR e APBS).", formatter_class=argparse.RawTextHelpFormatter)
