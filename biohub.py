@@ -456,27 +456,46 @@ def calculate_physicochemical_properties(args):
             print("Aviso: Módulo de visualização não disponível. Instale matplotlib.", file=sys.stderr)
 
 def calculate_intramolecular_contacts(args):
-    """Calcula contatos entre resíduos com base na distância entre seus carbonos alfa."""
-    ca_atoms = {}
+    """Calcula contatos entre resíduos com base na distância mínima entre quaisquer átomos."""
+    # Dicionário: resíduo -> lista de coordenadas de todos os átomos
+    residue_atoms = {}
     if not os.path.exists(args.pdb_file):
         print(f"Erro: Arquivo não encontrado em '{args.pdb_file}'", file=sys.stderr)
         return
     with open(args.pdb_file, 'r') as f:
         first_chain_id = None
         for line in f:
-            # Pego apenas os carbonos alfa (CA) da primeira cadeia.
-            if line.startswith("ATOM") and line[13:16].strip() == "CA":
+            # Pego todos os átomos (não apenas CA) da primeira cadeia
+            if line.startswith("ATOM"):
                 if first_chain_id is None: first_chain_id = line[21]
                 if line[21] == first_chain_id:
-                    # Armazeno as coordenadas de cada carbono alfa pelo número do resíduo.
-                    ca_atoms[int(line[22:26])] = tuple(float(line[i:i+8]) for i in [30, 38, 46])
-    
-    residues = sorted(ca_atoms.keys())
-    # Calculo a distância euclidiana entre todos os pares de C-alfa. Essa função pode ser otimizada para avaliar todos os átomos, mas aqui foco apenas nos C-alfa para simplicidade.
-    contacts = [(r1, r2, round(math.sqrt(sum((c1-c2)**2 for c1,c2 in zip(ca_atoms[r1], ca_atoms[r2]))), 3))
-                for i, r1 in enumerate(residues) for r2 in residues[i+1:]
-                # Filtro: ignoro vizinhos diretos e mantenho apenas distâncias abaixo do limiar.
-                if abs(r1 - r2) > 1 and math.sqrt(sum((c1-c2)**2 for c1,c2 in zip(ca_atoms[r1], ca_atoms[r2]))) <= args.threshold]
+                    res_num = int(line[22:26])
+                    coords = tuple(float(line[i:i+8]) for i in [30, 38, 46])
+                    if res_num not in residue_atoms:
+                        residue_atoms[res_num] = []
+                    residue_atoms[res_num].append(coords)
+
+    residues = sorted(residue_atoms.keys())
+
+    # Calcula a distância mínima entre qualquer par de átomos de dois resíduos
+    contacts = []
+    for i, r1 in enumerate(residues):
+        for r2 in residues[i+1:]:
+            # Ignora vizinhos diretos na sequência
+            if abs(r1 - r2) <= 1:
+                continue
+
+            # Calcula distância mínima entre qualquer átomo de r1 e qualquer átomo de r2
+            min_dist = float('inf')
+            for atom1 in residue_atoms[r1]:
+                for atom2 in residue_atoms[r2]:
+                    dist = math.sqrt(sum((c1-c2)**2 for c1,c2 in zip(atom1, atom2)))
+                    if dist < min_dist:
+                        min_dist = dist
+
+            # Se a distância mínima está abaixo do threshold, é um contato
+            if min_dist <= args.threshold:
+                contacts.append((r1, r2, round(min_dist, 3)))
     
     if args.output:
         write_csv(args.output, ["Residuo_1", "Residuo_2", "Distancia_A"], contacts)

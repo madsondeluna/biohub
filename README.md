@@ -63,7 +63,7 @@ O BioHub foi **intencionalmente desenvolvido com código hardcoded**, utilizando
   - **Meia-vida** baseada na regra do N-terminal de Bachmair et al. (1986)
   - Coeficiente de extinção molar (ε₂₈₀) baseado em Trp, Tyr e pontes dissulfeto
 
-* **Análise estrutural (contacts)**: Cálculo euclidiano de distâncias 3D entre carbonos alfa (Cα) para identificação de contatos intramoleculares
+* **Análise estrutural (contacts)**: Cálculo euclidiano de distâncias 3D entre **todos os átomos** dos resíduos para identificação de contatos intramoleculares (considera a distância mínima entre quaisquer átomos de dois resíduos)
 
 * **Hidrofobicidade (exposure)**: Aplicação da **escala de Kyte-Doolittle** (1982) por resíduo
 
@@ -125,12 +125,15 @@ Calcula um conjunto expandido de propriedades físico-químicas essenciais para 
 
 ### 5. `contacts`
 
-Identifica e lista contatos intramoleculares com base na distância entre os átomos de **Carbono Alfa (CA)**. A distância entre os CAs é um excelente proxy para a proximidade entre os resíduos. Este cálculo é útil para:
+Identifica e lista contatos intramoleculares com base na **distância mínima entre quaisquer átomos** de dois resíduos. Diferente de abordagens que usam apenas carbonos alfa, este método considera todos os átomos da cadeia lateral e backbone, proporcionando uma análise mais precisa e completa das interações. Este cálculo é útil para:
 
-* Identificar o núcleo hidrofóbico (core) da proteína.
-* Analisar a topologia do enovelamento.
+* Identificar o núcleo hidrofóbico (core) da proteína com maior precisão.
+* Analisar a topologia do enovelamento considerando cadeias laterais.
 * Estudar interações de longo alcance que estabilizam a estrutura terciária.
+* Detectar contatos entre cadeias laterais que não seriam visíveis apenas com Cα.
 * Ajuste customizável do limiar de distância (padrão: 8.0 Å).
+
+**Nota técnica:** O cálculo é feito avaliando todos os pares de átomos entre dois resíduos e selecionando a distância mínima encontrada. Esta abordagem detecta significativamente mais contatos e com distâncias menores comparado ao método tradicional de Cα.
 
 ### 6. `exposure`
 
@@ -712,17 +715,20 @@ python3 biohub.py sasa proteina.pdb --plot-profile sasa_profile.png
 
 #### 5. Mapa de Contatos (contacts)
 
-Matriz NxN mostrando contatos intramoleculares.
+Matriz NxN mostrando contatos intramoleculares baseados em distâncias atômicas.
 
 ```bash
 python3 biohub.py contacts proteina.pdb --plot contact_map.png -t 8.0
 ```
 
 **Características:**
-- Heatmap simétrico
+- Heatmap com gradiente de distâncias em Ångström (não binário)
+- Colorbar mostrando escala numérica de distâncias
 - Linha diagonal de referência
 - Densidade de contatos calculada
 - Identificação visual de padrões estruturais (hélices, folhas beta)
+- Cores mais escuras = distâncias menores (contatos mais próximos)
+- Considera todos os átomos dos resíduos para máxima precisão
 
 ### Combinando Múltiplas Visualizações
 

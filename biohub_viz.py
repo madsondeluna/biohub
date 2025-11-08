@@ -34,6 +34,50 @@ except ImportError:
     HAS_SQUARIFY = False
 
 
+# ============================================================================
+# CONSTANTES DE PADRONIZAÇÃO VISUAL
+# ============================================================================
+# Posicionamento padronizado para legendas e notas no lado direito
+LEGEND_X_POSITION = 1.05   # Posição X padrão para todos os elementos à direita
+LEGEND_SPACING = 0.03      # Espaçamento vertical entre blocos (legenda, nota, stats)
+
+# Posição X especial para gráficos com colorbar (SASA)
+LEGEND_X_WITH_COLORBAR = 1.18  # Deslocado para direita para evitar colorbar
+
+# Posições Y calculadas com base no espaçamento
+LEGEND_TOP_Y = 0.98        # Posição Y para legenda no topo
+INFO_BOX_1_Y = 0.65        # Primeira caixa de info abaixo da legenda
+INFO_BOX_2_Y = 0.40        # Segunda caixa de info (se houver)
+INFO_BOX_3_Y = 0.15        # Terceira caixa de info (se houver)
+
+# Estilo padronizado para legendas
+LEGEND_FONT_SIZE = 10
+LEGEND_STYLE = {
+    'frameon': True,
+    'shadow': True,
+    'fancybox': True,
+    'fontsize': LEGEND_FONT_SIZE
+}
+
+# Estilo padronizado para caixas de informação (stats e notas)
+INFO_BOX_STYLE = {
+    'boxstyle': 'round',
+    'facecolor': 'wheat',
+    'alpha': 0.9,
+    'edgecolor': 'black',
+    'linewidth': 1.0,
+    'pad': 0.5
+}
+
+INFO_BOX_FONT_SIZE = 9
+INFO_BOX_FAMILY = 'sans-serif'  # Mesma fonte do gráfico (não monospace)
+
+# Margens para tight_layout (formato: [left, bottom, right, top])
+LAYOUT_MARGINS_WITH_LEGEND = [0, 0, 0.85, 1]         # Para gráficos com legenda à direita
+LAYOUT_MARGINS_WITH_COLORBAR = [0, 0, 0.78, 1]       # Para gráficos com colorbar
+LAYOUT_MARGINS_SIMPLE = [0, 0, 1, 1]                 # Para gráficos sem legenda lateral
+
+
 def check_dependencies(require_numpy=False, require_squarify=False):
     """
     Verifica se as dependências necessárias estão disponíveis.
@@ -119,7 +163,7 @@ def plot_aa_composition_treemap(aa_composition, sequence_length, output_file='aa
     if HAS_SQUARIFY:
         # Usa squarify para treemap com quadrados
         squarify.plot(sizes=sizes, label=labels, color=colors,
-                     alpha=0.8, ax=ax, text_kwargs={'fontsize': 10, 'weight': 'bold'},
+                     alpha=0.8, ax=ax, text_kwargs={'fontsize': 9, 'weight': 'bold'},
                      edgecolor='white', linewidth=2)
     else:
         # Fallback: gráfico de barras hierárquico
@@ -134,13 +178,14 @@ def plot_aa_composition_treemap(aa_composition, sequence_length, output_file='aa
     # Título
     plt.suptitle('Composição de Aminoácidos - Treemap', fontsize=16, fontweight='bold', y=0.98)
 
-    # Legenda de grupos - FORA do gráfico
+    # Legenda de grupos - PADRONIZADA no lado direito
     legend_elements = [mpatches.Patch(facecolor=color, edgecolor='black', label=group)
                       for group, color in group_colors.items()]
-    plt.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.02, 0.5),
-              fontsize=11, frameon=True, shadow=True, fancybox=True, title='Grupos')
+    plt.legend(handles=legend_elements, loc='upper left',
+              bbox_to_anchor=(LEGEND_X_POSITION, LEGEND_TOP_Y),
+              title='Grupos', **LEGEND_STYLE)
 
-    # Informações estatísticas - FORA do gráfico
+    # Informações estatísticas - PADRONIZADA abaixo da legenda
     total_hydrophobic = sum(aa_composition.get(aa, 0) for aa in groups['Hidrofóbico'])
     total_polar = sum(aa_composition.get(aa, 0) for aa in groups['Polar'])
     total_charged = sum(aa_composition.get(aa, 0) for aa in groups['Ácido'] + groups['Básico'])
@@ -150,11 +195,13 @@ def plot_aa_composition_treemap(aa_composition, sequence_length, output_file='aa
     textstr += f'Polares: {total_polar/sequence_length*100:.1f}%\n'
     textstr += f'Carregados: {total_charged/sequence_length*100:.1f}%'
 
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.9, edgecolor='black', linewidth=1.5)
-    fig.text(0.02, 0.02, textstr, fontsize=10, verticalalignment='bottom',
-            bbox=props, family='monospace')
+    # Caixa de stats alinhada no lado direito
+    ax.text(LEGEND_X_POSITION, INFO_BOX_1_Y, textstr,
+           transform=ax.transAxes, fontsize=INFO_BOX_FONT_SIZE,
+           verticalalignment='top', bbox=INFO_BOX_STYLE,
+           family=INFO_BOX_FAMILY)
 
-    plt.tight_layout(rect=[0, 0.05, 0.85, 1])
+    plt.tight_layout(rect=LAYOUT_MARGINS_WITH_LEGEND)
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Treemap de composição salvo em '{output_file}'", file=sys.stderr)
     plt.close()
@@ -213,7 +260,7 @@ def plot_aa_composition_bar(aa_composition, sequence_length, output_file='aa_com
     ax.grid(axis='y', alpha=0.3, linestyle=':')
     ax.set_ylim(0, max(aa_percentages) * 1.15)
 
-    # Legenda - FORA do gráfico
+    # Legenda - PADRONIZADA no lado direito
     legend_elements = [
         mpatches.Patch(facecolor='#E63946', label='Hidrofóbico', edgecolor='black'),
         mpatches.Patch(facecolor='#2A9D8F', label='Polar', edgecolor='black'),
@@ -221,10 +268,11 @@ def plot_aa_composition_bar(aa_composition, sequence_length, output_file='aa_com
         mpatches.Patch(facecolor='#F77F00', label='Ácido', edgecolor='black'),
         mpatches.Patch(facecolor='#9D4EDD', label='Glicina', edgecolor='black')
     ]
-    ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.02, 0.5),
-             frameon=True, shadow=True, fancybox=True, title='Grupos')
+    ax.legend(handles=legend_elements, loc='upper left',
+             bbox_to_anchor=(LEGEND_X_POSITION, LEGEND_TOP_Y),
+             title='Grupos', **LEGEND_STYLE)
 
-    plt.tight_layout(rect=[0, 0, 0.85, 1])
+    plt.tight_layout(rect=LAYOUT_MARGINS_WITH_LEGEND)
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Gráfico de composição salvo em '{output_file}'", file=sys.stderr)
     plt.close()
@@ -282,29 +330,33 @@ def plot_hydropathy_profile(sequence, kyte_doolittle_scale, output_file='hydropa
     max_pos = positions[scores.index(max_score)]
     min_pos = positions[scores.index(min_score)]
 
-    # Legenda - FORA do gráfico
-    legend_items = ax.legend(loc='center left', bbox_to_anchor=(1.02, 0.65),
-                            frameon=True, shadow=True, fontsize=10, fancybox=True)
+    # Legenda - PADRONIZADA no lado direito
+    legend_items = ax.legend(loc='upper left',
+                            bbox_to_anchor=(LEGEND_X_POSITION, LEGEND_TOP_Y),
+                            **LEGEND_STYLE)
 
-    # Nota sobre regiões transmembrana - alinhada com a legenda
+    # Nota sobre regiões transmembrana - PADRONIZADA abaixo da legenda
     if max_score > 1.6:
-        note = "Nota: Picos > 1.6 sugerem\npossíveis domínios\ntransmembrana"
-        ax.text(1.02, 0.35, note, transform=ax.transAxes, fontsize=9,
-                verticalalignment='top',
-                bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9, edgecolor='orange', linewidth=1.5),
-                style='italic')
+        note_text = "Nota:\nPicos > 1.6 sugerem\npossíveis domínios\ntransmembrana"
+        ax.text(LEGEND_X_POSITION, INFO_BOX_1_Y, note_text,
+               transform=ax.transAxes, fontsize=INFO_BOX_FONT_SIZE,
+               verticalalignment='top', bbox=INFO_BOX_STYLE,
+               family=INFO_BOX_FAMILY, linespacing=1.5)
+
+    # Estatísticas - PADRONIZADA mais abaixo no lado direito
+    textstr = f'Média: {avg_score:.3f}\n'
+    textstr += f'Máx: {max_score:.3f} (pos {max_pos})\n'
+    textstr += f'Mín: {min_score:.3f} (pos {min_pos})'
+
+    ax.text(LEGEND_X_POSITION, INFO_BOX_2_Y, textstr,
+           transform=ax.transAxes, fontsize=INFO_BOX_FONT_SIZE,
+           verticalalignment='top', bbox=INFO_BOX_STYLE,
+           family=INFO_BOX_FAMILY)
 
     ax.grid(True, alpha=0.3, linestyle=':', zorder=0)
     ax.set_xlim(positions[0], positions[-1])
 
-    # Estatísticas - FORA do gráfico (parte inferior)
-    textstr = f'Média: {avg_score:.3f}  |  Máx: {max_score:.3f} (pos {max_pos})  |  Mín: {min_score:.3f} (pos {min_pos})'
-
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.9, edgecolor='black', linewidth=1.5)
-    fig.text(0.5, 0.01, textstr, fontsize=10, ha='center',
-            bbox=props, family='monospace')
-
-    plt.tight_layout(rect=[0, 0.05, 0.85, 1])
+    plt.tight_layout(rect=LAYOUT_MARGINS_WITH_LEGEND)
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Perfil de hidrofobicidade salvo em '{output_file}'", file=sys.stderr)
     plt.close()
@@ -361,32 +413,34 @@ def plot_sasa_profile(sasa_per_atom, output_file='sasa_profile.png'):
     ax.set_title('Perfil de Acessibilidade ao Solvente (SASA)', fontsize=14, fontweight='bold')
     ax.grid(True, alpha=0.3, linestyle=':')
 
-    # Legenda - FORA do gráfico
-    ax.legend(loc='center left', bbox_to_anchor=(1.18, 0.5),
-             frameon=True, shadow=True, fontsize=10, fancybox=True)
-
-    # Colorbar - ao lado da legenda
-    cbar = plt.colorbar(scatter, ax=ax, pad=0.18)
+    # Colorbar - ANTES da legenda para posicionar corretamente
+    cbar = plt.colorbar(scatter, ax=ax, pad=0.02, fraction=0.046)
     cbar.set_label('SASA (Ų)', fontsize=10, fontweight='bold')
 
-    # Estatísticas - FORA do gráfico (parte inferior)
+    # Legenda - Deslocada para direita para não sobrepor o colorbar
+    ax.legend(loc='upper left',
+             bbox_to_anchor=(LEGEND_X_WITH_COLORBAR, LEGEND_TOP_Y),
+             **LEGEND_STYLE)
+
+    # Estatísticas - Deslocadas para direita, abaixo da legenda
     num_exposed = sum(1 for s in avg_sasa if s > threshold)
     num_buried = len(avg_sasa) - num_exposed
     mean_sasa = sum(avg_sasa) / len(avg_sasa)
     max_sasa = max(avg_sasa)
     max_pos = residue_numbers[avg_sasa.index(max_sasa)]
 
-    textstr = f'Total: {len(avg_sasa)} resíduos  |  '
-    textstr += f'Expostos (>{threshold:.0f} Ų): {num_exposed}  |  '
-    textstr += f'Enterrados (≤{threshold:.0f} Ų): {num_buried}  |  '
-    textstr += f'SASA médio: {mean_sasa:.2f} Ų  |  '
+    textstr = f'Total: {len(avg_sasa)} resíduos\n'
+    textstr += f'Expostos (>{threshold:.0f} Ų): {num_exposed}\n'
+    textstr += f'Enterrados (≤{threshold:.0f} Ų): {num_buried}\n'
+    textstr += f'SASA médio: {mean_sasa:.2f} Ų\n'
     textstr += f'SASA máx: {max_sasa:.2f} Ų (res {max_pos})'
 
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.9, edgecolor='black', linewidth=1.5)
-    fig.text(0.5, 0.01, textstr, fontsize=9, ha='center',
-            bbox=props, family='monospace')
+    ax.text(LEGEND_X_WITH_COLORBAR, INFO_BOX_1_Y, textstr,
+           transform=ax.transAxes, fontsize=INFO_BOX_FONT_SIZE,
+           verticalalignment='top', bbox=INFO_BOX_STYLE,
+           family=INFO_BOX_FAMILY)
 
-    plt.tight_layout(rect=[0, 0.05, 0.82, 1])
+    plt.tight_layout(rect=LAYOUT_MARGINS_WITH_COLORBAR)
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Perfil de SASA salvo em '{output_file}'", file=sys.stderr)
     plt.close()
@@ -405,21 +459,36 @@ def plot_contact_map(contacts, max_residue, output_file='contact_map.png', thres
     if not check_dependencies(require_numpy=True):
         return
 
-    # Cria matriz de contatos
+    # Cria matriz de distâncias (não binária)
     contact_matrix = np.zeros((max_residue, max_residue))
+
+    # Lista para rastrear min/max das distâncias
+    distances = []
 
     for res1, res2, dist in contacts:
         i, j = res1 - 1, res2 - 1
         if 0 <= i < max_residue and 0 <= j < max_residue:
-            contact_matrix[i, j] = 1
-            contact_matrix[j, i] = 1
+            contact_matrix[i, j] = dist
+            contact_matrix[j, i] = dist
+            distances.append(dist)
+
+    # Calcula min/max das distâncias para a escala
+    if distances:
+        min_dist = min(distances)
+        max_dist = max(distances)
+    else:
+        min_dist, max_dist = 0, threshold
 
     # Cria o gráfico
     fig, ax = plt.subplots(figsize=(10, 10))
 
-    # Heatmap
-    im = ax.imshow(contact_matrix, cmap='Blues', origin='lower',
-                   interpolation='nearest', aspect='auto', vmin=0, vmax=1)
+    # Heatmap com escala de distâncias
+    # Usar máscara para não mostrar zeros (sem contato) como azul escuro
+    masked_matrix = np.ma.masked_where(contact_matrix == 0, contact_matrix)
+
+    im = ax.imshow(masked_matrix, cmap='viridis_r', origin='lower',
+                   interpolation='nearest', aspect='auto',
+                   vmin=min_dist, vmax=max_dist)
 
     # Linha diagonal
     ax.plot([0, max_residue-1], [0, max_residue-1], 'r--', linewidth=1, alpha=0.5, label='Diagonal')
@@ -427,32 +496,37 @@ def plot_contact_map(contacts, max_residue, output_file='contact_map.png', thres
     # Configurações
     ax.set_xlabel('Resíduo i', fontsize=12, fontweight='bold')
     ax.set_ylabel('Resíduo j', fontsize=12, fontweight='bold')
-    ax.set_title(f'Mapa de Contatos Intramoleculares\n({len(contacts)} contatos, threshold = {threshold:.1f} Å)',
+    ax.set_title(f'Mapa de Contatos Intramoleculares\n({len(contacts)} contatos)',
                  fontsize=14, fontweight='bold')
 
-    # Colorbar
+    # Colorbar com escala de distâncias
     cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label('Contato', fontsize=10, fontweight='bold')
-    cbar.set_ticks([0, 1])
-    cbar.set_ticklabels(['Não', 'Sim'])
+    cbar.set_label('Distância (Å)', fontsize=10, fontweight='bold')
+
+    # Define ticks mostrando min, max e valores intermediários
+    if distances:
+        tick_values = np.linspace(min_dist, max_dist, 5)
+        cbar.set_ticks(tick_values)
+        cbar.set_ticklabels([f'{val:.1f}' for val in tick_values])
 
     # Grade
     ax.grid(True, which='both', alpha=0.2, linestyle=':', color='gray')
 
-    # Estatísticas - FORA do gráfico (parte inferior)
+    # Estatísticas - PADRONIZADA no lado direito
     total_possible = (max_residue * (max_residue - 1)) // 2
     contact_density = (len(contacts) / total_possible) * 100 if total_possible > 0 else 0
 
-    textstr = f'Resíduos totais: {max_residue}  |  '
-    textstr += f'Contatos: {len(contacts)}  |  '
-    textstr += f'Densidade: {contact_density:.2f}%  |  '
+    textstr = f'Resíduos totais: {max_residue}\n'
+    textstr += f'Contatos: {len(contacts)}\n'
+    textstr += f'Densidade: {contact_density:.2f}%\n'
     textstr += f'Threshold: {threshold:.1f} Å'
 
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.9, edgecolor='black', linewidth=1.5)
-    fig.text(0.5, 0.01, textstr, fontsize=10, ha='center',
-            bbox=props, family='monospace')
+    ax.text(LEGEND_X_POSITION, LEGEND_TOP_Y, textstr,
+           transform=ax.transAxes, fontsize=INFO_BOX_FONT_SIZE,
+           verticalalignment='top', bbox=INFO_BOX_STYLE,
+           family=INFO_BOX_FAMILY)
 
-    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    plt.tight_layout(rect=LAYOUT_MARGINS_WITH_LEGEND)
     plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"Mapa de contatos salvo em '{output_file}'", file=sys.stderr)
     plt.close()
