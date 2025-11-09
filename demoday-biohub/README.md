@@ -1,7 +1,7 @@
 # BioHub - DEMODAY
 
 <p align="center">
-  <img src="imgs/dwight.gif" alt="Workflow" width="100%"/>
+  <img src="imgs/hello.gif" alt="Workflow" width="100%"/>
 </p> 
 
 Este roteiro demonstra **TODAS** as funcionalidades do BioHub de ponta a ponta usando o PDB **1TUP** (p53 Tumor Suppressor).
