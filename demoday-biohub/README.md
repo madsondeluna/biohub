@@ -743,6 +743,10 @@ T2,M4,3.79
 python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --write-pdb 1TUP_hydrophoby.pdb --pymol 1TUP_hydrophoby.pse --plot-hydrophoby 1TUP_hydrophoby_profile.png
 ```
 
+<p align="center">
+  <img src="imgs/XXXXXXXXXX.png" alt="XXXXXXX" width="100%"/>
+</p> 
+
 **O que este comando faz:**
 - Prediz exposição ao solvente baseado em hidrofobicidade (Kyte-Doolittle)
 - Calcula hidrofobicidade por átomo
@@ -769,27 +773,33 @@ A,3,ALA,3,C,1.8
 A,4,MET,4,CB,1.9
 ...
 ```
+> CSV com hidrofobicidade por átomo (valores Kyte-Doolittle)
 
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/XXXXXXXXXX.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
-#### Perfil de Hidrofobicidade
+> Arquivo PDB com B-factors ajustados para refletir hidrofobicidade por resíduo
 
-![Perfil Hidrofobicidade](1TUP_hydrophoby_profile.png)
+<p align="center">
+  <img src="imgs/XXXXXXXXXX.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
-[ADD IMAGEM AQUI]
 
 #### Visualização PyMOL da Hidrofobicidade
 
 ```bash
-pymol 1TUP_hydrophoby.pse
+pymol pdb + pse
 ```
+
+<p align="center">
+  <img src="imgs/XXXXXXXXXX.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 **Esquema de cores:**
 - **Azul**: Resíduos hidrofílicos (valores negativos)
 - **Branco**: Neutros
 - **Vermelho**: Resíduos hidrofóbicos (valores positivos)
-
-[ADD IMAGEM AQUI - SCREENSHOT DO PYMOL]
 
 ---
 
@@ -840,7 +850,7 @@ E5,125.43
 #### Visualização PyMOL do SASA
 
 ```bash
-pymol 1TUP_sasa.pse
+pymol pdb + pse
 ```
 
 **Esquema de cores (gradiente):**
