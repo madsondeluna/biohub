@@ -36,6 +36,22 @@ Filtering PDB content...
 Filtered PDB saved to: 1TUP_clean.pdb
 ```
 
+---
+
+> Visualização do 1TUP.pdb no PyMOL (bruto):
+
+<p align="center">
+  <img src="imgs/1.png" alt="Workflow" width="100%"/>
+</p> 
+
+> Visualização do 1TUP_clean.pdb no PyMOL (limpo):
+
+<p align="center">
+  <img src="imgs/1.png" alt="Workflow" width="100%"/>
+</p> 
+
+---
+
 <p align="center">
   <img src="imgs/1.png" alt="Workflow" width="100%"/>
 </p> 
