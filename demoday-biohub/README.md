@@ -692,6 +692,10 @@ python ../biohub.py physchem MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVE
 python ../biohub.py contacts 1TUP_clean.pdb --threshold 40.0 --output 1TUP_contacts.csv --plot 1TUP_contact_map.png
 ```
 
+<p align="center">
+  <img src="imgs/11.png" alt="XXXXXXX" width="100%"/>
+</p> 
+
 **O que este comando faz:**
 - Identifica todos os pares de resíduos com distância ≤ 40.0 Å
 - Gera matriz de contatos
@@ -718,7 +722,7 @@ T2,M4,3.79
 ```
 
 <p align="center">
-  <img src="imgs/xxxxxxx.png" alt="XXXXXXX" width="100%"/>
+  <img src="imgs/12.png" alt="XXXXXXX" width="100%"/>
 </p> 
 
 #### Mapa de Contatos
@@ -726,7 +730,7 @@ T2,M4,3.79
 ![Mapa de Contatos](1TUP_contact_map.png)
 
 <p align="center">
-  <img src="imgs/xxxxxxx.png" alt="XXXXXXX" width="100%"/>
+  <img src="imgs/1TUP_contact_map.png" alt="XXXXXXX" width="100%"/>
 </p> 
 
 ---
