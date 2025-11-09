@@ -295,7 +295,7 @@ pip install -r requirements.txt
 python biohub.py -h
 ```
 
-Se você ver o banner do BioHub e a ajuda, está tudo certo! ✅
+Se você ver o banner do BioHub e a ajuda, está tudo certo!
 
 ---
 
