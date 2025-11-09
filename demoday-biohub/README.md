@@ -56,7 +56,7 @@ Filtered PDB saved to: 1TUP_clean.pdb
   <img src="imgs/1.png" alt="Workflow" width="100%"/>
 </p> 
 
-### 1.2 Informações do PDB baixado
+### 1.2 Informações do PDB Baixado e Limpo (Início e Fim)
 
 ```bash
 head -20 1TUP_clean.pdb
