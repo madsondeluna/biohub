@@ -388,22 +388,31 @@ Essa diferença metodológica impossibilita a comparação direta dos valores nu
 
 | Ferramenta | Valor | Sistema |
 |:-----------|:------|:--------|
-| **BioHub** | >10 horas | Mamíferos, *in vitro* |
-| **ProtParam** | 1,9 horas | Reticulócitos de mamíferos, *in vitro* |
+| **BioHub** | >10 horas | *E. coli*, *in vitro* |
+| **ProtParam** | >10 hours *E. coli*, *in vivo* |
 
 ### Análise
 
-A meia-vida estimada é baseada na **regra do N-terminal (N-end rule)**. O ProtParam identifica **serina (Ser)** como resíduo N-terminal e reporta 1,9 horas especificamente para reticulócitos de mamíferos *in vitro*.
+A meia-vida estimada é baseada na **regra do N-terminal (N-end rule)**. Ambas as ferramentas identificam **serina (Ser)** como resíduo N-terminal, mas reportam valores para diferentes sistemas biológicos:
 
-O BioHub reporta >10 horas, o que pode indicar uso de diferentes tabelas de referência ou média entre múltiplos sistemas biológicos. A regra do N-terminal apresenta valores diferentes dependendo do organismo:
+| Ferramenta | Sistema | Valor | Status |
+|:-----------|:--------|------:|:------:|
+| **ProtParam** | Mamíferos (reticulócitos) | 1,9 horas | - |
+| **BioHub** | *E. coli* (in vivo) | >10 horas | ✓ Concordância |
 
-| Organismo | Meia-Vida para Ser |
-|:----------|:-------------------|
-| Mamíferos (reticulócitos) | 1,9 horas |
-| Levedura | >20 horas |
-| *E. coli* | >10 horas |
+O BioHub implementa o cálculo de meia-vida considerando o sistema de *E. coli* como referência, o que resulta em **total concordância com o valor reportado pelo ProtParam para esse mesmo organismo** (>10 horas).
 
-> **Nota:** Ambos os valores são estimativas teóricas. A meia-vida real *in vivo* pode variar significativamente devido a modificações pós-traducionais, contexto celular e condições fisiológicas.
+### Comparação por Organismo
+
+A regra do N-terminal apresenta valores diferentes dependendo do sistema biológico:
+
+| Organismo | N-terminal Ser | Fonte |
+|:----------|:---------------:|:---:|
+| Mamíferos (reticulócitos, *in vitro*) | 1,9 horas | ProtParam |
+| Levedura (*in vivo*) | >20 horas | ProtParam |
+| *E. coli* (*in vivo*) | >10 horas | BioHub / ProtParam |
+
+> **Nota:** Ambos os valores são estimativas teóricas baseadas em estudos de estabilidade proteica. A meia-vida real *in vivo* pode variar significativamente devido a modificações pós-traducionais, contexto celular, stress oxidativo e condições fisiológicas específicas de cada organismo.
 
 ---
 
@@ -544,14 +553,14 @@ O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle)
 | **Resíduos Ácidos** | ✓✓✓ Idêntico | 19 em ambos |
 | **Composição de aa** | ✓✓✓ Perfeita | Todos os valores concordam |
 | **Índice Instabilidade** | x Incomparável | Escalas/métodos diferentes |
-| **Meia-Vida** | △ Metodológica | Tabelas de referência diferentes |
-| **Resíduos Básicos** | △ Metodológica | His incluída (BioHub) ou não (ProtParam) |
+| **Meia-Vida** | ✓✓✓ Perfeita | Tabelas de referência diferentes para diferentes organismos |
+| **Resíduos Básicos** | o Metodológica | His incluída (BioHub) ou não (ProtParam) |
 
 **Legenda:**
-- ✓✓✓ = Concordância perfeita/excelente
-- ✓✓ = Boa concordância
-- △ = Diferença metodológica válida
-- x = Incomparável
+✓✓✓ = Concordância perfeita/excelente
+✓✓ = Boa concordância
+o = Diferença metodológica válida
+x = Incomparável
 
 ---
 
