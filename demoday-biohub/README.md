@@ -556,9 +556,9 @@ O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle)
 
 ### Pontos Fortes do BioHub
 
-1. **Precisão excepcional** nos cálculos de peso molecular (erro <0.001%), GRAVY e índice alifático
-2. **Concordância total** na composição de aminoácidos com ProtParam
-3. **Meia-vida com concordância perfeita** quando utilizando *E. coli* como referência (>10 horas)
+1. **Precisão** nos cálculos de peso molecular (erro <0.001%), GRAVY e índice alifático
+2. **Concordância** na composição de aminoácidos com ProtParam
+3. **Meia-vida com concordância** quando utilizando *E. coli* como referência (>10 horas)
 4. **Visualizações superiores:** treemaps e gráficos de hidrofobicidade facilitam interpretação biológica
 5. **Interface integrada:** análise completa em um único ambiente computacional
 
