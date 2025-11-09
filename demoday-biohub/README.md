@@ -23,9 +23,7 @@ Este roteiro demonstra as funcionalidades do BioHub de ponta a ponta usando o PD
 ### Parte 2: Análise Comparativa BioHub vs ProtParam (ExPASy)
 - [Introdução](#análise-comparativa-biohub-vs-protparam-expasy)
 - [Parâmetros com Concordância Excelente](#parâmetros-com-concordância-excelente-≤0001)
-  - Peso Molecular, GRAVY, Índice Alifático, Comprimento
 - [Parâmetros com Concordância Boa](#parâmetros-com-concordância-boa-3-5)
-  - Ponto Isoelétrico (pI)
 - [Índice de Instabilidade](#índice-de-instabilidade-métodos-diferentes-resultados-incomparáveis)
 - [Meia-Vida](#meia-vida-diferença-metodológica)
 - [Composição de Aminoácidos](#composição-de-aminoácidos-concordância-total)
