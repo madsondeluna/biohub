@@ -1,4 +1,8 @@
-# BioHub: Uma Plataforma para Análise de Sequências e Estruturas de Proteínas
+# BioHub
+
+*Uma Plataforma para Análise de Sequências e Estruturas de Proteínas*
+
+---
 
 ![Bioinformatics](https://img.shields.io/badge/Bioinformatics-Research-006699?logo=google-scholar&logoColor=white)
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -226,7 +230,7 @@ Calcula a **Área de Superfície Acessível ao Solvente (SASA)** usando o algori
 ---
 
 <p align="center">
-  <img src="/img/9FC335A9-F378-42B4-80D8-35A8A3F61FF1_1_201_a.jpeg" alt="Workflow" width="100%"/>
+  <img src="img/biohub_page-0001.jpg" alt="Workflow" width="100%"/>
 </p>
 
 ---
