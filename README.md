@@ -994,9 +994,8 @@ O BioHub foi validado contra **ProtParam (ExPASy)**, a referência internacional
 
 **Legenda:** == Idêntico | ~= Variou Pouco | -- Diferença Metodológica | -x Incomparável
 
-### Acesse a Análise Completa
+### Acesse a Análise Completa: [demoday-biohub/README.md](demoday-biohub/README.md)
 
-**[demoday-biohub/README.md](demoday-biohub/README.md)** - Inclui:
 - Workflow ponta a ponta com p53 (PDB: 1TUP)
 - Comparação detalhada de todos os 10 parâmetros
 - Explicação das diferenças metodológicas
