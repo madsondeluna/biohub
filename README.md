@@ -230,7 +230,7 @@ Calcula a **Área de Superfície Acessível ao Solvente (SASA)** usando o algori
 ---
 
 <p align="center">
-  <img src="img/biohub_workflow.svg" alt="Workflow" width="100%"/>
+  <img src="img/biobio.001.jpeg" alt="Workflow" width="100%"/>
 </p>
 
 ---
