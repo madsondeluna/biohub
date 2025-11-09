@@ -1,4 +1,4 @@
-# BioHub - Roteiro Completo de Demonstração
+# BioHub - DEMODAY
 
 <p align="center">
   <img src="imgs/dwight.gif" alt="Workflow" width="100%"/>
@@ -905,8 +905,6 @@ pymol pdb + pml
 - **Azul**: SASA baixo (resíduos enterrados)
 - **Verde**: SASA intermediário
 - **Vermelho**: SASA alto (resíduos expostos)
-
-[ADD IMAGEM AQUI - SCREENSHOT DO PYMOL]
 
 ---
 
