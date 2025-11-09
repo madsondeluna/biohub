@@ -1,0 +1,64 @@
+Number of amino acids: 196
+Theoretical pI: 8.34
+Molecular weight: 22003.93
+
+Amino acid composition: 
+Ala (A)   7	  3.6%
+Arg (R)  17	  8.7%
+Asn (N)   9	  4.6%
+Asp (D)   8	  4.1%
+Cys (C)  10	  5.1%
+Gln (Q)   7	  3.6%
+Glu (E)  11	  5.6%
+Gly (G)  13	  6.6%
+His (H)   7	  3.6%
+Ile (I)   6	  3.1%
+Leu (L)  14	  7.1%
+Lys (K)   5	  2.6%
+Met (M)   6	  3.1%
+Phe (F)   5	  2.6%
+Pro (P)  14	  7.1%
+Ser (S)  19	  9.7%
+Thr (T)  14	  7.1%
+Trp (W)   1	  0.5%
+Tyr (Y)   8	  4.1%
+Val (V)  15	  7.7%
+Pyl (O)   0	  0.0%
+Sec (U)   0	  0.0%
+
+
+Total number of negatively charged residues (Asp + Glu): 19
+Total number of positively charged residues (Arg + Lys): 22
+
+Atomic composition:
+Carbon      C	       945
+Hydrogen    H	      1493
+Nitrogen    N	       283
+Oxygen      O	       292
+Sulfur      S	        16
+
+Formula: C945H1493N283O292S16
+Total number of atoms: 3029
+
+Extinction coefficients:
+Extinction coefficients are in units of  M-1 cm-1, at 280 nm measured in water.
+Ext. coefficient    18045
+Abs 0.1% (=1 g/l)   0.820, assuming all pairs of Cys residues form cystines
+
+
+
+Ext. coefficient    17420
+Abs 0.1% (=1 g/l)   0.792, assuming all Cys residues are reduced
+
+Estimated half-life:
+The N-terminal of the sequence considered is S (Ser).
+The estimated half-life is: 1.9 hours (mammalian reticulocytes, in vitro).
+                            >20 hours (yeast, in vivo).
+                            >10 hours (Escherichia coli, in vivo).
+
+Instability index:
+The instability index (II) is computed to be 73.97
+This classifies the protein as unstable.
+
+Aliphatic index: 65.56
+Grand average of hydropathicity (GRAVY):-0.503
