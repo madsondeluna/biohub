@@ -545,10 +545,10 @@ O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle)
 | **Resíduos Básicos** | o Diferença Metodológica | His incluída (BioHub) ou não (ProtParam) |
 
 **Legenda:**
-✓✓✓ = Concordância Excelente
-✓✓ = Boa Concordância
-o = Diferença Metodológica
-x = Incomparável
+✓✓✓ = Concordância Excelente;
+✓✓ = Boa Concordância;
+o = Diferença Metodológica;
+x = Incomparável;
 
 ---
 
@@ -558,31 +558,35 @@ x = Incomparável
 
 1. **Precisão excepcional** nos cálculos de peso molecular (erro <0.001%), GRAVY e índice alifático
 2. **Concordância total** na composição de aminoácidos com ProtParam
-3. **Visualizações superiores:** treemaps e gráficos de hidrofobicidade facilitam interpretação biológica
-4. **Interface integrada:** análise completa em um único ambiente computacional
+3. **Meia-vida com concordância perfeita** quando utilizando *E. coli* como referência (>10 horas)
+4. **Visualizações superiores:** treemaps e gráficos de hidrofobicidade facilitam interpretação biológica
+5. **Interface integrada:** análise completa em um único ambiente computacional
 
 ### Limitações Identificadas
 
-1. **Índice de instabilidade:** Valores incomparáveis com o padrão ProtParam devido a diferenças nas escalas utilizadas
-2. **Meia-vida:** Falta especificação do sistema biológico de referência (mamíferos, levedura ou *E. coli*)
+1. **Índice de instabilidade:** Utiliza método e escala diferentes do ProtParam, resultando em valores **não passíveis de comparação direta** (-105.87 vs 73.97)
+2. **Métodos alternativos:** Algumas diferenças metodológicas são válidas (ex: inclusão de histidina nos resíduos básicos)
 
 ### Recomendações para Uso
 
 #### Para análises de rotina
-O BioHub é confiável para peso molecular, GRAVY, índice alifático, pI e composição de aminoácidos.
+O BioHub é confiável para peso molecular, GRAVY, índice alifático, pI, composição de aminoácidos e **meia-vida em sistemas de *E. coli***.
 
 #### Para publicações científicas
-- Use ProtParam para validação do índice de instabilidade até que o BioHub padronize sua implementação
-- Reporte sempre qual ferramenta foi utilizada para cada parâmetro
+- Sempre especifique qual ferramenta foi utilizada para cada parâmetro
+- Para índice de instabilidade: **não utilize valores do BioHub em comparações quantitativas** com ProtParam, as escalas são incomparáveis
+- Use ProtParam como referência padrão para índice de instabilidade
 - Considere validar parâmetros críticos com múltiplas ferramentas
 
 #### Para visualização e exploração
 Os gráficos do BioHub (treemap, hidrofobicidade) são superiores ao ProtParam para identificação de padrões e regiões funcionais.
 
-### Melhorias Sugeridas para o BioHub
+### Para as próximas versões do BioHub (Vamos ter cálculos implementados com auxilio de bibliotecas externas como Biopython, etc.)
 
-1. Documentar claramente qual tabela de N-end rule é utilizada para meia-vida
-2. Adicionar disclaimer explicando a escala diferente do índice de instabilidade
+> Vale lembrar que o BioHub é 99% desenvolvido do zero, sem uso de bibliotecas externas para cálculos bioquímicos. Portanto, algumas diferenças metodológicas são esperadas. E essa concordância já é excelente para uma ferramenta em estágio inicial (!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+
+1. **Documentar explicitamente** a escala alternativa utilizada no índice de instabilidade
+2. **Adicionar disclaimer** claro indicando que os valores de instabilidade não são comparáveis com ProtParam
 3. Incluir opção para calcular resíduos básicos com/sem histidina
 4. Adicionar composição atômica e coeficiente de extinção molar (disponíveis no ProtParam)
 5. Implementar predição de domínios transmembrana integrada ao perfil de hidrofobicidade
@@ -591,10 +595,13 @@ Os gráficos do BioHub (treemap, hidrofobicidade) são superiores ao ProtParam p
 
 ## Conclusão Final
 
-O BioHub demonstra ser uma **ferramenta confiável e precisa** para análise de propriedades físico-químicas de proteínas, com concordância excelente (<0.001%) com o ProtParam (referência internacional) em 5 dos 7 parâmetros principais. As visualizações gráficas produzidas pelo BioHub superam significativamente o ProtParam em termos de interpretabilidade e identificação de padrões biológicos.
+O BioHub demonstra ser uma **ferramenta confiável e precisa** para análise de propriedades físico-químicas de proteínas, com concordância excelente (<0.001%) com o ProtParam (referência internacional) em **6 dos 7 parâmetros principais**. As visualizações gráficas produzidas pelo BioHub superam significativamente o ProtParam em termos de interpretabilidade e identificação de padrões biológicos.
 
-A única discrepância significativa ocorre no índice de instabilidade, onde os valores são incomparáveis devido a diferenças nas escalas utilizadas pelos dois programas. Para uso em publicações científicas, recomenda-se validação cruzada do índice de instabilidade com o ProtParam até que o BioHub documente formalmente sua implementação alternativa.
+A discrepância no índice de instabilidade ocorre porque BioHub implementa uma **escala e método diferentes** do ProtParam, resultando em valores fundamentalmente **não comparáveis**. Recomenda-se:
 
+- **Para índice de instabilidade:** Use ProtParam como referência padrão
+- **Para meia-vida:** O BioHub oferece concordância perfeita quando se utiliza *E. coli* como sistema de referência
+- **Para demais parâmetros:** O BioHub é totalmente confiável para uso em publicações científicas
 
 ---
 
