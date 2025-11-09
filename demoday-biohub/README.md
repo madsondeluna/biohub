@@ -531,18 +531,18 @@ O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle)
 
 ## Resumo Comparativo Final
 
-| Parâmetro | Status | Observação |
-|:----------|:------:|:-----------|
-| **Comprimento** | == | 196 aa em ambos |
-| **Peso Molecular** | == | Diferença <0.001% |
-| **GRAVY** | == | -0.503 em ambos |
-| **Índice Alifático** | == | 65.56 em ambos |
-| **Ponto Isoelétrico** | ~= | Diferença 3.7% (aceitável) |
-| **Resíduos Ácidos** | == | 19 em ambos |
-| **Composição de aa** | == | Todos os valores concordam |
-| **Índice Instabilidade** | -x | Escalas/Métodos diferentes |
-| **Meia-Vida** | == | Tabelas de referência diferentes para diferentes organismos |
-| **Resíduos Básicos** | -- | His incluída (BioHub) ou não (ProtParam) |
+| Parâmetro | BioHub | ProtParam | Status | Observação |
+|:----------|:------:|:---------:|:------:|:-----------|
+| **Comprimento** | 196 aa | 196 aa | == | Idêntico |
+| **Peso Molecular** | 22.003,86 Da | 22.003,93 Da | == | Diferença <0.001% |
+| **GRAVY** | -0.503 | -0.503 | == | Idêntico |
+| **Índice Alifático** | 65.56 | 65.56 | == | Idêntico |
+| **Ponto Isoelétrico** | 8.03 | 8.34 | ~= | Diferença 3.7% |
+| **Resíduos Ácidos** | 19 | 19 | == | Idêntico |
+| **Composição de aa** | 20 tipos | 20 tipos | == | Idêntico |
+| **Índice Instabilidade** | -105.87 | 73.97 | -x | Escalas diferentes |
+| **Meia-Vida** | >10 h (E. coli) | >10 h (E. coli) | == | Idêntico para E. coli |
+| **Resíduos Básicos** | 29 (com His) | 22 (sem His) | -- | Metodologia diferente |
 
 **Legenda:**
 == = Idêntico;
