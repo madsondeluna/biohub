@@ -38,7 +38,7 @@ Filtered PDB saved to: 1TUP_clean.pdb
 
 <p align="center">
   <img src="imgs/1.png" alt="Workflow" width="100%"/>
-</p>
+</p> 
 
 ### 1.2 Informações do PDB baixado
 
