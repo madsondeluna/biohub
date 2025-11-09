@@ -558,7 +558,7 @@ ls -lh
 
 ---
 
-## Comandos Sequenciais (Cópia Rápida)
+## Comandos Sequenciais 
 
 ```bash
 # 1. Download e limpeza
@@ -595,7 +595,8 @@ python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv 
 
 **Data da Análise:** 09 de novembro de 2025  
 **Sequência Analisada:** 196 aminoácidos  
-**Proteína:** 1TUP
+**Proteína:** 1TUP (DNA Binding Domain of p53 - 1TUP.pdb)
+**Sequência:** SSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENL
 
 ---
 
