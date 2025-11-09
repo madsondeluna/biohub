@@ -531,24 +531,24 @@ O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle)
 
 ## Resumo Comparativo Final
 
-| Parâmetro | Concordância | Observação |
-|:----------|:------------:|:-----------|
-| **Comprimento** | ✓✓✓ Perfeita | 196 aa em ambos |
-| **Peso Molecular** | ✓✓✓ Excelente | Diferença <0.001% |
-| **GRAVY** | ✓✓✓ Idêntico | -0.503 em ambos |
-| **Índice Alifático** | ✓✓✓ Idêntico | 65.56 em ambos |
-| **Ponto Isoelétrico** | ✓✓ Boa | Diferença 3.7% (aceitável) |
-| **Resíduos Ácidos** | ✓✓✓ Idêntico | 19 em ambos |
-| **Composição de aa** | ✓✓✓ Perfeita | Todos os valores concordam |
-| **Índice Instabilidade** | x Diferença Metodológica | Escalas/Métodos diferentes |
-| **Meia-Vida** | ✓✓✓ Perfeita | Tabelas de referência diferentes para diferentes organismos |
-| **Resíduos Básicos** | o Diferença Metodológica | His incluída (BioHub) ou não (ProtParam) |
+| Parâmetro | Status | Observação |
+|:----------|:------:|:-----------|
+| **Comprimento** | == | 196 aa em ambos |
+| **Peso Molecular** | == | Diferença <0.001% |
+| **GRAVY** | == | -0.503 em ambos |
+| **Índice Alifático** | == | 65.56 em ambos |
+| **Ponto Isoelétrico** | ~= | Diferença 3.7% (aceitável) |
+| **Resíduos Ácidos** | == | 19 em ambos |
+| **Composição de aa** | == | Todos os valores concordam |
+| **Índice Instabilidade** | -x | Escalas/Métodos diferentes |
+| **Meia-Vida** | == | Tabelas de referência diferentes para diferentes organismos |
+| **Resíduos Básicos** | -- | His incluída (BioHub) ou não (ProtParam) |
 
 **Legenda:**
-✓✓✓ = Concordância Excelente;
-✓✓ = Boa Concordância;
-o = Diferença Metodológica;
-x = Incomparável;
+== = Idêntico;
+~= = Variou Pouco;
+-- = Diferença Metodológica;
+-x = Incomparável;
 
 ---
 
@@ -680,7 +680,7 @@ python ../biohub.py physchem MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETC
 python ../biohub.py physchem MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVEEFFEGPSEALRVSGAPAAQDPVTETPGPVAPAPATPWPLSSFVPSQKTYQGNYGFHLGFLQSGTAKSVMCTYSPPLNKLFI --output seq2_properties.csv --plot-composition seq2_composition.png --plot-treemap seq2_treemap.png --plot-hydro seq2_hydropathy.png --window 9
 ```
 
-[ADD IMAGEM AQUI - RESULTADOS DAS ANÁLISES]
+> Agora é só voltar na **nas análises da seção 3**, pois as análises são as mesmas, só mudando a sequência.
 
 ---
 
