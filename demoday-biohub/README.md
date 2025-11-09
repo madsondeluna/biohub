@@ -613,7 +613,7 @@ Esta análise compara os resultados obtidos pela ferramenta BioHub com o ProtPar
 | **BioHub** | 22.003,86 Da | - |
 | **ProtParam** | 22.003,93 Da | 0,07 Da |
 | **Diferença Percentual** | - | 0,0003% |
-| **Status** | - | ✓ Concordância perfeita |
+| **Status** | - | ✓ Concordância excelente |
 
 O cálculo do peso molecular é baseado na soma das massas atômicas dos aminoácidos menos as moléculas de água perdidas nas ligações peptídicas. A diferença mínima de 0,07 Da representa variação aceitável devido a pequenas diferenças nos valores de massa isotópica média utilizados nas bases de dados.
 
@@ -916,7 +916,7 @@ O BioHub demonstra ser uma **ferramenta confiável e precisa** para análise de 
 A discrepância no índice de instabilidade ocorre porque BioHub implementa uma **escala e método diferentes** do ProtParam, resultando em valores fundamentalmente **não comparáveis**. Recomenda-se:
 
 - **Para índice de instabilidade:** Use ProtParam como referência padrão
-- **Para meia-vida:** O BioHub oferece concordância perfeita quando se utiliza *E. coli* como sistema de referência
+- **Para meia-vida:** O BioHub oferece concordância excelente quando se utiliza *E. coli* como sistema de referência
 - **Para demais parâmetros:** O BioHub é totalmente confiável para uso em publicações científicas
 
 ---
