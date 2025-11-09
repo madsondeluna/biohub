@@ -21,18 +21,19 @@ Este roteiro demonstra as funcionalidades do BioHub de ponta a ponta usando o PD
 8. [Todas as Visualizações](#8-todas-as-visualizações)
 
 ### Parte 2: Análise Comparativa BioHub vs ProtParam (ExPASy)
-- [Introdução](#análise-comparativa-biohub-vs-protparam-expasy)
-- [Parâmetros com Concordância Excelente](#parâmetros-com-concordância-excelente-≤0001)
-- [Parâmetros com Concordância Boa](#parâmetros-com-concordância-boa-3-5)
-- [Índice de Instabilidade](#índice-de-instabilidade-métodos-diferentes-resultados-incomparáveis)
-- [Meia-Vida](#meia-vida-diferença-metodológica)
-- [Composição de Aminoácidos](#composição-de-aminoácidos-concordância-total)
-- [Distribuição de Resíduos por Categoria](#distribuição-de-resíduos-por-categoria)
-- [Parâmetros Adicionais (ProtParam)](#parâmetros-adicionais-somente-protparam)
-- [Perfil de Hidrofobicidade](#perfil-de-hidrofobicidade-análise-dos-gráficos)
-- [Resumo Comparativo Final](#resumo-comparativo-final)
-- [Ressalvas e Recomendações](#ressalvas-e-recomendações)
-- [Conclusão Final](#conclusão-final-da-comparação-biohub-vs-protparam)
+- [Análise Comparativa BioHub vs ProtParam](#análise-comparativa-biohub-vs-protparam-expasy)
+  - [Introdução](#introdução)
+  - [Parâmetros com Concordância Excelente](#parâmetros-com-concordância-excelente-≤0001)
+  - [Parâmetros com Concordância Boa](#parâmetros-com-concordância-boa-3-5)
+  - [Índice de Instabilidade](#índice-de-instabilidade-métodos-diferentes-resultados-incomparáveis)
+  - [Meia-Vida](#meia-vida-diferença-metodológica)
+  - [Composição de Aminoácidos](#composição-de-aminoácidos-concordância-total)
+  - [Distribuição de Resíduos](#distribuição-de-resíduos-por-categoria)
+  - [Parâmetros Adicionais](#parâmetros-adicionais-somente-protparam)
+  - [Perfil de Hidrofobicidade](#perfil-de-hidrofobicidade-análise-dos-gráficos)
+  - [Resumo Comparativo](#resumo-comparativo-final)
+  - [Ressalvas e Recomendações](#ressalvas-e-recomendações)
+  - [Conclusão Final](#conclusão-final-da-comparação-biohub-vs-protparam)
 
 ---
 
@@ -222,414 +223,6 @@ Total de Resíduos Apolares,81
 <p align="center">
   <img src="imgs/1TUP_hydropathy.png" alt="XXXXXXX" width="100%"/>
 </p> 
-
----
-
-## Para níveis de comparação, aqui temos os resultados com o ProtParam (ExPASy):
-
-````bash
-Number of amino acids: 196
-Theoretical pI: 8.34
-Molecular weight: 22003.93
-
-Amino acid composition: 
-Ala (A)   7	  3.6%
-Arg (R)  17	  8.7%
-Asn (N)   9	  4.6%
-Asp (D)   8	  4.1%
-Cys (C)  10	  5.1%
-Gln (Q)   7	  3.6%
-Glu (E)  11	  5.6%
-Gly (G)  13	  6.6%
-His (H)   7	  3.6%
-Ile (I)   6	  3.1%
-Leu (L)  14	  7.1%
-Lys (K)   5	  2.6%
-Met (M)   6	  3.1%
-Phe (F)   5	  2.6%
-Pro (P)  14	  7.1%
-Ser (S)  19	  9.7%
-Thr (T)  14	  7.1%
-Trp (W)   1	  0.5%
-Tyr (Y)   8	  4.1%
-Val (V)  15	  7.7%
-Pyl (O)   0	  0.0%
-Sec (U)   0	  0.0%
-
-
-Total number of negatively charged residues (Asp + Glu): 19
-Total number of positively charged residues (Arg + Lys): 22
-
-Atomic composition:
-Carbon      C	       945
-Hydrogen    H	      1493
-Nitrogen    N	       283
-Oxygen      O	       292
-Sulfur      S	        16
-
-Formula: C945H1493N283O292S16
-Total number of atoms: 3029
-
-Extinction coefficients:
-Extinction coefficients are in units of  M-1 cm-1, at 280 nm measured in water.
-Ext. coefficient    18045
-Abs 0.1% (=1 g/l)   0.820, assuming all pairs of Cys residues form cystines
-
-
-
-Ext. coefficient    17420
-Abs 0.1% (=1 g/l)   0.792, assuming all Cys residues are reduced
-
-Estimated half-life:
-The N-terminal of the sequence considered is S (Ser).
-The estimated half-life is: 1.9 hours (mammalian reticulocytes, in vitro).
-                            >20 hours (yeast, in vivo).
-                            >10 hours (Escherichia coli, in vivo).
-
-Instability index:
-The instability index (II) is computed to be 73.97
-This classifies the protein as unstable.
-
-Aliphatic index: 65.56
-Grand average of hydropathicity (GRAVY):-0.503
-````
-
----
-
-# Análise Comparativa BioHub vs ProtParam (ExPASy)
-
-**Data da Análise:** 09 de novembro de 2025  
-**Sequência Analisada:** 196 aminoácidos  
-**Proteína:** 1TUP
-
----
-
-## Introdução
-
-Esta análise compara os resultados obtidos pela ferramenta BioHub com o ProtParam (ExPASy) para a mesma sequência proteica de 196 aminoácidos. Ambas as ferramentas implementam algoritmos estabelecidos na literatura para cálculo de propriedades físico-químicas de proteínas.
-
----
-
-## Parâmetros com Concordância Excelente (≤0.001%)
-
-### Peso Molecular
-
-| Ferramenta | Valor | Diferença |
-|:-----------|------:|:---------:|
-| **BioHub** | 22.003,86 Da | - |
-| **ProtParam** | 22.003,93 Da | 0,07 Da |
-| **Diferença Percentual** | - | 0,0003% |
-| **Status** | - | ✓ Concordância perfeita |
-
-O cálculo do peso molecular é baseado na soma das massas atômicas dos aminoácidos menos as moléculas de água perdidas nas ligações peptídicas. A diferença mínima de 0,07 Da representa variação aceitável devido a pequenas diferenças nos valores de massa isotópica média utilizados nas bases de dados.
-
-### GRAVY (Grand Average of Hydropathicity)
-
-| Ferramenta | Valor | Diferença |
-|:-----------|------:|:---------:|
-| **BioHub** | -0.503 | - |
-| **ProtParam** | -0.503 | 0 |
-| **Diferença Percentual** | - | 0% |
-| **Status** | - | ✓ Idêntico |
-
-Ambas as ferramentas implementam corretamente a escala de Kyte-Doolittle (1982). O valor negativo (-0.503) classifica a proteína como **moderadamente hidrofílica**, indicando caráter solúvel em ambiente aquoso. O perfil de hidrofobicidade ao longo da sequência mostra regiões com picos hidrofóbicos acima de 1.6 (posições 161 e ~175), sugerindo possíveis domínios transmembrana.
-
-### Índice Alifático
-
-| Ferramenta | Valor | Diferença |
-|:-----------|------:|:---------:|
-| **BioHub** | 65.56 | - |
-| **ProtParam** | 65.56 | 0 |
-| **Diferença Percentual** | - | 0% |
-| **Status** | - | ✓ Idêntico |
-
-O índice alifático é calculado pelo método de Ikai (1980), baseado nas frequências relativas de Ala, Val, Ile e Leu. O valor de 65.56 indica volume relativo moderado de cadeias laterais alifáticas, típico de proteínas globulares.
-
-### Comprimento da Sequência
-
-| Ferramenta | Valor | Status |
-|:-----------|------:|:------:|
-| **BioHub** | 196 aa | - |
-| **ProtParam** | 196 aa | - |
-| **Concordância** | - | ✓ Confirmado |
-
----
-
-## Parâmetros com Concordância Boa (3-5%)
-
-### Ponto Isoelétrico (pI)
-
-| Ferramenta | Valor | Diferença |
-|:-----------|------:|:---------:|
-| **BioHub** | 8.03 | - |
-| **ProtParam** | 8.34 | 0,31 unidades |
-| **Diferença Percentual** | - | 3,7% |
-| **Status** | - | ✓ Concordância aceitável |
-
-O ponto isoelétrico é o pH no qual a carga líquida da proteína é zero. Ambos os valores (8.03 e 8.34) classificam a proteína como **levemente básica**, consistente com o excesso de resíduos básicos sobre ácidos. 
-
-A diferença de 0,31 unidades é aceitável e pode decorrer de variações nos valores de pKa utilizados para os grupos ionizáveis (N-terminal, C-terminal, Asp, Glu, Lys, Arg, His). Variações de ±0.3 unidades são comuns entre diferentes implementações computacionais.
-
----
-
-## Índice de Instabilidade: Métodos Diferentes, Resultados Incomparáveis
-
-### Resultados Obtidos
-
-| Ferramenta | Valor | Classificação | Status |
-|:-----------|------:|:--------------|:------:|
-| **ProtParam** | 73.97 | Instável | - |
-| **BioHub** | -105.87 | Estável | x Incomparável |
-
-Embora ambas as ferramentas implementem a matriz DIWV (Índice de Instabilidade de Guruprasad et al., 1990), cada uma utiliza **métodos e escalas distintos** para calcular o índice final. Essas diferenças metodológicas resultam em **valores numericamente incomparáveis**.
-
-- **ProtParam** implementa a fórmula padrão: `II = (10/L) × Σ DIWV`, produzindo valores onde >40 indica instabilidade
-- **BioHub** utiliza uma escala alternativa que inverte/transforma os resultados, produzindo valores negativos para proteínas estáveis
-
-Como consequência dessa divergência metodológica, os valores -105.87 e 73.97 não podem ser diretamente comparados, pois representam escalas e interpretações fundamentalmente diferentes do mesmo parâmetro biológico.
-
-> **Conclusão:** Os índices de instabilidade calculados por cada ferramenta **não são passíveis de comparação direta**. Recomenda-se usar ProtParam como referência padrão para publicações científicas até que o BioHub documente formalmente sua implementação alternativa.
-
----
-
-## Meia-Vida: Diferença Metodológica
-
-### Resultados
-
-| Ferramenta | Valor | Sistema |
-|:-----------|:------|:--------|
-| **BioHub** | >10 horas | *E. coli*, *in vitro* |
-| **ProtParam** | >10 hours *E. coli*, *in vivo* |
-
-### Análise
-
-A meia-vida estimada é baseada na **regra do N-terminal (N-end rule)**. Ambas as ferramentas identificam **serina (Ser)** como resíduo N-terminal, mas reportam valores para diferentes sistemas biológicos:
-
-| Ferramenta | Sistema | Valor | Status |
-|:-----------|:--------|------:|:------:|
-| **ProtParam** | Mamíferos (reticulócitos) | 1,9 horas | - |
-| **BioHub** | *E. coli* (in vivo) | >10 horas | ✓ Concordância |
-
-O BioHub implementa o cálculo de meia-vida considerando o sistema de *E. coli* como referência, o que resulta em **total concordância com o valor reportado pelo ProtParam para esse mesmo organismo** (>10 horas).
-
-### Comparação por Organismo
-
-A regra do N-terminal apresenta valores diferentes dependendo do sistema biológico:
-
-| Organismo | N-terminal Ser | Fonte |
-|:----------|:---------------:|:---:|
-| Mamíferos (reticulócitos, *in vitro*) | 1,9 horas | ProtParam |
-| Levedura (*in vivo*) | >20 horas | ProtParam |
-| *E. coli* (*in vivo*) | >10 horas | BioHub / ProtParam |
-
-> **Nota:** Ambos os valores são estimativas teóricas baseadas em estudos de estabilidade proteica. A meia-vida real *in vivo* pode variar significativamente devido a modificações pós-traducionais, contexto celular, stress oxidativo e condições fisiológicas específicas de cada organismo.
-
----
-
-## Composição de Aminoácidos: Concordância Total
-
-### Resíduos Ácidos (Asp + Glu)
-
-| Ferramenta | Contagem | Percentual | Status |
-|:-----------|:--------:|:----------:|:------:|
-| **BioHub** | 19 | 9,7% | - |
-| **ProtParam** | 19 | 9,7% | - |
-| **Concordância** | - | - | ✓ Idêntico |
-
-### Resíduos Básicos
-
-| Ferramenta | Contagem | Percentual | Composição | Observação |
-|:-----------|:--------:|:----------:|:-----------|:-----------|
-| **BioHub** | 29 | 14,8% | Arg+Lys+His | Inclui His |
-| **ProtParam** | 22 | 11,2% | Arg+Lys | Exclui His |
-| **Diferença** | 7 | 3,6% | Histidinas | Diferença metodológica |
-
-A diferença de 7 resíduos corresponde exatamente às histidinas presentes na sequência. Esta é uma **diferença metodológica válida**:
-
-- **Histidina** (pKa ~6.0) pode atuar como ácido ou base dependendo do pH
-- Em pH fisiológico (~7.4), His é predominantemente neutra, justificando sua exclusão do ProtParam
-- O BioHub adota abordagem conservadora incluindo His nos básicos
-
-### Aminoácidos Mais Frequentes
-
-| Aminoácido | Código | Contagem | Percentual | Grupo |
-|:-----------|:------:|---------:|-----------:|:------|
-| Serina | S | 19 | 9,7% | Polar |
-| Arginina | R | 17 | 8,7% | Básico |
-| Valina | V | 15 | 7,7% | Hidrofóbico |
-| Leucina | L | 14 | 7,1% | Hidrofóbico |
-| Prolina | P | 14 | 7,1% | Hidrofóbico |
-| Treonina | T | 14 | 7,1% | Polar |
-| Glicina | G | 13 | 6,6% | Glicina |
-| Glutamato | E | 11 | 5,6% | Ácido |
-| Cisteína | C | 10 | 5,1% | Polar |
-
-### Resíduos Polares vs Apolares
-
-| Categoria | BioHub | Percentual | Observação |
-|:----------|:------:|-----------:|:-----------|
-| **Polares** | 67 | 34,2% | Inclui Ser, Thr, Gln, Asn, Cys, Tyr |
-| **Apolares** | 81 | 41,3% | Inclui Val, Leu, Ile, Ala, Met, Pro, Phe, Trp |
-
-A proporção de ~34% polares e ~41% apolares é típica de proteínas globulares solúveis.
-
----
-
-## Distribuição de Resíduos por Categoria
-
-### Composição por Grupos Funcionais
-
-| Grupo | Percentual | Aminoácidos Incluídos |
-|:------|:----------:|:---------------------|
-| **Hidrofóbicos** | 34,7% | Val, Leu, Pro, Ala, Met, Ile, Trp, Phe |
-| **Polares** | 34,2% | Ser, Thr, Gln, Asn, Cys, Tyr |
-| **Básicos** | 24,5% | Arg, His, Lys |
-| **Ácidos** | 9,7% | Glu (5,6%), Asp (4,1%) |
-| **Glicina** | 6,6% | Especial - alta flexibilidade conformacional |
-
-A alta proporção de resíduos hidrofóbicos (34,7%) e básicos (24,5%) é consistente com o caráter anfipático da proteína, que apresenta regiões hidrofílicas (GRAVY -0.503) mas com domínios hidrofóbicos localizados.
-
----
-
-## Parâmetros Adicionais (Somente ProtParam)
-
-### Composição Atômica
-
-| Elemento | Quantidade |
-|:---------|:----------:|
-| Carbono (C) | 945 |
-| Hidrogênio (H) | 1.493 |
-| Nitrogênio (N) | 283 |
-| Oxigênio (O) | 292 |
-| Enxofre (S) | 16 |
-
-**Fórmula molecular:** C₉₄₅H₁₄₉₃N₂₈₃O₂₉₂S₁₆  
-**Total de átomos:** 3.029
-
-### Coeficiente de Extinção Molar (280 nm)
-
-| Condição | Valor (M⁻¹cm⁻¹) | Abs 0,1% |
-|:---------|----------------:|---------:|
-| **Com cistinas** (pontes dissulfeto) | 18.045 | 0,820 |
-| **Com cisteínas reduzidas** | 17.420 | 0,792 |
-
-O coeficiente de extinção é útil para quantificação espectrofotométrica da proteína. A presença de 10 cisteínas (5,1%) sugere potencial para 5 pontes dissulfeto, o que pode estabilizar a estrutura terciária.
-
----
-
-## Perfil de Hidrofobicidade (Análise dos Gráficos)
-
-O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle) revela:
-
-### Regiões Hidrofílicas (valores negativos)
-
-| Posição | Kyte-Doolittle | Característica |
-|:--------|:--------------:|:---------------|
-| 1-10 | < -1.5 | Início altamente hidrofílico |
-| 70-85 | ~-2.1 | Região fortemente hidrofílica |
-| 120-140 | < -0.5 | Região hidrofílica moderada |
-| **191** | **-3.5** | **Término extremamente hidrofílico (mínimo)** |
-
-### Regiões Hidrofóbicas (picos positivos)
-
-| Posição | Kyte-Doolittle | Característica |
-|:--------|:--------------:|:---------------|
-| ~25 | ~0.6 | Pico hidrofóbico moderado |
-| 45-50 | ~0.4 | Região hidrofóbica |
-| **161** | **~1.2** | **Pico máximo - possível domínio transmembrana** |
-| ~175 | ~1.0 | Pico secundário |
-
-### Estatísticas do Perfil
-
-| Parâmetro | Valor | Posição |
-|:----------|:-----:|:--------|
-| **Média** | -0.479 | - |
-| **Máximo** | 1.2 | 161 |
-| **Mínimo** | -3.5 | 191 |
-
-> **Nota importante:** O gráfico indica que picos >1.6 sugerem possíveis domínios transmembrana. Embora a posição 161 atinja ~1.2 (abaixo do limiar), esta região merece investigação adicional com ferramentas especializadas em predição de hélices transmembrana (TMHMM, Phobius).
-
----
-
-## Resumo Comparativo Final
-
-| Parâmetro | BioHub | ProtParam | Status | Observação |
-|:----------|:------:|:---------:|:------:|:-----------|
-| **Comprimento** | 196 aa | 196 aa | == | Idêntico |
-| **Peso Molecular** | 22.003,86 Da | 22.003,93 Da | == | Diferença <0.001% |
-| **GRAVY** | -0.503 | -0.503 | == | Idêntico |
-| **Índice Alifático** | 65.56 | 65.56 | == | Idêntico |
-| **Ponto Isoelétrico** | 8.03 | 8.34 | ~= | Diferença 3.7% |
-| **Resíduos Ácidos** | 19 | 19 | == | Idêntico |
-| **Composição de aa** | 20 tipos | 20 tipos | == | Idêntico |
-| **Índice Instabilidade** | -105.87 | 73.97 | -x | Escalas diferentes |
-| **Meia-Vida** | >10 h (E. coli) | >10 h (E. coli) | == | Idêntico para E. coli |
-| **Resíduos Básicos** | 29 (com His) | 22 (sem His) | -- | Metodologia diferente |
-
-**Legenda:**
-== -> Idêntico;
-~= -> Variou Pouco;
--- -> Diferença Metodológica;
--x -> Incomparável;
-
----
-
-## Ressalvas e Recomendações
-
-### Pontos Fortes do BioHub
-
-1. **Precisão** nos cálculos de peso molecular (erro <0.001%), GRAVY e índice alifático
-2. **Concordância** na composição de aminoácidos com ProtParam
-3. **Meia-vida com concordância** quando utilizando *E. coli* como referência (>10 horas)
-4. **Visualizações superiores:** treemaps e gráficos de hidrofobicidade facilitam interpretação biológica
-5. **Interface integrada:** análise completa em um único ambiente computacional
-
-### Limitações Identificadas
-
-1. **Índice de instabilidade:** Utiliza método e escala diferentes do ProtParam, resultando em valores **não passíveis de comparação direta** (-105.87 vs 73.97)
-2. **Métodos alternativos:** Algumas diferenças metodológicas são válidas (ex: inclusão de histidina nos resíduos básicos)
-
-### Recomendações para Uso
-
-#### Para análises de rotina
-O BioHub é confiável para peso molecular, GRAVY, índice alifático, pI, composição de aminoácidos e **meia-vida em sistemas de *E. coli***.
-
-#### Para publicações científicas
-- Sempre especifique qual ferramenta foi utilizada para cada parâmetro
-- Para índice de instabilidade: **não utilize valores do BioHub em comparações quantitativas** com ProtParam, as escalas são incomparáveis
-- Use ProtParam como referência padrão para índice de instabilidade
-- Considere validar parâmetros críticos com múltiplas ferramentas
-
-#### Para visualização e exploração
-Os gráficos do BioHub (treemap, hidrofobicidade) são superiores ao ProtParam para identificação de padrões e regiões funcionais.
-
-### Para as próximas versões do BioHub (Vamos ter cálculos implementados com auxilio de bibliotecas externas como Biopython, etc.)
-
-> Vale lembrar que o BioHub é 99% desenvolvido do zero, sem uso de bibliotecas externas para cálculos bioquímicos. Portanto, algumas diferenças metodológicas são esperadas. E essa concordância já é excelente para uma ferramenta em estágio inicial (!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
-
-1. **Documentar explicitamente** a escala alternativa utilizada no índice de instabilidade
-2. **Adicionar disclaimer** claro indicando que os valores de instabilidade não são comparáveis com ProtParam
-3. Incluir opção para calcular resíduos básicos com/sem histidina
-4. Adicionar composição atômica e coeficiente de extinção molar (disponíveis no ProtParam)
-5. Implementar predição de domínios transmembrana integrada ao perfil de hidrofobicidade
-
----
-
-## Conclusão Final da Comparação BioHub vs ProtParam
-
-O BioHub demonstra ser uma **ferramenta confiável e precisa** para análise de propriedades físico-químicas de proteínas, com concordância excelente (<0.001%) com o ProtParam (referência internacional) em **6 dos 7 parâmetros principais**. As visualizações gráficas produzidas pelo BioHub superam significativamente o ProtParam em termos de interpretabilidade e identificação de padrões biológicos.
-
-A discrepância no índice de instabilidade ocorre porque BioHub implementa uma **escala e método diferentes** do ProtParam, resultando em valores fundamentalmente **não comparáveis**. Recomenda-se:
-
-- **Para índice de instabilidade:** Use ProtParam como referência padrão
-- **Para meia-vida:** O BioHub oferece concordância perfeita quando se utiliza *E. coli* como sistema de referência
-- **Para demais parâmetros:** O BioHub é totalmente confiável para uso em publicações científicas
-
----
-
-**Elaborado por:** Madson Aragão
-**Data:** 09 de novembro de 2025  
-**Proteína:** 1TUP (196 aminoácidos)
 
 ---
 
@@ -994,6 +587,343 @@ python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --wri
 # 9. SASA
 python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv --write-pdb 1TUP_sasa.pdb --pymol 1TUP_sasa.pml --plot-profile 1TUP_sasa_profile.png
 ```
+
+---
+
+# Parte 2: Análise Comparativa BioHub vs ProtParam (ExPASy)
+
+**Data da Análise:** 09 de novembro de 2025  
+**Sequência Analisada:** 196 aminoácidos  
+**Proteína:** 1TUP
+
+---
+
+## Introdução
+
+Esta análise compara os resultados obtidos pela ferramenta BioHub com o ProtParam (ExPASy) para a mesma sequência proteica de 196 aminoácidos. Ambas as ferramentas implementam algoritmos estabelecidos na literatura para cálculo de propriedades físico-químicas de proteínas.
+
+---
+
+## Parâmetros com Concordância Excelente (≤0.001%)
+
+### Peso Molecular
+
+| Ferramenta | Valor | Diferença |
+|:-----------|------:|:---------:|
+| **BioHub** | 22.003,86 Da | - |
+| **ProtParam** | 22.003,93 Da | 0,07 Da |
+| **Diferença Percentual** | - | 0,0003% |
+| **Status** | - | ✓ Concordância perfeita |
+
+O cálculo do peso molecular é baseado na soma das massas atômicas dos aminoácidos menos as moléculas de água perdidas nas ligações peptídicas. A diferença mínima de 0,07 Da representa variação aceitável devido a pequenas diferenças nos valores de massa isotópica média utilizados nas bases de dados.
+
+### GRAVY (Grand Average of Hydropathicity)
+
+| Ferramenta | Valor | Diferença |
+|:-----------|------:|:---------:|
+| **BioHub** | -0.503 | - |
+| **ProtParam** | -0.503 | 0 |
+| **Diferença Percentual** | - | 0% |
+| **Status** | - | ✓ Idêntico |
+
+Ambas as ferramentas implementam corretamente a escala de Kyte-Doolittle (1982). O valor negativo (-0.503) classifica a proteína como **moderadamente hidrofílica**, indicando caráter solúvel em ambiente aquoso. O perfil de hidrofobicidade ao longo da sequência mostra regiões com picos hidrofóbicos acima de 1.6 (posições 161 e ~175), sugerindo possíveis domínios transmembrana.
+
+### Índice Alifático
+
+| Ferramenta | Valor | Diferença |
+|:-----------|------:|:---------:|
+| **BioHub** | 65.56 | - |
+| **ProtParam** | 65.56 | 0 |
+| **Diferença Percentual** | - | 0% |
+| **Status** | - | ✓ Idêntico |
+
+O índice alifático é calculado pelo método de Ikai (1980), baseado nas frequências relativas de Ala, Val, Ile e Leu. O valor de 65.56 indica volume relativo moderado de cadeias laterais alifáticas, típico de proteínas globulares.
+
+### Comprimento da Sequência
+
+| Ferramenta | Valor | Status |
+|:-----------|------:|:------:|
+| **BioHub** | 196 aa | - |
+| **ProtParam** | 196 aa | - |
+| **Concordância** | - | ✓ Confirmado |
+
+---
+
+## Parâmetros com Concordância Boa (3-5%)
+
+### Ponto Isoelétrico (pI)
+
+| Ferramenta | Valor | Diferença |
+|:-----------|------:|:---------:|
+| **BioHub** | 8.03 | - |
+| **ProtParam** | 8.34 | 0,31 unidades |
+| **Diferença Percentual** | - | 3,7% |
+| **Status** | - | ✓ Concordância aceitável |
+
+O ponto isoelétrico é o pH no qual a carga líquida da proteína é zero. Ambos os valores (8.03 e 8.34) classificam a proteína como **levemente básica**, consistente com o excesso de resíduos básicos sobre ácidos. 
+
+A diferença de 0,31 unidades é aceitável e pode decorrer de variações nos valores de pKa utilizados para os grupos ionizáveis (N-terminal, C-terminal, Asp, Glu, Lys, Arg, His). Variações de ±0.3 unidades são comuns entre diferentes implementações computacionais.
+
+---
+
+## Índice de Instabilidade: Métodos Diferentes, Resultados Incomparáveis
+
+### Resultados Obtidos
+
+| Ferramenta | Valor | Classificação | Status |
+|:-----------|------:|:--------------|:------:|
+| **ProtParam** | 73.97 | Instável | - |
+| **BioHub** | -105.87 | Estável | x Incomparável |
+
+Embora ambas as ferramentas implementem a matriz DIWV (Índice de Instabilidade de Guruprasad et al., 1990), cada uma utiliza **métodos e escalas distintos** para calcular o índice final. Essas diferenças metodológicas resultam em **valores numericamente incomparáveis**.
+
+- **ProtParam** implementa a fórmula padrão: `II = (10/L) × Σ DIWV`, produzindo valores onde >40 indica instabilidade
+- **BioHub** utiliza uma escala alternativa que inverte/transforma os resultados, produzindo valores negativos para proteínas estáveis
+
+Como consequência dessa divergência metodológica, os valores -105.87 e 73.97 não podem ser diretamente comparados, pois representam escalas e interpretações fundamentalmente diferentes do mesmo parâmetro biológico.
+
+> **Conclusão:** Os índices de instabilidade calculados por cada ferramenta **não são passíveis de comparação direta**. Recomenda-se usar ProtParam como referência padrão para publicações científicas até que o BioHub documente formalmente sua implementação alternativa.
+
+---
+
+## Meia-Vida: Diferença Metodológica
+
+### Resultados
+
+| Ferramenta | Valor | Sistema |
+|:-----------|:------|:--------|
+| **BioHub** | >10 horas | *E. coli*, *in vitro* |
+| **ProtParam** | >10 hours *E. coli*, *in vivo* |
+
+### Análise
+
+A meia-vida estimada é baseada na **regra do N-terminal (N-end rule)**. Ambas as ferramentas identificam **serina (Ser)** como resíduo N-terminal, mas reportam valores para diferentes sistemas biológicos:
+
+| Ferramenta | Sistema | Valor | Status |
+|:-----------|:--------|------:|:------:|
+| **ProtParam** | Mamíferos (reticulócitos) | 1,9 horas | - |
+| **BioHub** | *E. coli* (in vivo) | >10 horas | ✓ Concordância |
+
+O BioHub implementa o cálculo de meia-vida considerando o sistema de *E. coli* como referência, o que resulta em **total concordância com o valor reportado pelo ProtParam para esse mesmo organismo** (>10 horas).
+
+### Comparação por Organismo
+
+A regra do N-terminal apresenta valores diferentes dependendo do sistema biológico:
+
+| Organismo | N-terminal Ser | Fonte |
+|:----------|:---------------:|:---:|
+| Mamíferos (reticulócitos, *in vitro*) | 1,9 horas | ProtParam |
+| Levedura (*in vivo*) | >20 horas | ProtParam |
+| *E. coli* (*in vivo*) | >10 horas | BioHub / ProtParam |
+
+> **Nota:** Ambos os valores são estimativas teóricas baseadas em estudos de estabilidade proteica. A meia-vida real *in vivo* pode variar significativamente devido a modificações pós-traducionais, contexto celular, stress oxidativo e condições fisiológicas específicas de cada organismo.
+
+---
+
+## Composição de Aminoácidos: Concordância Total
+
+### Resíduos Ácidos (Asp + Glu)
+
+| Ferramenta | Contagem | Percentual | Status |
+|:-----------|:--------:|:----------:|:------:|
+| **BioHub** | 19 | 9,7% | - |
+| **ProtParam** | 19 | 9,7% | - |
+| **Concordância** | - | - | ✓ Idêntico |
+
+### Resíduos Básicos
+
+| Ferramenta | Contagem | Percentual | Composição | Observação |
+|:-----------|:--------:|:----------:|:-----------|:-----------|
+| **BioHub** | 29 | 14,8% | Arg+Lys+His | Inclui His |
+| **ProtParam** | 22 | 11,2% | Arg+Lys | Exclui His |
+| **Diferença** | 7 | 3,6% | Histidinas | Diferença metodológica |
+
+A diferença de 7 resíduos corresponde exatamente às histidinas presentes na sequência. Esta é uma **diferença metodológica válida**:
+
+- **Histidina** (pKa ~6.0) pode atuar como ácido ou base dependendo do pH
+- Em pH fisiológico (~7.4), His é predominantemente neutra, justificando sua exclusão do ProtParam
+- O BioHub adota abordagem conservadora incluindo His nos básicos
+
+### Aminoácidos Mais Frequentes
+
+| Aminoácido | Código | Contagem | Percentual | Grupo |
+|:-----------|:------:|---------:|-----------:|:------|
+| Serina | S | 19 | 9,7% | Polar |
+| Arginina | R | 17 | 8,7% | Básico |
+| Valina | V | 15 | 7,7% | Hidrofóbico |
+| Leucina | L | 14 | 7,1% | Hidrofóbico |
+| Prolina | P | 14 | 7,1% | Hidrofóbico |
+| Treonina | T | 14 | 7,1% | Polar |
+| Glicina | G | 13 | 6,6% | Glicina |
+| Glutamato | E | 11 | 5,6% | Ácido |
+| Cisteína | C | 10 | 5,1% | Polar |
+
+### Resíduos Polares vs Apolares
+
+| Categoria | BioHub | Percentual | Observação |
+|:----------|:------:|-----------:|:-----------|
+| **Polares** | 67 | 34,2% | Inclui Ser, Thr, Gln, Asn, Cys, Tyr |
+| **Apolares** | 81 | 41,3% | Inclui Val, Leu, Ile, Ala, Met, Pro, Phe, Trp |
+
+A proporção de ~34% polares e ~41% apolares é típica de proteínas globulares solúveis.
+
+---
+
+## Distribuição de Resíduos por Categoria
+
+### Composição por Grupos Funcionais
+
+| Grupo | Percentual | Aminoácidos Incluídos |
+|:------|:----------:|:---------------------|
+| **Hidrofóbicos** | 34,7% | Val, Leu, Pro, Ala, Met, Ile, Trp, Phe |
+| **Polares** | 34,2% | Ser, Thr, Gln, Asn, Cys, Tyr |
+| **Básicos** | 24,5% | Arg, His, Lys |
+| **Ácidos** | 9,7% | Glu (5,6%), Asp (4,1%) |
+| **Glicina** | 6,6% | Especial - alta flexibilidade conformacional |
+
+A alta proporção de resíduos hidrofóbicos (34,7%) e básicos (24,5%) é consistente com o caráter anfipático da proteína, que apresenta regiões hidrofílicas (GRAVY -0.503) mas com domínios hidrofóbicos localizados.
+
+---
+
+## Parâmetros Adicionais (Somente ProtParam)
+
+### Composição Atômica
+
+| Elemento | Quantidade |
+|:---------|:----------:|
+| Carbono (C) | 945 |
+| Hidrogênio (H) | 1.493 |
+| Nitrogênio (N) | 283 |
+| Oxigênio (O) | 292 |
+| Enxofre (S) | 16 |
+
+**Fórmula molecular:** C₉₄₅H₁₄₉₃N₂₈₃O₂₉₂S₁₆  
+**Total de átomos:** 3.029
+
+### Coeficiente de Extinção Molar (280 nm)
+
+| Condição | Valor (M⁻¹cm⁻¹) | Abs 0,1% |
+|:---------|----------------:|---------:|
+| **Com cistinas** (pontes dissulfeto) | 18.045 | 0,820 |
+| **Com cisteínas reduzidas** | 17.420 | 0,792 |
+
+O coeficiente de extinção é útil para quantificação espectrofotométrica da proteína. A presença de 10 cisteínas (5,1%) sugere potencial para 5 pontes dissulfeto, o que pode estabilizar a estrutura terciária.
+
+---
+
+## Perfil de Hidrofobicidade (Análise dos Gráficos)
+
+O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle) revela:
+
+### Regiões Hidrofílicas (valores negativos)
+
+| Posição | Kyte-Doolittle | Característica |
+|:--------|:--------------:|:---------------|
+| 1-10 | < -1.5 | Início altamente hidrofílico |
+| 70-85 | ~-2.1 | Região fortemente hidrofílica |
+| 120-140 | < -0.5 | Região hidrofílica moderada |
+| **191** | **-3.5** | **Término extremamente hidrofílico (mínimo)** |
+
+### Regiões Hidrofóbicas (picos positivos)
+
+| Posição | Kyte-Doolittle | Característica |
+|:--------|:--------------:|:---------------|
+| ~25 | ~0.6 | Pico hidrofóbico moderado |
+| 45-50 | ~0.4 | Região hidrofóbica |
+| **161** | **~1.2** | **Pico máximo - possível domínio transmembrana** |
+| ~175 | ~1.0 | Pico secundário |
+
+### Estatísticas do Perfil
+
+| Parâmetro | Valor | Posição |
+|:----------|:-----:|:--------|
+| **Média** | -0.479 | - |
+| **Máximo** | 1.2 | 161 |
+| **Mínimo** | -3.5 | 191 |
+
+> **Nota importante:** O gráfico indica que picos >1.6 sugerem possíveis domínios transmembrana. Embora a posição 161 atinja ~1.2 (abaixo do limiar), esta região merece investigação adicional com ferramentas especializadas em predição de hélices transmembrana (TMHMM, Phobius).
+
+---
+
+## Resumo Comparativo Final
+
+| Parâmetro | BioHub | ProtParam | Status | Observação |
+|:----------|:------:|:---------:|:------:|:-----------|
+| **Comprimento** | 196 aa | 196 aa | == | Idêntico |
+| **Peso Molecular** | 22.003,86 Da | 22.003,93 Da | == | Diferença <0.001% |
+| **GRAVY** | -0.503 | -0.503 | == | Idêntico |
+| **Índice Alifático** | 65.56 | 65.56 | == | Idêntico |
+| **Ponto Isoelétrico** | 8.03 | 8.34 | ~= | Diferença 3.7% |
+| **Resíduos Ácidos** | 19 | 19 | == | Idêntico |
+| **Composição de aa** | 20 tipos | 20 tipos | == | Idêntico |
+| **Índice Instabilidade** | -105.87 | 73.97 | -x | Escalas diferentes |
+| **Meia-Vida** | >10 h (E. coli) | >10 h (E. coli) | == | Idêntico para E. coli |
+| **Resíduos Básicos** | 29 (com His) | 22 (sem His) | -- | Metodologia diferente |
+
+**Legenda:**
+== -> Idêntico;
+~= -> Variou Pouco;
+-- -> Diferença Metodológica;
+-x -> Incomparável;
+
+---
+
+## Ressalvas e Recomendações
+
+### Pontos Fortes do BioHub
+
+1. **Precisão** nos cálculos de peso molecular (erro <0.001%), GRAVY e índice alifático
+2. **Concordância** na composição de aminoácidos com ProtParam
+3. **Meia-vida com concordância** quando utilizando *E. coli* como referência (>10 horas)
+4. **Visualizações superiores:** treemaps e gráficos de hidrofobicidade facilitam interpretação biológica
+5. **Interface integrada:** análise completa em um único ambiente computacional
+
+### Limitações Identificadas
+
+1. **Índice de instabilidade:** Utiliza método e escala diferentes do ProtParam, resultando em valores **não passíveis de comparação direta** (-105.87 vs 73.97)
+2. **Métodos alternativos:** Algumas diferenças metodológicas são válidas (ex: inclusão de histidina nos resíduos básicos)
+
+### Recomendações para Uso
+
+#### Para análises de rotina
+O BioHub é confiável para peso molecular, GRAVY, índice alifático, pI, composição de aminoácidos e **meia-vida em sistemas de *E. coli***.
+
+#### Para publicações científicas
+- Sempre especifique qual ferramenta foi utilizada para cada parâmetro
+- Para índice de instabilidade: **não utilize valores do BioHub em comparações quantitativas** com ProtParam, as escalas são incomparáveis
+- Use ProtParam como referência padrão para índice de instabilidade
+- Considere validar parâmetros críticos com múltiplas ferramentas
+
+#### Para visualização e exploração
+Os gráficos do BioHub (treemap, hidrofobicidade) são superiores ao ProtParam para identificação de padrões e regiões funcionais.
+
+### Para as próximas versões do BioHub (Vamos ter cálculos implementados com auxilio de bibliotecas externas como Biopython, etc.)
+
+> Vale lembrar que o BioHub é 99% desenvolvido do zero, sem uso de bibliotecas externas para cálculos bioquímicos. Portanto, algumas diferenças metodológicas são esperadas. E essa concordância já é excelente para uma ferramenta em estágio inicial (!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+
+1. **Documentar explicitamente** a escala alternativa utilizada no índice de instabilidade
+2. **Adicionar disclaimer** claro indicando que os valores de instabilidade não são comparáveis com ProtParam
+3. Incluir opção para calcular resíduos básicos com/sem histidina
+4. Adicionar composição atômica e coeficiente de extinção molar (disponíveis no ProtParam)
+5. Implementar predição de domínios transmembrana integrada ao perfil de hidrofobicidade
+
+---
+
+## Conclusão Final da Comparação BioHub vs ProtParam
+
+O BioHub demonstra ser uma **ferramenta confiável e precisa** para análise de propriedades físico-químicas de proteínas, com concordância excelente (<0.001%) com o ProtParam (referência internacional) em **6 dos 7 parâmetros principais**. As visualizações gráficas produzidas pelo BioHub superam significativamente o ProtParam em termos de interpretabilidade e identificação de padrões biológicos.
+
+A discrepância no índice de instabilidade ocorre porque BioHub implementa uma **escala e método diferentes** do ProtParam, resultando em valores fundamentalmente **não comparáveis**. Recomenda-se:
+
+- **Para índice de instabilidade:** Use ProtParam como referência padrão
+- **Para meia-vida:** O BioHub oferece concordância perfeita quando se utiliza *E. coli* como sistema de referência
+- **Para demais parâmetros:** O BioHub é totalmente confiável para uso em publicações científicas
+
+---
+
+**Elaborado por:** Madson Aragão
+**Data:** 09 de novembro de 2025  
+**Proteína:** 1TUP (196 aminoácidos)
 
 ---
 
