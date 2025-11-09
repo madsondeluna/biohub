@@ -108,7 +108,7 @@ Os cálculos de **SASA** e **hidrofobicidade** utilizam métodos computacionais 
 **Hidrofobicidade:**
 - Implementação da **escala de Kyte-Doolittle (1982)**, um dos métodos mais consagrados para quantificar o caráter hidrofóbico/hidrofílico de aminoácidos
 - Gera **PDB especial com B-factors anotados** com valores de hidrofobicidade
-- Produz **arquivo .pse e script .pml para PyMOL**, permitindo a **inspeção visual e comprovação das predições** diretamente na estrutura tridimensional
+- Produz **script .pml para PyMOL**, permitindo a **inspeção visual e comprovação das predições** diretamente na estrutura tridimensional
 - Facilita a identificação de regiões hidrofóbicas (núcleo) vs. hidrofílicas (superfície)
 
 **SASA (Solvent Accessible Surface Area):**
@@ -193,7 +193,7 @@ Calcula um conjunto expandido de propriedades físico-químicas essenciais para 
 * **GRAVY (Grand Average of Hydropathicity)**: Um índice do caráter hidrofóbico ou hidrofílico geral de uma proteína. Valores positivos indicam hidrofobicidade (ex.: proteínas de membrana), enquanto valores negativos indicam hidrofilicidade (ex.: proteínas citosólicas).
 * **Índice Alifático**: Medida do volume ocupado por cadeias laterais alifáticas (Ala, Val, Ile, Leu), correlacionado com a estabilidade térmica da proteína.
 * **Índice de Instabilidade**: Prevê se a proteína é estável ou instável em ambientes fisiológicos (valores > 40 indicam instabilidade).
-* **Meia-vida**: Estimativa da meia-vida da proteína em mamíferos (in vitro) com base no resíduo N-terminal.
+* **Meia-vida**: Estimativa da meia-vida da proteína em *E. coli* (*in vitro*) com base no resíduo N-terminal.
 * **Composição de Aminoácidos**: A contagem e a frequência de cada resíduo, incluindo contagens de resíduos ácidos, básicos, polares e apolares.
 
 ### 5. `contacts`
@@ -531,7 +531,7 @@ python3 biohub.py physchem -h
 * GRAVY (hidropaticidade)
 * Índice alifático
 * Índice de instabilidade
-* Meia-vida estimada (mamíferos, in vitro)
+* Meia-vida estimada (*E. coli*, *in vitro*)
 * Total de resíduos ácidos (Asp+Glu)
 * Total de resíduos básicos (Arg+Lys+His)
 * Total de resíduos polares
@@ -607,20 +607,19 @@ python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv --write-pdb proteina_
 **Gerar visualização PyMOL:**
 
 ```bash
-python3 biohub.py hydrophoby proteina.pdb --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse
+python3 biohub.py hydrophoby proteina.pdb --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pml
 ```
 
 **Análise completa (CSV + PDB + PyMOL + Gráfico):**
 
 ```bash
-python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse --plot-hydrophoby hydro_profile.png
+python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pml --plot-hydrophoby hydro_profile.png
 ```
 
 Este comando gera:
 - `exposicao.csv`: Dados de hidrofobicidade por átomo
 - `proteina_hydro.pdb`: PDB com hidrofobicidade no B-factor
 - `proteina_hydro.pml`: Script PyMOL com visualização pré-configurada
-- `proteina_hydro.pse`: Sessão PyMOL (se PyMOL estiver instalado)
 - `hydro_profile.png`: Gráfico de perfil de hidrofobicidade por resíduo
 
 **Ajuda do comando:**
@@ -632,7 +631,7 @@ python3 biohub.py hydrophoby -h
 * `ARQUIVO_PDB`: Caminho para o arquivo PDB de entrada (obrigatório)
 * `-o, --output ARQUIVO_CSV`: Salva os resultados por átomo em CSV (Chain, ResNum, ResName, AtomNum, AtomName, Hydrophobicity)
 * `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com a hidrofobicidade escrita no B-factor de cada átomo
-* `--pymol ARQUIVO_PSE`: Gera script PyMOL (.pml) e sessão (.pse) para visualização interativa
+* `--pymol ARQUIVO_PML`: Gera script PyMOL (.pml) para visualização interativa
 * `--plot-hydrophoby ARQUIVO_PNG`: Gera perfil de hidrofobicidade por resíduo (requer matplotlib e numpy)
 
 **Interpretação dos resultados:**
@@ -696,13 +695,12 @@ python3 biohub.py sasa proteina.pdb -o sasa_resultados.csv --write-pdb proteina_
 **Gerar visualização PyMOL (média por resíduo, gradiente invertido):**
 
 ```bash
-python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb --pymol proteina_sasa.pse
+python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb --pymol proteina_sasa.pml
 ```
 
 Este comando gera:
 - `proteina_sasa.pdb`: PDB com SASA médio por resíduo no B-factor
 - `proteina_sasa.pml`: Script PyMOL com visualização pré-configurada
-- `proteina_sasa.pse`: Sessão PyMOL (se PyMOL estiver instalado)
 
 **Ajuda do comando:**
 
@@ -717,7 +715,7 @@ python3 biohub.py sasa -h
 - `--num-points INT`: Número de pontos na superfície de cada átomo (padrão: 960)
 - `-o, --output ARQUIVO_CSV`: Salva os resultados por átomo em CSV (Chain, ResNum, ResName, AtomNum, AtomName, SASA_A2)
 - `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com o SASA médio por resíduo escrito no B-factor
-- `--pymol ARQUIVO_PSE`: Gera script PyMOL (.pml) e sessão (.pse) para visualização interativa
+- `--pymol ARQUIVO_PML`: Gera script PyMOL (.pml) para visualização interativa
 
 **Novidades e Observações:**
 
@@ -752,7 +750,7 @@ spectrum b, red_white_blue, minimum=0, maximum=10.8
 
 ```bash
 # Gerar SASA por resíduo e visualização
-python3 biohub.py sasa 4HHB.pdb --write-pdb 4HHB_sasa.pdb --pymol 4HHB_sasa.pse --num-points 300
+python3 biohub.py sasa 4HHB.pdb --write-pdb 4HHB_sasa.pdb --pymol 4HHB_sasa.pml --num-points 300
 
 # Abrir no PyMOL
 pymol 4HHB_sasa.pml
@@ -894,7 +892,7 @@ python3 biohub.py physchem "MKTAYIAKQRQISFVK..." \
 python3 biohub.py sasa proteina.pdb \
   --plot-profile sasa.png \
   --write-pdb proteina_sasa.pdb \
-  --pymol vis_sasa.pse \
+  --pymol vis_sasa.pml \
   -o sasa_data.csv
 ```
 
@@ -975,22 +973,35 @@ python3 -c "import matplotlib, numpy, squarify; print('Todas as dependências OK
 
 ---
 
-## Prova de Conceito: Análise Completa do DNA Binding Domain da p53 (1TUP)
+## Validação e Demonstração Completa: p53 DNA Binding Domain (1TUP)
 
-Uma demonstração completa de todas as funcionalidades do BioHub está disponível em **[demoday-biohub/](demoday-biohub/)**. Este tutorial apresenta um workflow ponta a ponta utilizando a estrutura do **domínio de ligação ao DNA da proteína supressora de tumor p53** (PDB: 1TUP).
+O BioHub foi validado contra **ProtParam (ExPASy)**, a referência internacional para análises de proteínas. Uma demonstração ponta a ponta de todas as funcionalidades está disponível em **[demoday-biohub/](demoday-biohub/)**, com análise comparativa completa.
 
-**O que está incluído:**
-- Download e limpeza estrutural do PDB 1TUP (cadeia A, sem heteroátomos)
-- Conversão da estrutura tridimensional para sequência primária (PDB → FASTA)
-- Análises físico-químicas completas da sequência
-- Demonstração de conversão CSV → FASTA com análises subsequentes
-- Análises estruturais: contatos intramoleculares, exposição ao solvente, SASA
-- Geração de visualizações PyMOL e gráficos científicos
+### Resumo Comparativo BioHub vs ProtParam
+
+| Parâmetro | BioHub | ProtParam | Status | Observação |
+|:----------|:------:|:---------:|:------:|:-----------|
+| **Comprimento** | 196 aa | 196 aa | == | Idêntico |
+| **Peso Molecular** | 22.003,86 Da | 22.003,93 Da | == | Diferença <0.001% |
+| **GRAVY** | -0.503 | -0.503 | == | Idêntico |
+| **Índice Alifático** | 65.56 | 65.56 | == | Idêntico |
+| **Ponto Isoelétrico** | 8.03 | 8.34 | ~= | Diferença 3.7% |
+| **Resíduos Ácidos** | 19 | 19 | == | Idêntico |
+| **Composição de aa** | 20 tipos | 20 tipos | == | Idêntico |
+| **Índice Instabilidade** | -105.87 | 73.97 | -x | Escalas diferentes |
+| **Meia-Vida** | >10 h (E. coli) | >10 h (E. coli) | == | Idêntico para E. coli |
+| **Resíduos Básicos** | 29 (com His) | 22 (sem His) | -- | Metodologia diferente |
+
+**Legenda:** == Idêntico | ~= Variou Pouco | -- Diferença Metodológica | -x Incomparável
+
+### Acesse a Análise Completa
+
+**[demoday-biohub/README.md](demoday-biohub/README.md)** - Inclui:
+- Workflow ponta a ponta com p53 (PDB: 1TUP)
+- Comparação detalhada de todos os 10 parâmetros
+- Explicação das diferenças metodológicas
+- Recomendações de uso para diferentes cenários
 - Comandos prontos para copiar e executar
-
-**Acesse o tutorial completo:** [demoday-biohub/README.md](demoday-biohub/README.md)
-
-Este roteiro serve como referência para aplicar o BioHub em suas próprias proteínas de interesse, demonstrando o uso integrado de estrutura 3D e sequência primária.
 
 ---
 

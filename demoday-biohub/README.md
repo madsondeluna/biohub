@@ -760,7 +760,7 @@ T2,M4,3.79
 ### 6.1 Predizer a exposição ao solvente baseada em hidrofobicidade
 
 ```bash
-python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --write-pdb 1TUP_hydrophoby.pdb --pymol 1TUP_hydrophoby.pse --plot-hydrophoby 1TUP_hydrophoby_profile.png
+python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --write-pdb 1TUP_hydrophoby.pdb --pymol 1TUP_hydrophoby.pml --plot-hydrophoby 1TUP_hydrophoby_profile.png
 ```
 
 <p align="center">
@@ -775,7 +775,7 @@ python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --wri
 **Arquivos gerados:**
 - `1TUP_hydrophoby.csv` - Dados de hidrofobicidade por resíduo
 - `1TUP_hydrophoby.pdb` - PDB com B-factors ajustados
-- `1TUP_hydrophoby.pse` - Sessão PyMOL colorida por hidrofobicidade
+- `1TUP_hydrophoby.pml` - Script PyMOL com visualização pré-configurada
 - `1TUP_hydrophoby_profile.png` - Gráfico de perfil de hidrofobicidade
 
 > Uma das principais saídas da função de hidrofobicidade é o gráfico do perfil de hidrofobicidade ao longo da sequência, que ajuda a identificar regiões hidrofóbicas e hidrofílicas.
@@ -834,7 +834,7 @@ pymol pdb + pml
 ### 7.1 Calcular SASA com 500 pontos
 
 ```bash
-python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv --write-pdb 1TUP_sasa.pdb --pymol 1TUP_sasa.pse --plot-profile 1TUP_sasa_profile.png
+python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv --write-pdb 1TUP_sasa.pdb --pymol 1TUP_sasa.pml --plot-profile 1TUP_sasa_profile.png
 ```
 
 <p align="center">
@@ -849,7 +849,7 @@ python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv 
 **Arquivos gerados:**
 - `1TUP_sasa.csv` - SASA por resíduo em Ų
 - `1TUP_sasa.pdb` - PDB com B-factors = SASA
-- `1TUP_sasa.pse` - Sessão PyMOL colorida por SASA
+- `1TUP_sasa.pml` - Script PyMOL com visualização pré-configurada
 - `1TUP_sasa_profile.png` - Gráfico do perfil de SASA
 
 > Uma das principais saídas da função SASA é o gráfico do perfil de acessibilidade ao solvente ao longo da sequência, que ajuda a identificar regiões expostas ou enterradas ao meio.
@@ -944,7 +944,7 @@ ls -lh
 - `seq1_composition.png`, `seq1_treemap.png`, `seq1_hydropathy.png`
 - `seq2_composition.png`, `seq2_treemap.png`, `seq2_hydropathy.png`
 
-#### Sessões PyMOL (.pse)
+#### Sessões PyMOL (.pml)
 - `1TUP_hydrophoby.pml` - Visualização de hidrofobicidade
 - `1TUP_sasa.pml` - Visualização de SASA
 
@@ -962,7 +962,7 @@ ls -lh
 2. O script principal está em `../biohub.py` (um nível acima)
 3. Todas as análises estruturais usam o `1TUP_clean.pdb` (PDB limpo)
 4. Para comandos `physchem`, cole a sequência completa extraída do FASTA
-5. **PyMOL** deve estar instalado para abrir os arquivos `.pse`
+5. **PyMOL** deve estar instalado para abrir e visualizar os arquivos `.pml`
 
 ---
 
@@ -991,10 +991,10 @@ python ../biohub.py physchem SEQUENCIA_SEQ2_AQUI --output seq2_properties.csv --
 python ../biohub.py contacts 1TUP_clean.pdb --threshold 8.0 --output 1TUP_contacts.csv --plot 1TUP_contact_map.png
 
 # 8. Hidrofobicidade
-python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --write-pdb 1TUP_hydrophoby.pdb --pymol 1TUP_hydrophoby.pse --plot-hydrophoby 1TUP_hydrophoby_profile.png
+python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --write-pdb 1TUP_hydrophoby.pdb --pymol 1TUP_hydrophoby.pml --plot-hydrophoby 1TUP_hydrophoby_profile.png
 
 # 9. SASA
-python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv --write-pdb 1TUP_sasa.pdb --pymol 1TUP_sasa.pse --plot-profile 1TUP_sasa_profile.png
+python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv --write-pdb 1TUP_sasa.pdb --pymol 1TUP_sasa.pml --plot-profile 1TUP_sasa_profile.png
 ```
 
 ---
