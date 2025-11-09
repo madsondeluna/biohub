@@ -1,7 +1,7 @@
 # BioHub - DEMODAY
 
 <p align="center">
-  <img src="imgs/hello-ezgif.com-speed.gif" alt="Workflow" width="100%"/>
+  <img src="imgs/hello-ezgif.com-speed.gif" alt="Workflow" width="90%"/>
 </p> 
 
 Este roteiro demonstra **TODAS** as funcionalidades do BioHub de ponta a ponta usando o PDB **1TUP** (p53 Tumor Suppressor).
@@ -996,12 +996,6 @@ python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv 
 ```
 
 ---
-
-> Just one more thing...
-
-<p align="center">
-  <img src="imgs/just-one-more-thing.gif" alt="Workflow" width="100%"/>
-</p> 
 
 ## Contato
 
