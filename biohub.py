@@ -19,6 +19,13 @@ import csv          # Para ler e escrever arquivos no formato CSV.
 import urllib.request # Para baixar arquivos da internet, especificamente os PDBs do RCSB.
 from collections import defaultdict # Um tipo de dicionário que cria um valor padrão para chaves que ainda não existem.
 
+# Importação opcional do módulo de visualização
+try:
+    import biohub_viz
+    HAS_VIZ = True
+except ImportError:
+    HAS_VIZ = False
+
 # Constantes e Dicionários de Dados 
 # Dicionário para converter o código de 3 letras de aminoácidos para 1 letra.
 THREE_TO_ONE = {
@@ -79,23 +86,13 @@ DIWV = {
 def print_banner():
     """Esta função simplesmente exibe a arte ASCII e informações da ferramenta no início da execução."""
     banner = r"""
-
- _._     _,-'""`-._
-(,-.`._,'(       |\`-/|
-    `-.-' \ )-`( , o o)
-          `-    \`_`"'-
-█████████████████████████████████████████████████████████████████████
-█▌                                                                 ▐█
-█▌                                                                 ▐█
-█▌    .______    __    ______    __    __   __    __  .______      ▐█
-█▌    |   _  \  |  |  /  __  \  |  |  |  | |  |  |  | |   _  \     ▐█
-█▌    |  |_)  | |  | |  |  |  | |  |__|  | |  |  |  | |  |_)  |    ▐█
-█▌    |   _  <  |  | |  |  |  | |   __   | |  |  |  | |   _  <     ▐█
-█▌    |  |_)  | |  | |  `--'  | |  |  |  | |  `--'  | |  |_)  |    ▐█
-█▌    |______/  |__|  \______/  |__|  |__|  \______/  |______/     ▐█
-█▌                                                                 ▐█
-█▌                                                                 ▐█
-█████████████████████████████████████████████████████████████████████
+    
+    ██████╗ ██╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗ 
+    ██╔══██╗██║██╔═══██╗██║  ██║██║   ██║██╔══██╗
+    ██████╔╝██║██║   ██║███████║██║   ██║██████╔╝
+    ██╔══██╗██║██║   ██║██╔══██║██║   ██║██╔══██╗
+    ██████╔╝██║╚██████╔╝██║  ██║╚██████╔╝██████╔╝
+    ╚═════╝ ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ 
 
     """
     # Uso sys.stderr para que a interface não seja misturada com a saída de dados (stdout).
@@ -108,7 +105,7 @@ def print_banner():
 def print_exit_message():
     """Exibe uma mensagem de agradecimento ao final da execução..."""
     print("\n" + "=" * 65, file=sys.stderr)
-    print("Obrigado por usar o BioHub! Essa aplicação foi feita com <3 e cafê..." + "\nAh, se você ver um gatinho carente no ICB, faça carinho nele!", file=sys.stderr)
+    print("Obrigado por usar o BioHub! Essa aplicação foi feita com <3 e café...", file=sys.stderr)
     print("=" * 65, file=sys.stderr)
 
 def parse_pdb_atoms(pdb_filepath: str):
@@ -438,28 +435,67 @@ def calculate_physicochemical_properties(args):
             if count > 0: print(f"{aa}: {count:<5} ({(count/length)*100:.2f}%)", end="  ")
         print()
 
+    # Gera visualizações se solicitado
+    if hasattr(args, 'plot_treemap') and args.plot_treemap:
+        if HAS_VIZ:
+            biohub_viz.plot_aa_composition_treemap(aa_composition, length, args.plot_treemap)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib, numpy e squarify.", file=sys.stderr)
+
+    if hasattr(args, 'plot_composition') and args.plot_composition:
+        if HAS_VIZ:
+            biohub_viz.plot_aa_composition_bar(aa_composition, length, args.plot_composition)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib.", file=sys.stderr)
+
+    if hasattr(args, 'plot_hydro') and args.plot_hydro:
+        if HAS_VIZ:
+            window = args.window if hasattr(args, 'window') else 9
+            biohub_viz.plot_hydropathy_profile(sequence, KYTE_DOOLITTLE, args.plot_hydro, window)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib.", file=sys.stderr)
+
 def calculate_intramolecular_contacts(args):
-    """Calcula contatos entre resíduos com base na distância entre seus carbonos alfa."""
-    ca_atoms = {}
+    """Calcula contatos entre resíduos com base na distância mínima entre quaisquer átomos."""
+    # Dicionário: resíduo -> lista de coordenadas de todos os átomos
+    residue_atoms = {}
     if not os.path.exists(args.pdb_file):
         print(f"Erro: Arquivo não encontrado em '{args.pdb_file}'", file=sys.stderr)
         return
     with open(args.pdb_file, 'r') as f:
         first_chain_id = None
         for line in f:
-            # Pego apenas os carbonos alfa (CA) da primeira cadeia.
-            if line.startswith("ATOM") and line[13:16].strip() == "CA":
+            # Pego todos os átomos (não apenas CA) da primeira cadeia
+            if line.startswith("ATOM"):
                 if first_chain_id is None: first_chain_id = line[21]
                 if line[21] == first_chain_id:
-                    # Armazeno as coordenadas de cada carbono alfa pelo número do resíduo.
-                    ca_atoms[int(line[22:26])] = tuple(float(line[i:i+8]) for i in [30, 38, 46])
-    
-    residues = sorted(ca_atoms.keys())
-    # Calculo a distância euclidiana entre todos os pares de C-alfa. Essa função pode ser otimizada para avaliar todos os átomos, mas aqui foco apenas nos C-alfa para simplicidade.
-    contacts = [(r1, r2, round(math.sqrt(sum((c1-c2)**2 for c1,c2 in zip(ca_atoms[r1], ca_atoms[r2]))), 3))
-                for i, r1 in enumerate(residues) for r2 in residues[i+1:]
-                # Filtro: ignoro vizinhos diretos e mantenho apenas distâncias abaixo do limiar.
-                if abs(r1 - r2) > 1 and math.sqrt(sum((c1-c2)**2 for c1,c2 in zip(ca_atoms[r1], ca_atoms[r2]))) <= args.threshold]
+                    res_num = int(line[22:26])
+                    coords = tuple(float(line[i:i+8]) for i in [30, 38, 46])
+                    if res_num not in residue_atoms:
+                        residue_atoms[res_num] = []
+                    residue_atoms[res_num].append(coords)
+
+    residues = sorted(residue_atoms.keys())
+
+    # Calcula a distância mínima entre qualquer par de átomos de dois resíduos
+    contacts = []
+    for i, r1 in enumerate(residues):
+        for r2 in residues[i+1:]:
+            # Ignora vizinhos diretos na sequência
+            if abs(r1 - r2) <= 1:
+                continue
+
+            # Calcula distância mínima entre qualquer átomo de r1 e qualquer átomo de r2
+            min_dist = float('inf')
+            for atom1 in residue_atoms[r1]:
+                for atom2 in residue_atoms[r2]:
+                    dist = math.sqrt(sum((c1-c2)**2 for c1,c2 in zip(atom1, atom2)))
+                    if dist < min_dist:
+                        min_dist = dist
+
+            # Se a distância mínima está abaixo do threshold, é um contato
+            if min_dist <= args.threshold:
+                contacts.append((r1, r2, round(min_dist, 3)))
     
     if args.output:
         write_csv(args.output, ["Residuo_1", "Residuo_2", "Distancia_A"], contacts)
@@ -468,6 +504,14 @@ def calculate_intramolecular_contacts(args):
         if not contacts: print("Nenhum contato encontrado.")
         else:
             for c in contacts: print(f"Res {c[0]} - Res {c[1]}: {c[2]:.3f} Å")
+
+    # Gera visualização se solicitado
+    if hasattr(args, 'plot') and args.plot and contacts:
+        if HAS_VIZ:
+            max_res = max(max(c[0], c[1]) for c in contacts) if contacts else 1
+            biohub_viz.plot_contact_map(contacts, max_res, args.plot, args.threshold)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib e numpy.", file=sys.stderr)
 
 def write_pdb_with_bfactor(input_pdb_path, output_pdb_path, atom_values, property_name="Property"):
     """
@@ -577,15 +621,16 @@ def generate_pymol_session(pdb_path, output_pse, property_type="hydrophobicity",
             script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
             
         elif property_type == "sasa":
-            # Esquema de cores: azul (enterrado) -> branco -> vermelho (exposto)
+            # Esquema de cores INVERTIDO: vermelho (enterrado) -> branco -> azul (exposto)
+            # Invertemos porque alto SASA = exposto ao solvente (água) = deve ser azul
             script_content.append(f"# === SASA (Acessibilidade ao Solvente) ===")
-            script_content.append(f"# Azul = Enterrado ({min_val:.1f} Ų), Vermelho = Exposto ({max_val:.1f} Ų)")
+            script_content.append(f"# Vermelho = Enterrado ({min_val:.1f} Ų), Azul = Exposto ({max_val:.1f} Ų)")
             script_content.append(f"")
             script_content.append(f"# Representação Cartoon (fita)")
             script_content.append(f"show cartoon, {pdb_name}")
             script_content.append(f"cartoon automatic, {pdb_name}")
             script_content.append(f"set cartoon_fancy_helices, 1")
-            script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
+            script_content.append(f"spectrum b, red_white_blue, {pdb_name}, minimum={min_val}, maximum={max_val}")
             script_content.append(f"")
             script_content.append(f"# Representação Sticks (bastões)")
             script_content.append(f"show sticks, {pdb_name}")
@@ -599,7 +644,7 @@ def generate_pymol_session(pdb_path, output_pse, property_type="hydrophobicity",
             script_content.append(f"set transparency, 0.5, {pdb_name}")
             script_content.append(f"# Aplica gradiente de SASA na superfície")
             script_content.append(f"set surface_color, white, {pdb_name}")
-            script_content.append(f"spectrum b, blue_white_red, {pdb_name}, minimum={min_val}, maximum={max_val}")
+            script_content.append(f"spectrum b, red_white_blue, {pdb_name}, minimum={min_val}, maximum={max_val}")
         
         script_content.append(f"")
         script_content.append(f"# === Configurações Gerais de Qualidade ===")
@@ -671,7 +716,7 @@ def generate_pymol_session(pdb_path, output_pse, property_type="hydrophobicity",
     except Exception as e:
         print(f"Erro ao gerar script PyMOL: {e}", file=sys.stderr)
 
-def predict_solvent_exposure(args):
+def predict_solvent_hydrophoby(args):
     """Prevê a exposição ao solvente usando hidrofobicidade (Kyte-Doolittle) por átomo."""
     atoms = parse_pdb_atoms(args.pdb_file)
     if not atoms: return
@@ -717,6 +762,13 @@ def predict_solvent_exposure(args):
             print(f"{row[0]:<5} | {row[1]:<6} | {row[2]:<7} | {row[3]:<7} | {row[4]:<8} | {row[5]}")
         if len(results_data) > 20:
             print(f"... e mais {len(results_data) - 20} átomos. Use -o para salvar todos os dados.")
+    
+    # Gera visualização se solicitado
+    if hasattr(args, 'plot_hydrophoby') and args.plot_hydrophoby:
+        if HAS_VIZ:
+            biohub_viz.plot_hydrophoby_profile(results, args.plot_hydrophoby)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib e numpy.", file=sys.stderr)
     
     # Gera PDB anotado se solicitado
     if args.write_pdb:
@@ -794,35 +846,100 @@ def calculate_sasa(args):
             print(f"{row[0]:<5} | {row[1]:<6} | {row[2]:<7} | {row[3]:<7} | {row[4]:<8} | {row[5]}")
         if len(results_data) > 20:
             print(f"... e mais {len(results_data) - 20} átomos. Use -o para salvar todos os dados.")
-    
+
+    # Gera visualização se solicitado
+    if hasattr(args, 'plot_profile') and args.plot_profile:
+        if HAS_VIZ:
+            biohub_viz.plot_sasa_profile(sasa_per_atom, args.plot_profile)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib e numpy.", file=sys.stderr)
+
     # Gera PDB anotado se solicitado
     if args.write_pdb:
-        # Prepara dados para escrita no B-factor
-        atom_values = [{'atom_num': atom['atom_num'], 'value': atom['sasa']} for atom in sasa_per_atom]
-        write_pdb_with_bfactor(args.pdb_file, args.write_pdb, atom_values, "SASA")
+        # Calcula SASA MÉDIO POR RESÍDUO para visualização mais biologicamente relevante
+        from collections import defaultdict
+        residue_sasa = defaultdict(list)
+        
+        # Agrupa SASA por resíduo (chain + res_num)
+        for atom in sasa_per_atom:
+            residue_key = (atom['chain_id'], atom['res_num'])
+            residue_sasa[residue_key].append(atom['sasa'])
+        
+        # Calcula média por resíduo
+        residue_avg_sasa = {}
+        for residue_key, sasa_list in residue_sasa.items():
+            residue_avg_sasa[residue_key] = sum(sasa_list) / len(sasa_list)
+        
+        # Atribui a média do resíduo a todos os átomos daquele resíduo
+        atom_values = []
+        for atom in sasa_per_atom:
+            residue_key = (atom['chain_id'], atom['res_num'])
+            avg_sasa = residue_avg_sasa[residue_key]
+            atom_values.append({'atom_num': atom['atom_num'], 'value': avg_sasa})
+        
+        write_pdb_with_bfactor(args.pdb_file, args.write_pdb, atom_values, "SASA (média por resíduo)")
         
         # Gera sessão PyMOL se solicitado
         if args.pymol:
-            # Para SASA, usa percentil 90 como máximo para melhor distribuição de cores
-            # (a maioria dos átomos tem SASA baixo, então isso cria melhor contraste)
-            sasa_values = sorted([atom['sasa'] for atom in sasa_per_atom])
-            min_sasa = 0.0  # SASA mínimo é sempre 0 (completamente enterrado)
-            # Usa percentil 90 ao invés do máximo absoluto para melhor distribuição
-            percentil_90_idx = int(len(sasa_values) * 0.90)
-            max_sasa = sasa_values[percentil_90_idx] if percentil_90_idx < len(sasa_values) else sasa_values[-1]
-            print(f"Range de visualização SASA: 0.00 - {max_sasa:.2f} Ų (percentil 90)", file=sys.stderr)
+            # Para SASA, usa a média por resíduo para definir o range
+            avg_sasa_values = sorted(list(residue_avg_sasa.values()))
+            
+            # Remove valores muito baixos para análise (resíduos quase completamente enterrados)
+            non_zero_sasa = [v for v in avg_sasa_values if v > 0.5]
+            
+            if len(non_zero_sasa) > 0:
+                # Usa percentil 70 dos valores não-zero para melhor sensibilidade
+                percentil_70_idx = int(len(non_zero_sasa) * 0.70)
+                max_sasa = non_zero_sasa[percentil_70_idx]
+                min_sasa = 0.0
+            else:
+                min_sasa = 0.0
+                max_sasa = max(avg_sasa_values) if avg_sasa_values else 1.0
+            
+            print(f"Range de visualização SASA (média por resíduo): 0.00 - {max_sasa:.2f} Ų (percentil 70)", file=sys.stderr)
+            print(f"  Resíduos totais: {len(residue_avg_sasa)}", file=sys.stderr)
+            print(f"  Resíduos enterrados (SASA<0.5): {len(avg_sasa_values) - len(non_zero_sasa)}", file=sys.stderr)
+            print(f"  Resíduos expostos (SASA≥0.5): {len(non_zero_sasa)}", file=sys.stderr)
             generate_pymol_session(args.write_pdb, args.pymol, property_type="sasa", min_val=min_sasa, max_val=max_sasa)
     elif args.pymol:
         # Se --pymol foi especificado mas --write-pdb não, avisa o usuário
         print("Aviso: --pymol requer --write-pdb. Gerando PDB temporário...", file=sys.stderr)
+        
+        # Calcula média por resíduo também para o caso temporário
+        from collections import defaultdict
+        residue_sasa = defaultdict(list)
+        for atom in sasa_per_atom:
+            residue_key = (atom['chain_id'], atom['res_num'])
+            residue_sasa[residue_key].append(atom['sasa'])
+        
+        residue_avg_sasa = {}
+        for residue_key, sasa_list in residue_sasa.items():
+            residue_avg_sasa[residue_key] = sum(sasa_list) / len(sasa_list)
+        
+        atom_values = []
+        for atom in sasa_per_atom:
+            residue_key = (atom['chain_id'], atom['res_num'])
+            avg_sasa = residue_avg_sasa[residue_key]
+            atom_values.append({'atom_num': atom['atom_num'], 'value': avg_sasa})
+        
         temp_pdb = "temp_sasa.pdb"
-        atom_values = [{'atom_num': atom['atom_num'], 'value': atom['sasa']} for atom in sasa_per_atom]
-        write_pdb_with_bfactor(args.pdb_file, temp_pdb, atom_values, "SASA")
-        sasa_values = sorted([atom['sasa'] for atom in sasa_per_atom])
-        min_sasa = 0.0
-        percentil_90_idx = int(len(sasa_values) * 0.90)
-        max_sasa = sasa_values[percentil_90_idx] if percentil_90_idx < len(sasa_values) else sasa_values[-1]
-        print(f"Range de visualização SASA: 0.00 - {max_sasa:.2f} Ų (percentil 90)", file=sys.stderr)
+        write_pdb_with_bfactor(args.pdb_file, temp_pdb, atom_values, "SASA (média por resíduo)")
+        
+        avg_sasa_values = sorted(list(residue_avg_sasa.values()))
+        non_zero_sasa = [v for v in avg_sasa_values if v > 0.5]
+        
+        if len(non_zero_sasa) > 0:
+            percentil_70_idx = int(len(non_zero_sasa) * 0.70)
+            max_sasa = non_zero_sasa[percentil_70_idx]
+            min_sasa = 0.0
+        else:
+            min_sasa = 0.0
+            max_sasa = max(avg_sasa_values) if avg_sasa_values else 1.0
+        
+        print(f"Range de visualização SASA (média por resíduo): 0.00 - {max_sasa:.2f} Ų (percentil 70)", file=sys.stderr)
+        print(f"  Resíduos totais: {len(residue_avg_sasa)}", file=sys.stderr)
+        print(f"  Resíduos enterrados (SASA<0.5): {len(avg_sasa_values) - len(non_zero_sasa)}", file=sys.stderr)
+        print(f"  Resíduos expostos (SASA≥0.5): {len(non_zero_sasa)}", file=sys.stderr)
         generate_pymol_session(temp_pdb, args.pymol, property_type="sasa", min_val=min_sasa, max_val=max_sasa)
 
 def run_apbs_analysis(args): #BETA, TALVEZ SERÁ DESCONTINUADO
@@ -903,25 +1020,31 @@ def main():
     parser_csv.add_argument("--header", action="store_true", help="Flag para indicar que a primeira linha do CSV é um cabeçalho.")
     parser_csv.add_argument("--delimiter", metavar="CHAR", default=",", help="Caractere usado como delimitador no CSV. Padrão: ','.")
 
-    # Comando physchem 
+    # Comando physchem
     parser_physchem = subparsers.add_parser("physchem", help="Calcula um conjunto expandido de propriedades físico-químicas.", formatter_class=argparse.RawTextHelpFormatter)
     parser_physchem.add_argument("sequence", metavar="SEQUENCIA", help="A sequência de aminoácidos a ser analisada.")
     parser_physchem.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
+    parser_physchem.add_argument("--plot-treemap", metavar="ARQUIVO_PNG", help="Gera treemap de composição de aminoácidos (requer matplotlib, numpy, squarify).")
+    parser_physchem.add_argument("--plot-composition", metavar="ARQUIVO_PNG", help="Gera gráfico de barras de composição de aminoácidos (requer matplotlib).")
+    parser_physchem.add_argument("--plot-hydro", metavar="ARQUIVO_PNG", help="Gera perfil de hidrofobicidade Kyte-Doolittle (requer matplotlib).")
+    parser_physchem.add_argument("--window", metavar="INT", type=int, default=9, help="Tamanho da janela para perfil de hidrofobicidade (padrão: 9).")
 
-    # Comando contacts 
+    # Comando contacts
     parser_contacts = subparsers.add_parser("contacts", help="Calcula contatos intramoleculares com base na distância entre C-Alfas.", formatter_class=argparse.RawTextHelpFormatter)
     parser_contacts.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
     parser_contacts.add_argument("-t", "--threshold", metavar="FLOAT", type=float, default=8.0, help="Distância máxima em Angstroms para considerar um contato. Padrão: 8.0.")
     parser_contacts.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
+    parser_contacts.add_argument("--plot", metavar="ARQUIVO_PNG", help="Gera mapa de contatos (contact map) (requer matplotlib e numpy).")
 
-    # Comando exposure 
-    parser_exposure = subparsers.add_parser("exposure", help="Calcula hidrofobicidade por átomo (escala Kyte-Doolittle).", formatter_class=argparse.RawTextHelpFormatter)
-    parser_exposure.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
-    parser_exposure.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
-    parser_exposure.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com a hidrofobicidade escrita no B-factor.")
-    parser_exposure.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de hidrofobicidade.")
+    # Comando hydrophoby 
+    parser_hydrophoby = subparsers.add_parser("hydrophoby", help="Calcula hidrofobicidade por átomo (escala Kyte-Doolittle).", formatter_class=argparse.RawTextHelpFormatter)
+    parser_hydrophoby.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
+    parser_hydrophoby.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
+    parser_hydrophoby.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com a hidrofobicidade escrita no B-factor.")
+    parser_hydrophoby.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de hidrofobicidade.")
+    parser_hydrophoby.add_argument("--plot-hydrophoby", metavar="ARQUIVO_PNG", help="Gera perfil de hidrofobicidade por resíduo (requer matplotlib e numpy).")
     
-    # Comando sasa 
+    # Comando sasa
     parser_sasa = subparsers.add_parser("sasa", help="Calcula a Área de Superfície Acessível ao Solvente (SASA).", formatter_class=argparse.RawTextHelpFormatter)
     parser_sasa.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
     parser_sasa.add_argument("--probe-radius", metavar="FLOAT", type=float, default=1.4, help="Raio da sonda do solvente em Angstroms (padrão: 1.4 para água).")
@@ -929,6 +1052,7 @@ def main():
     parser_sasa.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados por átomo em um arquivo CSV.")
     parser_sasa.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com o SASA escrito no B-factor.")
     parser_sasa.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de SASA.")
+    parser_sasa.add_argument("--plot-profile", metavar="ARQUIVO_PNG", help="Gera perfil de SASA por resíduo (requer matplotlib e numpy).")
 
     # Comando apbs 
     parser_apbs = subparsers.add_parser("apbs", help="Calcula a energia de solvatação eletrostática (requer PDB2PQR e APBS).", formatter_class=argparse.RawTextHelpFormatter)
@@ -947,7 +1071,7 @@ def main():
     command_functions = {
         "fetchpdb": handle_fetch_pdb, "fasta": handle_pdb_to_fasta, "csv2fasta": handle_csv_to_fasta,
         "physchem": calculate_physicochemical_properties, "contacts": calculate_intramolecular_contacts,
-        "exposure": predict_solvent_exposure, "sasa": calculate_sasa, "apbs": run_apbs_analysis
+        "hydrophoby": predict_solvent_hydrophoby, "sasa": calculate_sasa, "apbs": run_apbs_analysis
     }
     
     # Chamo a função correspondente ao comando que o usuário escolheu.

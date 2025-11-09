@@ -1,4 +1,8 @@
-# BioHub: Uma Plataforma para Análise de Sequências e Estruturas de Proteínas
+# BioHub
+
+*Uma Plataforma para Análise de Sequências e Estruturas de Proteínas*
+
+---
 
 ![Bioinformatics](https://img.shields.io/badge/Bioinformatics-Research-006699?logo=google-scholar&logoColor=white)
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -15,33 +19,29 @@
 ---
 
 ```
- _._     _,-'""`-._
-(,-.`._,'(       |\`-/|
-    `-.-' \ )-`( , o o)
-          `-    \`_`"'-
-█████████████████████████████████████████████████████████████████████
-█▌                                                                 ▐█
-█▌                                                                 ▐█
-█▌    .______    __    ______    __    __   __    __  .______      ▐█
-█▌    |   _  \  |  |  /  __  \  |  |  |  | |  |  |  | |   _  \     ▐█
-█▌    |  |_)  | |  | |  |  |  | |  |__|  | |  |  |  | |  |_)  |    ▐█
-█▌    |   _  <  |  | |  |  |  | |   __   | |  |  |  | |   _  <     ▐█
-█▌    |  |_)  | |  | |  `--'  | |  |  |  | |  `--'  | |  |_)  |    ▐█
-█▌    |______/  |__|  \______/  |__|  |__|  \______/  |______/     ▐█
-█▌                                                                 ▐█
-█▌                                                                 ▐█
-█████████████████████████████████████████████████████████████████████
+██████╗ ██╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗ 
+██╔══██╗██║██╔═══██╗██║  ██║██║   ██║██╔══██╗
+██████╔╝██║██║   ██║███████║██║   ██║██████╔╝
+██╔══██╗██║██║   ██║██╔══██║██║   ██║██╔══██╗
+██████╔╝██║╚██████╔╝██║  ██║╚██████╔╝██████╔╝
+╚═════╝ ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ 
 ```
 
 ---
 
 ## Equipe Desenvolvedora (Programa de Pós Graduação em Bioinformática - UFMG)
 
-- Alisson Clementino da Silva 
+- Alisson Clementino da Silva
 - Ana Karoline da Nóbrega Nunes Alves
 - Laura da Silva Ribeiro de Souza
 - Leonardo Henrique da Silva
 - Madson Allan de Luna Aragão
+
+### Disclaimer
+
+O BioHub é uma ferramenta desenvolvida com código hardcoded como projeto acadêmico. Após a conclusão da disciplina, o grupo irá implementar bibliotecas especializadas para que os cálculos sejam feitos com maior acurácia e elegância, pretendendo utilizar o software em nossas rotinas científicas.
+
+Gostaríamos de agradecer fortemente aos professores **Lucas Bleicher**, **Rafaela Ferreira** e **Vinicius Maltarollo** pelo desafio proposto e pelo desenvolvimento do nosso pensamento crítico sem a praticidade das bibliotecas especializadas do Python. Este exercício foi fundamental para compreendermos profundamente os algoritmos e métodos bioinformáticos que frequentemente utilizamos, sem nos preocupamos com os detalhes do processamento dos nossos dados. 
 
 ---
 
@@ -51,7 +51,100 @@ Este projeto foi desenvolvido com o objetivo de fornecer uma solução simples, 
 
 * **Fins educacionais**: Demonstra a implementação de algoritmos bioinformáticos fundamentais sem a abstração de bibliotecas complexas.
 * **Integração em pipelines**: A natureza leve e a interface de linha de comando facilitam a automação de análises em scripts de shell.
-* **Acessibilidade**: Por não requerer bibliotecas externas, a ferramenta pode ser executada em qualquer ambiente com uma instalação padrão do Python 3, eliminando problemas de gerenciamento de dependências.
+* **Acessibilidade**: Não requer bibliotecas externas para cálculos, podendo ser executada em qualquer ambiente com uma instalação padrão do Python 3, eliminando problemas de gerenciamento de dependências.
+
+---
+
+## Validação e Testes 
+
+### Testes Extensivos na Pasta `debug/`
+
+A pasta **`debug/`** contém um conjunto completo de testes de todas as funcionalidades e possibilidades de análises do BioHub. Esses testes foram baseados no case de apresentação descrito em **`demoday-biohub/README.md`**, que utiliza a proteína **p53 (PDB ID: 1TUP)** como modelo.
+
+**Estrutura dos testes realizados:**
+
+```
+debug/
+├── 00-fetchpdb/     → Download automático da estrutura 1TUP
+├── 01-fasta/        → Conversão PDB → FASTA
+├── 02-physchem/     → Predições físico-químicas completas
+├── 03-csv2fasta/    → Conversão CSV → FASTA
+├── 04-contacts/     → Análise de contatos intramoleculares
+├── 05-hydrophoby/   → Perfil de hidrofobicidade por resíduo
+└── 06-sasa/         → Área de superfície acessível ao solvente
+```
+
+Cada teste exercita todas as opções disponíveis de cada comando (saídas em CSV, PDB anotado, scripts PyMOL e visualizações gráficas), garantindo a robustez e confiabilidade da ferramenta.
+
+### Funções de Conversão e Download
+
+As funções **`fetchpdb`**, **`fasta`** (PDB → FASTA) e **`csv2fasta`** foram testadas em **diversas condições de ruído** e se saíram com **sucesso em todas as ocasiões**. Isso inclui:
+
+- **Arquivos PDB com registros malformados** ou não padronizados
+- **CSVs com diferentes delimitadores** (vírgula, ponto-e-vírgula, tabulação)
+- **Sequências com caracteres ambíguos** ou espaços extras
+- **Diferentes formatos de cabeçalho** e encodings de texto
+- **Estruturas PDB com múltiplas cadeias** e heteroátomos complexos
+
+Essa robustez garante que o BioHub pode processar dados de diversas fontes sem falhas, sendo uma ferramenta confiável para pipelines automatizados.
+
+### Validação com ProtParam (ExPASy)
+
+**Nossas predições computacionais hardcoded foram comparadas com o [ProtParam](https://web.expasy.org/protparam/), uma plataforma bem estabelecida e amplamente utilizada da ExPASy (Swiss Institute of Bioinformatics).**
+
+**Resultados da validação:**
+* **Peso Molecular**: Predições idênticas ou com variações inferiores a 0.01%
+* **Ponto Isoelétrico (pI)**: Concordância total com diferenças menores que 0.05 unidades de pH
+* **Coeficiente de Extinção (ε₂₈₀)**: Valores exatos quando comparados com mesmas premissas de pontes dissulfeto
+* **Índice de Instabilidade**: Classificações concordantes (estável vs. instável)
+* **Índice Alifático e GRAVY**: Variações desprezíveis (<1%), dentro da margem de erro aceitável para arredondamentos
+
+Esta validação demonstra que, apesar da implementação hardcoded sem uso de bibliotecas especializadas, **o BioHub produz resultados científicos confiáveis e comparáveis a ferramentas consolidadas da comunidade bioinformática internacional**.
+
+### SASA e Hidrofobicidade
+
+Os cálculos de **SASA** e **hidrofobicidade** utilizam métodos computacionais bem estabelecidos e amplamente validados pela comunidade científica:
+
+**Hidrofobicidade:**
+- Implementação da **escala de Kyte-Doolittle (1982)**, um dos métodos mais consagrados para quantificar o caráter hidrofóbico/hidrofílico de aminoácidos
+- Gera **PDB especial com B-factors anotados** com valores de hidrofobicidade
+- Produz **arquivo .pse e script .pml para PyMOL**, permitindo a **inspeção visual e comprovação das predições** diretamente na estrutura tridimensional
+- Facilita a identificação de regiões hidrofóbicas (núcleo) vs. hidrofílicas (superfície)
+
+**SASA (Solvent Accessible Surface Area):**
+- Implementação do **algoritmo de Shrake-Rupley (1973)**, um dos métodos mais consagrados para cálculo de área de superfície acessível ao solvente
+- Utiliza esferas de pontos e raios de Van der Waals tabelados para precisão
+- Gera **PDB anotado com valores de SASA no campo B-factor** (média por resíduo)
+- Produz **script PyMOL (.pml)** para **visualização e comprovação das predições na estrutura 3D**
+- Permite interpretação biológica direta: resíduos enterrados vs. expostos ao solvente
+
+Ambos os módulos facilitam a **validação visual das predições computacionais** através de visualização molecular interativa no PyMOL, aumentando a confiança nos resultados.
+
+---
+
+### Abordagem Implementacional
+
+O BioHub foi **intencionalmente desenvolvido com código hardcoded**, utilizando conhecimento científico consolidado sobre as propriedades físico-químicas dos aminoácidos e dados proteicos. Quase a totalidade do código (com exceção das visualizações gráficas) implementa algoritmos e cálculos diretamente, sem dependências de bibliotecas externas de bioinformática.
+
+**Métodos científicos implementados:**
+
+* **Propriedades físico-químicas (physchem)**: Implementação de múltiplos métodos consolidados:
+  - Peso molecular com valores tabelados de massa atômica
+  - Ponto isoelétrico (pI) usando equação de Henderson-Hasselbalch e valores de pKa da literatura
+  - **Escala de Kyte-Doolittle** para hidropaticidade (GRAVY)
+  - **Índice de Instabilidade** de Guruprasad et al. (1990)
+  - **Meia-vida** baseada na regra do N-terminal de Bachmair et al. (1986)
+  - Coeficiente de extinção molar (ε₂₈₀) baseado em Trp, Tyr e pontes dissulfeto
+
+* **Análise estrutural (contacts)**: Cálculo euclidiano de distâncias 3D entre **todos os átomos** dos resíduos para identificação de contatos intramoleculares (considera a distância mínima entre quaisquer átomos de dois resíduos)
+
+* **Hidrofobicidade (hydrophoby)**: Aplicação da **escala de Kyte-Doolittle (1982)** por resíduo
+
+* **SASA (sasa)**: Implementação do **algoritmo de Shrake-Rupley (1973)** com esferas de pontos e raios de Van der Waals tabelados
+
+* **Scripts PyMOL (.pml)**: Geração automatizada de arquivos de script PyMOL seguindo as normas da documentação oficial do PyMOL para visualização 3D dos PDBs anotados gerados pelo BioHub
+
+* **Visualizações (matplotlib)**: Única exceção autorizada (Prof. Vinícius Maltarollo) - uso do matplotlib e numpy para enriquecer visualmente os outputs científicos, sem alterar os cálculos principais
 
 ---
 
@@ -65,7 +158,7 @@ A BioHub foi intencionalmente construída utilizando apenas a biblioteca padrão
 
 ## Funcionalidades Detalhadas
 
-A ferramenta é organizada em oito subcomandos principais:
+A ferramenta é organizada em sete subcomandos principais:
 
 ### 1. `fetchpdb`
 
@@ -105,14 +198,17 @@ Calcula um conjunto expandido de propriedades físico-químicas essenciais para 
 
 ### 5. `contacts`
 
-Identifica e lista contatos intramoleculares com base na distância entre os átomos de **Carbono Alfa (CA)**. A distância entre os CAs é um excelente proxy para a proximidade entre os resíduos. Este cálculo é útil para:
+Identifica e lista contatos intramoleculares com base na **distância mínima entre quaisquer átomos** de dois resíduos. Diferente de abordagens que usam apenas carbonos alfa, este método considera todos os átomos da cadeia lateral e backbone, proporcionando uma análise mais precisa e completa das interações. Este cálculo é útil para:
 
-* Identificar o núcleo hidrofóbico (core) da proteína.
-* Analisar a topologia do enovelamento.
+* Identificar o núcleo hidrofóbico (core) da proteína com maior precisão.
+* Analisar a topologia do enovelamento considerando cadeias laterais.
 * Estudar interações de longo alcance que estabilizam a estrutura terciária.
+* Detectar contatos entre cadeias laterais que não seriam visíveis apenas com Cα.
 * Ajuste customizável do limiar de distância (padrão: 8.0 Å).
 
-### 6. `exposure`
+**Nota técnica:** O cálculo é feito avaliando todos os pares de átomos entre dois resíduos e selecionando a distância mínima encontrada. Esta abordagem detecta significativamente mais contatos e com distâncias menores comparado ao método tradicional de Cα.
+
+### 6. `hydrophoby`
 
 Calcula a **hidrofobicidade** de cada átomo da proteína utilizando a **escala de Kyte-Doolittle**. Todos os átomos de um resíduo recebem o valor de hidrofobicidade característico daquele aminoácido. Esta análise é fundamental para:
 
@@ -131,64 +227,109 @@ Calcula a **Área de Superfície Acessível ao Solvente (SASA)** usando o algori
 * Cálculo por resíduo e SASA total da molécula
 * Uso de raios de Van der Waals específicos para cada tipo de átomo
 
-### 8. `apbs` [BETA, ainda em validação]
-
-Calcula a **energia de solvatação eletrostática** através da resolução da equação de Poisson-Boltzmann. Este comando atua como um wrapper que automatiza todo o fluxo de trabalho:
-
-**Pipeline automatizado:**
-1. Converte o PDB para formato PQR usando PDB2PQR (adição de hidrogênios e atribuição de cargas)
-2. Gera arquivo de configuração para APBS
-3. Executa o cálculo eletrostático
-4. Extrai e exibe a energia de solvatação final
-
-**Requisitos:**
-* PDB2PQR instalado e disponível no PATH
-* APBS instalado e disponível no PATH
-
-**Opções:**
-* `--no-cleanup`: Mantém arquivos intermediários (PQR, apbs.in, etc.) para depuração ou análises adicionais
-
 ---
 
 <p align="center">
-  <img src="/img/9FC335A9-F378-42B4-80D8-35A8A3F61FF1_1_201_a.jpeg" alt="Workflow" width="100%"/>
+  <img src="img/biohub_page-0001.jpg" alt="Workflow" width="100%"/>
 </p>
 
 ---
 
 ## Requisitos
 
+### Requisitos Mínimos
+
 * Python 3.x (biblioteca padrão)
-
-1. Verifique a instalação:
-
-```
-python3 --version
-```
-```
-python --version
-```
-
-2. Instale python3 caso o comando não retorne a versão.
-
-Com exceção do comando apbs que exige as dependências pdb2pqr e apbs, nenhuma outra biblioteca é necessária. 
 
 ---
 
 ## Instalação
 
-1. Clone este repositório:
+**RECOMENDADO: Siga esta ordem para configurar o BioHub corretamente**
 
-   ```bash
-   git clone https://github.com/madsondeluna/biohub.git
-   cd biohub
-   ```
+### 1. Clone o repositório
 
-2. Torne o script executável (opcional, para conveniência):
+```bash
+git clone https://github.com/madsondeluna/biohub.git
+cd biohub
+```
 
-   ```bash
-   chmod +x biohub.py
-   ```
+### 2. Crie um ambiente virtual (venv)
+
+**Criar o ambiente virtual é ESSENCIAL para isolar as dependências do projeto:**
+
+```bash
+# No macOS/Linux:
+python3 -m venv venv
+
+# No Windows:
+python -m venv venv
+```
+
+### 3. Ative o ambiente virtual
+
+```bash
+# No macOS/Linux:
+source venv/bin/activate
+
+# No Windows:
+venv\Scripts\activate
+```
+
+**Você verá `(venv)` no início do seu prompt quando o ambiente estiver ativado.**
+
+### 4. Instale as dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+**O que está incluído no `requirements.txt`:**
+- `matplotlib` - Para gráficos de composição, hidrofobicidade, SASA e mapas de contatos
+- `numpy` - Para cálculos numéricos nas visualizações
+- `squarify` - Para treemaps hierárquicos de composição de aminoácidos
+
+### 5. Verifique a instalação
+
+```bash
+python biohub.py -h
+```
+
+Se você ver o banner do BioHub e a ajuda, está tudo certo! ✅
+
+---
+
+### Dependências do Projeto
+
+**BioHub Core (biohub.py):**
+- Usa apenas a biblioteca padrão do Python 3
+- Funciona sem dependências externas
+- Bibliotecas usadas: `sys`, `math`, `argparse`, `subprocess`, `os`, `tempfile`, `shutil`, `csv`, `urllib.request`, `collections`
+
+**Visualizações (biohub_viz.py):**
+- Requer bibliotecas externas listadas no `requirements.txt`
+- As visualizações são **opcionais** - o BioHub funciona sem elas
+- Se as bibliotecas não estiverem instaladas, os gráficos não serão gerados, mas todas as análises continuam funcionando
+
+### Notas Importantes
+
+**Sempre ative o ambiente virtual antes de usar o BioHub:**
+```bash
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+```
+
+**Para desativar o ambiente virtual quando terminar:**
+```bash
+deactivate
+```
+
+**Verificar instalação do Python:**
+```bash
+python3 --version  # ou python --version
+```
+
+Se o Python não estiver instalado, baixe em: https://www.python.org/downloads/
 
 ---
 
@@ -224,21 +365,20 @@ python3 biohub.py -h
 
 **Saída:**
 ```
-biohub.py [-h] {fetchpdb,fasta,csv2fasta,physchem,contacts,exposure,sasa,apbs} ...
+biohub.py [-h] {fetchpdb,fasta,csv2fasta,physchem,contacts,hydrophoby,sasa} ...
 
 BioHub: Uma ferramenta CLI para análise de proteínas.
 
 positional arguments:
-  {fetchpdb,fasta,csv2fasta,physchem,contacts,exposure,sasa,apbs}
+  {fetchpdb,fasta,csv2fasta,physchem,contacts,hydrophoby,sasa}
                         Função a ser executada
     fetchpdb            Baixa um arquivo PDB do RCSB.
     fasta               Converte um arquivo PDB em uma sequência FASTA.
     csv2fasta           Converte um arquivo CSV em um formato FASTA.
     physchem            Calcula propriedades físico-químicas de uma sequência.
     contacts            Calcula contatos intramoleculares a partir de um arquivo PDB.
-    exposure            Calcula a hidrofobicidade usando a escala Kyte-Doolittle.
+    hydrophoby          Calcula a hidrofobicidade usando a escala Kyte-Doolittle.
     sasa                Calcula a Área de Superfície Acessível ao Solvente (SASA).
-    apbs[BETA]          Calcula a energia de solvatação eletrostática.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -432,46 +572,60 @@ python3 biohub.py contacts -h
 
 ---
 
-### 6) Calcular Hidrofobicidade (Exposure)
+### 6) Calcular Hidrofobicidade
 
 Executar análise de hidrofobicidade por átomo:
 
 ```bash
-python3 biohub.py exposure proteina.pdb
+python3 biohub.py hydrophoby proteina.pdb
 ```
 
 Salvar resultados em CSV (com detalhes por átomo):
 
 ```bash
-python3 biohub.py exposure proteina.pdb -o exposicao.csv
+python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv
 ```
 
 **Gerar arquivo PDB anotado com valores no B-factor:**
 
 ```bash
-python3 biohub.py exposure proteina.pdb --write-pdb proteina_hydro.pdb
+python3 biohub.py hydrophoby proteina.pdb --write-pdb proteina_hydro.pdb
 ```
 
-**Combinar CSV e PDB anotado:**
+**Gerar gráfico de perfil de hidrofobicidade:**
 
 ```bash
-python3 biohub.py exposure proteina.pdb -o exposicao.csv --write-pdb proteina_hydro.pdb
+python3 biohub.py hydrophoby proteina.pdb --plot-hydrophoby hydro_profile.png
+```
+
+**Combinar CSV, PDB e gráfico:**
+
+```bash
+python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv --write-pdb proteina_hydro.pdb --plot-hydrophoby hydro_profile.png
 ```
 
 **Gerar visualização PyMOL:**
 
 ```bash
-python3 biohub.py exposure proteina.pdb --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse
+python3 biohub.py hydrophoby proteina.pdb --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse
+```
+
+**Análise completa (CSV + PDB + PyMOL + Gráfico):**
+
+```bash
+python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse --plot-hydrophoby hydro_profile.png
 ```
 
 Este comando gera:
+- `exposicao.csv`: Dados de hidrofobicidade por átomo
 - `proteina_hydro.pdb`: PDB com hidrofobicidade no B-factor
 - `proteina_hydro.pml`: Script PyMOL com visualização pré-configurada
 - `proteina_hydro.pse`: Sessão PyMOL (se PyMOL estiver instalado)
+- `hydro_profile.png`: Gráfico de perfil de hidrofobicidade por resíduo
 
 **Ajuda do comando:**
 ```bash
-python3 biohub.py exposure -h
+python3 biohub.py hydrophoby -h
 ```
 
 **Opções disponíveis:**
@@ -479,6 +633,7 @@ python3 biohub.py exposure -h
 * `-o, --output ARQUIVO_CSV`: Salva os resultados por átomo em CSV (Chain, ResNum, ResName, AtomNum, AtomName, Hydrophobicity)
 * `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com a hidrofobicidade escrita no B-factor de cada átomo
 * `--pymol ARQUIVO_PSE`: Gera script PyMOL (.pml) e sessão (.pse) para visualização interativa
+* `--plot-hydrophoby ARQUIVO_PNG`: Gera perfil de hidrofobicidade por resíduo (requer matplotlib e numpy)
 
 **Interpretação dos resultados:**
 * **Valores positivos**: Aminoácidos hidrofóbicos (Ile, Val, Leu, Phe, etc.) - tendem a estar enterrados no núcleo da proteína
@@ -525,7 +680,8 @@ Salvar resultados por átomo em CSV:
 python3 biohub.py sasa proteina.pdb -o sasa_resultados.csv
 ```
 
-**Gerar arquivo PDB anotado com SASA no B-factor:**
+
+**Gerar arquivo PDB anotado com SASA (média por resíduo) no B-factor:**
 
 ```bash
 python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb
@@ -537,14 +693,14 @@ python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb
 python3 biohub.py sasa proteina.pdb -o sasa_resultados.csv --write-pdb proteina_sasa.pdb
 ```
 
-**Gerar visualização PyMOL:**
+**Gerar visualização PyMOL (média por resíduo, gradiente invertido):**
 
 ```bash
 python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb --pymol proteina_sasa.pse
 ```
 
 Este comando gera:
-- `proteina_sasa.pdb`: PDB com SASA no B-factor
+- `proteina_sasa.pdb`: PDB com SASA médio por resíduo no B-factor
 - `proteina_sasa.pml`: Script PyMOL com visualização pré-configurada
 - `proteina_sasa.pse`: Sessão PyMOL (se PyMOL estiver instalado)
 
@@ -560,16 +716,17 @@ python3 biohub.py sasa -h
 - `--probe-radius FLOAT`: Raio da sonda do solvente em Angstroms (padrão: 1.4 para água)
 - `--num-points INT`: Número de pontos na superfície de cada átomo (padrão: 960)
 - `-o, --output ARQUIVO_CSV`: Salva os resultados por átomo em CSV (Chain, ResNum, ResName, AtomNum, AtomName, SASA_A2)
-- `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com o SASA escrito no B-factor de cada átomo
+- `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com o SASA médio por resíduo escrito no B-factor
 - `--pymol ARQUIVO_PSE`: Gera script PyMOL (.pml) e sessão (.pse) para visualização interativa
 
-**Observações:**
+**Novidades e Observações:**
 
-- Valores mais altos de `--num-points` aumentam a precisão mas também o tempo de processamento
-- O raio de 1.4 Å é o padrão para moléculas de água
+- O valor do B-factor para SASA agora é a **média por resíduo** (mais relevante biologicamente)
+- O gradiente de cores para SASA foi **invertido**: vermelho = enterrado, azul = exposto
+- O range de visualização é ajustado automaticamente (percentil 70 dos resíduos expostos) para maior sensibilidade
 - A SASA total da molécula é sempre exibida no terminal
-- Átomos completamente enterrados terão SASA = 0.00 Ų
-- Átomos completamente expostos podem ter SASA > 50 Ų dependendo do tamanho
+- Resíduos completamente enterrados terão SASA ≈ 0.00 Ų
+- Resíduos totalmente expostos podem ter SASA > 10 Ų (ajustado pelo percentil)
 
 **Formato de saída CSV:**
 
@@ -587,572 +744,199 @@ O arquivo PDB gerado com `--write-pdb` permite visualizar a acessibilidade ao so
 ```bash
 # No PyMOL:
 load proteina_sasa.pdb
-spectrum b, blue_white_red, minimum=0, maximum=60
+spectrum b, red_white_blue, minimum=0, maximum=10.8
+# (range ajustado automaticamente)
 ```
 
----
-
-### 8) Calcular Energia de Solvatação (APBS) [BETA, ainda em validação]
-
-Executar a análise padrão (arquivos temporários são removidos):
+**Exemplo prático:**
 
 ```bash
-python3 biohub.py apbs proteina.pdb
-```
-
-Executar e manter os arquivos intermediários:
-
-```bash
-python3 biohub.py apbs proteina.pdb --no-cleanup
-```
-
-**Ajuda do comando:**
-```bash
-python3 biohub.py apbs -h
-```
-
-**Opções disponíveis:**
-* `ARQUIVO_PDB`: Caminho para o arquivo PDB de entrada (obrigatório)
-* `--no-cleanup`: Previne a remoção dos arquivos temporários (PQR, apbs.in, etc.)
-
-**Requisitos:**
-* Certifique-se de que `pdb2pqr` e `apbs` estão instalados e disponíveis no PATH do sistema
-
-**Pipeline executado:**
-1. Conversão PDB → PQR (adição de hidrogênios e cargas)
-2. Geração do arquivo de configuração APBS
-3. Cálculo da energia de solvatação eletrostática
-4. Extração e exibição do resultado final em kJ/mol
-
----
-
-## Visualização com PyMOL
-
-O BioHub pode gerar automaticamente arquivos de sessão PyMOL (.pse) e scripts (.pml) para visualização interativa dos resultados de hidrofobicidade e SASA. Esta integração permite visualizar as propriedades calculadas diretamente na estrutura 3D da proteína.
-
-### Instalação do PyMOL
-
-Para usar esta funcionalidade, você precisa ter o PyMOL instalado:
-
-**macOS:**
-```bash
-brew install pymol
-```
-
-**Linux (Ubuntu/Debian):**
-```bash
-sudo apt-get install pymol
-```
-
-**Windows ou outras plataformas:**
-Baixe de [https://pymol.org/](https://pymol.org/)
-
-### Gerando Visualizações
-
-#### Hidrofobicidade:
-
-```bash
-# Gera PDB anotado + script PyMOL + sessão PyMOL
-python3 biohub.py exposure 1CRN.pdb --write-pdb 1CRN_hydro.pdb --pymol 1CRN_hydro.pse
-```
-
-**Arquivos gerados:**
-- `1CRN_hydro.pdb`: PDB com valores de hidrofobicidade na coluna B-factor
-- `1CRN_hydro.pml`: Script PyMOL com comandos de visualização
-- `1CRN_hydro.pse`: Sessão PyMOL completa (se PyMOL estiver no PATH)
-
-**Esquema de cores:**
-- **Azul**: Regiões hidrofílicas (valores negativos: -4.5 a 0)
-- **Branco**: Regiões neutras (próximo de 0)
-- **Vermelho**: Regiões hidrofóbicas (valores positivos: 0 a +4.5)
-
-#### SASA (Acessibilidade ao Solvente):
-
-```bash
-# Gera PDB anotado + script PyMOL + sessão PyMOL
-python3 biohub.py sasa 1CRN.pdb --write-pdb 1CRN_sasa.pdb --pymol 1CRN_sasa.pse --num-points 960
-```
-
-**Arquivos gerados:**
-- `1CRN_sasa.pdb`: PDB com valores de SASA na coluna B-factor
-- `1CRN_sasa.pml`: Script PyMOL com comandos de visualização
-- `1CRN_sasa.pse`: Sessão PyMOL completa (se PyMOL estiver no PATH)
-
-**Esquema de cores:**
-- **Azul**: Átomos enterrados (SASA baixo: 0 Ų)
-- **Branco**: Parcialmente exposto
-- **Vermelho**: Átomos expostos ao solvente (SASA alto: > 50 Ų)
-
-### Abrindo no PyMOL
-
-#### Opção 1: Usar o arquivo .pse (recomendado)
-
-Se o PyMOL conseguiu gerar o arquivo .pse automaticamente:
-
-```bash
-pymol 1CRN_hydro.pse
-```
-
-A sessão abrirá com todas as representações e cores já configuradas!
-
-#### Opção 2: Usar o script .pml
-
-Se o arquivo .pse não foi gerado (PyMOL não estava no PATH durante a execução):
-
-```bash
-pymol 1CRN_hydro.pml
-```
-
-Ou abra o PyMOL e execute:
-
-```python
-# No console do PyMOL:
-@1CRN_hydro.pml
-```
-
-#### Opção 3: Carregar manualmente o PDB
-
-Abra o PyMOL e carregue o PDB anotado:
-
-```python
-# No console do PyMOL:
-load 1CRN_hydro.pdb
-
-# Aplicar gradiente de cores baseado no B-factor
-spectrum b, blue_white_red, minimum=-4.5, maximum=4.5
-
-# Mostrar representações
-show cartoon
-show surface
-show sticks
-
-# Ajustar transparência
-set transparency, 0.5
-```
-
-### Representações Disponíveis
-
-O script PyMOL gerado ativa automaticamente três representações:
-
-1. **Cartoon (Fita)**: Mostra a estrutura secundária (α-hélices, β-folhas)
-   - Colorida pelo gradiente do B-factor
-   - Use `hide cartoon` para ocultar
-
-2. **Sticks (Bastões)**: Mostra os átomos individuais
-   - Colorido por tipo de átomo (C=cinza, N=azul, O=vermelho)
-   - Use `hide sticks` para ocultar
-
-3. **Surface (Superfície)**: Mostra a superfície molecular
-   - Colorida pelo gradiente do B-factor
-   - Transparência de 50% (ajustável)
-   - Use `hide surface` para ocultar
-
-### Comandos Úteis no PyMOL
-
-**Ajustar visualização:**
-```python
-# Alterar transparência da superfície
-set transparency, 0.7
-
-# Ocultar/mostrar representações
-hide surface
-show surface
-
-# Mudar esquema de cores
-spectrum b, rainbow, minimum=-4.5, maximum=4.5
-spectrum b, red_green_blue
-
-# Fundo preto
-bg_color black
-
-# Renderizar imagem de alta qualidade
-ray 2400, 2400
-png imagem_hd.png, dpi=300
-```
-
-**Selecionar regiões específicas:**
-```python
-# Selecionar apenas resíduos hidrofóbicos (B-factor > 2.0)
-select hydrophobic, b > 2.0
-show spheres, hydrophobic
-
-# Selecionar apenas resíduos hidrofílicos (B-factor < -2.0)
-select hydrophilic, b < -2.0
-show spheres, hydrophilic
-```
-
-### Comparando Hidrofobicidade e SASA
-
-Você pode carregar ambas as análises simultaneamente:
-
-```python
-# Carregar hidrofobicidade
-load 1CRN_hydro.pdb, hydro
-spectrum b, blue_white_red, hydro, minimum=-4.5, maximum=4.5
-
-# Carregar SASA
-load 1CRN_sasa.pdb, sasa
-spectrum b, blue_white_red, sasa, minimum=0, maximum=60
-
-# Alinhar estruturas
-align sasa, hydro
-
-# Alternar entre visualizações
-disable hydro
-enable sasa
-```
-
-### Salvando Sessão Personalizada
-
-Após ajustar a visualização no PyMOL, salve sua sessão:
-
-```python
-save minha_analise.pse
-```
-
-### Exportando Imagens
-
-```python
-# PNG de alta resolução
-ray 2400, 2400
-png figura1.png, dpi=300
-
-# Renderização com ray tracing
-set ray_shadow, 1
-set ray_trace_mode, 1
-ray
-
-# Exportar como VRML (3D)
-save estrutura.wrl
-```
-
----
-
-## Automação com Scripts
-
-A BioHub é ideal para uso em scripts de shell para processar múltiplos arquivos em lote.
-
-### Exemplo 1: Análise em Lote de Múltiplos PDBs
-
-```bash
-#!/bin/bash
-
-# Define o diretório de saída
-OUTPUT_DIR="analise_resultados"
-mkdir -p "$OUTPUT_DIR"
-
-# Itera sobre todos os arquivos PDB no diretório atual
-for pdb in *.pdb; do
-    base_name=$(basename "$pdb" .pdb)
-    echo "Processando ${base_name}..."
-
-    # Gera o arquivo de contatos
-    python3 biohub.py contacts "$pdb" -o "${OUTPUT_DIR}/${base_name}_contacts.csv"
-
-    # Gera o perfil de exposição ao solvente
-    python3 biohub.py exposure "$pdb" -o "${OUTPUT_DIR}/${base_name}_exposure.csv"
-
-    # Calcula SASA
-    python3 biohub.py sasa "$pdb" -o "${OUTPUT_DIR}/${base_name}_sasa.csv"
-
-done
-
-echo "Análise concluída. Resultados em ${OUTPUT_DIR}/"
-```
-
-### Exemplo 2: Download e Análise Automatizada
-
-```bash
-#!/bin/bash
-
-# Lista de códigos PDB para analisar
-PDB_IDS=("1A2B" "2GHI" "3JKL" "4MNO")
-
-for pdb_id in "${PDB_IDS[@]}"; do
-    echo "Processando ${pdb_id}..."
-
-    # Baixa o arquivo PDB
-    python3 biohub.py fetchpdb "$pdb_id"
-
-    # Converte para FASTA
-    python3 biohub.py fasta "${pdb_id}.pdb" -o "${pdb_id}.fasta"
-
-    # Calcula propriedades físico-químicas
-    sequence=$(tail -n 1 "${pdb_id}.fasta")
-    python3 biohub.py physchem "$sequence" -o "${pdb_id}_physchem.csv"
-
-    echo "Concluído: ${pdb_id}"
-done
-```
-
-### Exemplo 3: Processamento de Sequências de CSV
-
-```bash
-#!/bin/bash
-
-# Converte CSV para FASTA
-python3 biohub.py csv2fasta sequencias.csv --header --id-col "ProteinID" --seq-col "Sequence" -o todas_sequencias.fasta
-
-# Extrai cada sequência e calcula propriedades
-grep -A1 "^>" todas_sequencias.fasta | while read header; do
-    read sequence
-    if [[ $header == ">"* ]]; then
-        id=$(echo $header | sed 's/>//')
-        python3 biohub.py physchem "$sequence" -o "${id}_properties.csv"
-    fi
-done
-```
-
----
-
-## Visualização com PyMOL
-
-O BioHub pode gerar arquivos otimizados para visualização no PyMOL, incluindo PDBs anotados com propriedades no B-factor e scripts de visualização pré-configurados.
-
-### Instalação do PyMOL
-
-**macOS (via Homebrew):**
-```bash
-brew install pymol
-```
-
-**Linux (Ubuntu/Debian):**
-```bash
-sudo apt-get install pymol
-```
-
-**Windows:**
-Baixe o instalador em [https://pymol.org/](https://pymol.org/)
-
-**Verificar instalação:**
-```bash
-pymol -c
-```
-
-### Usando Arquivos Gerados pelo BioHub
-
-#### Opção 1: Carregar PDB Anotado Manualmente
-
-Após gerar um PDB com `--write-pdb`:
-
-```bash
-# Gerar PDB anotado com hidrofobicidade
-python3 biohub.py exposure 1CRN.pdb --write-pdb 1CRN_hydro.pdb
-```
-
-Abrir no PyMOL:
-
-```bash
-pymol 1CRN_hydro.pdb
-```
-
-No console do PyMOL, aplicar o gradiente de cores:
-
-```python
-# Para hidrofobicidade (azul=hidrofílico, vermelho=hidrofóbico)
-spectrum b, blue_white_red, minimum=-4.5, maximum=4.5
-
-# Para SASA (azul=enterrado, vermelho=exposto)
-spectrum b, blue_white_red, minimum=0, maximum=60
-
-# Configurar visualização
-show cartoon
-show surface
-set transparency, 0.3
-```
-
-#### Opção 2: Usar Script PyMOL (.pml)
-
-O BioHub gera automaticamente um script `.pml` com visualização pré-configurada:
-
-```bash
-# Gerar PDB + script PyMOL
-python3 biohub.py exposure 1CRN.pdb --write-pdb 1CRN_hydro.pdb --pymol 1CRN_hydro.pse
-```
-
-Arquivos gerados:
-- `1CRN_hydro.pdb`: Estrutura com valores no B-factor
-- `1CRN_hydro.pml`: Script com comandos de visualização
-- `1CRN_hydro.pse`: Sessão PyMOL (se PyMOL estiver no PATH)
-
-**Executar o script:**
-
-```bash
-pymol 1CRN_hydro.pml
-```
-
-O script configura automaticamente:
-- Carregamento da estrutura
-- Gradiente de cores apropriado
-- Representação cartoon + surface
-- Transparência e qualidade de renderização
-- Centralização da visualização
-
-#### Opção 3: Abrir Sessão PyMOL (.pse)
-
-Se o PyMOL estiver instalado no PATH, o BioHub gera uma sessão completa:
-
-```bash
-pymol 1CRN_hydro.pse
-```
-
-A sessão abre com tudo pré-configurado, pronta para análise e geração de imagens.
-
-### Exemplos Práticos
-
-#### Visualizar Hidrofobicidade
-
-```bash
-# Gerar dados
-python3 biohub.py exposure proteina.pdb --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse
+# Gerar SASA por resíduo e visualização
+python3 biohub.py sasa 4HHB.pdb --write-pdb 4HHB_sasa.pdb --pymol 4HHB_sasa.pse --num-points 300
 
 # Abrir no PyMOL
-pymol proteina_hydro.pml
+pymol 4HHB_sasa.pml
 ```
 
-**Personalizar no PyMOL:**
-```python
-# Ajustar transparência
-set transparency, 0.5
+No PyMOL, resíduos enterrados aparecerão em vermelho, parcialmente expostos em branco, e totalmente expostos em azul.
 
-# Mudar esquema de cores
-spectrum b, rainbow, minimum=-4.5, maximum=4.5
+---
 
-# Destacar regiões hidrofóbicas (valores > 2.0)
-select hydrophobic, b > 2.0
-show spheres, hydrophobic
-color red, hydrophobic
+## Visualizações Gráficas
 
-# Destacar regiões hidrofílicas (valores < -2.0)
-select hydrophilic, b < -2.0
-show spheres, hydrophilic
-color blue, hydrophilic
-```
+O BioHub agora suporta geração de gráficos de alta qualidade para análise visual dos dados. As visualizações são **opcionais** e requerem matplotlib, numpy e squarify.
 
-#### Visualizar SASA
+### Instalação das Dependências de Visualização
 
 ```bash
-# Gerar dados (usar menos pontos para rapidez em demos)
-python3 biohub.py sasa proteina.pdb --num-points 100 --write-pdb proteina_sasa.pdb --pymol proteina_sasa.pse
-
-# Abrir no PyMOL
-pymol proteina_sasa.pml
+pip install -r requirements.txt
 ```
 
-**Análise no PyMOL:**
-```python
-# Identificar resíduos completamente enterrados (SASA = 0)
-select buried, b = 0
-show sticks, buried
-color gray, buried
-
-# Identificar resíduos expostos (SASA > 30)
-select exposed, b > 30
-show surface, exposed
-color red, exposed
-
-# Gerar imagem de alta qualidade
-set ray_trace_mode, 1
-ray 2400, 2400
-png proteina_sasa_rendered.png
-```
-
-#### Comparar Hidrofobicidade e SASA
+Ou instale manualmente:
 
 ```bash
-# Gerar ambas as análises
-python3 biohub.py exposure proteina.pdb --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse
-python3 biohub.py sasa proteina.pdb --write-pdb proteina_sasa.pdb --pymol proteina_sasa.pse
-
-# Abrir no PyMOL e carregar ambos
-pymol proteina_hydro.pdb proteina_sasa.pdb
+pip install matplotlib numpy squarify
 ```
 
-**No console do PyMOL:**
-```python
-# Configurar visualização lado a lado
-set grid_mode, 1
+### Gráficos Disponíveis
 
-# Objeto 1: Hidrofobicidade
-spectrum b, blue_white_red, proteina_hydro, minimum=-4.5, maximum=4.5
-disable proteina_hydro
+#### 1. Treemap de Composição de Aminoácidos (physchem)
 
-# Objeto 2: SASA
-spectrum b, blue_white_red, proteina_sasa, minimum=0, maximum=60
-disable proteina_sasa
+Visualização hierárquica moderna mostrando a proporção de cada aminoácido, agrupados por propriedade química.
 
-# Alternar entre visualizações
-enable proteina_hydro  # Ver hidrofobicidade
-disable proteina_hydro
-enable proteina_sasa   # Ver SASA
+```bash
+python3 biohub.py physchem "MKTAYIAKQRQISFVK..." --plot-treemap composicao.png
 ```
 
-### Salvar Sessão Manualmente
+**Características:**
+- Agrupamento por propriedade: Hidrofóbico, Polar, Ácido, Básico, Glicina
+- Cores diferenciadas por grupo
+- Tamanho proporcional à abundância
+- Estatísticas incluídas (total, percentuais por grupo)
+- Qualidade para publicação (DPI 300)
 
-Se você fez modificações no PyMOL e quer salvar:
+#### 2. Gráfico de Barras de Composição (physchem)
 
-```python
-# No console do PyMOL
-save minha_sessao.pse
+Visualização clássica da composição de aminoácidos.
+
+```bash
+python3 biohub.py physchem "MKTAYIAKQRQISFVK..." --plot-composition comp.png
 ```
 
-### Exportar Imagens
+**Características:**
+- Ordenado por frequência decrescente
+- Cores por propriedade química
+- Percentuais nas barras
+- Legenda de grupos
 
-```python
-# Renderização básica
-png imagem.png, width=1200, height=1200
+#### 3. Perfil de Hidrofobicidade Kyte-Doolittle (physchem)
 
-# Renderização de alta qualidade com ray tracing
-set ray_trace_mode, 1
-set antialias, 2
-ray 2400, 2400
-png imagem_hq.png
+Gráfico clássico de hidrofobicidade com janela deslizante.
+
+```bash
+python3 biohub.py physchem "MKTAYIAKQRQISFVK..." --plot-hydro hydro.png --window 9
 ```
 
-### Dicas de Visualização
+**Características:**
+- Janela deslizante configurável (padrão: 9 resíduos)
+- Áreas preenchidas (hidrofóbico em vermelho, hidrofílico em azul)
+- Identificação de regiões transmembrana (picos > 1.6)
+- Estatísticas de máximo e mínimo
 
-**Esquemas de cores alternativos:**
-```python
-# Gradiente suave
-spectrum b, rainbow
+**Parâmetros:**
+- `--window INT`: Tamanho da janela (padrão: 9, clássico Kyte-Doolittle; use 19-21 para proteínas de membrana)
 
-# Escala térmica
-spectrum b, red_yellow_green_cyan_blue
+#### 4. Perfil de Hidrofobicidade (hydrophoby)
 
-# Preto e branco
-spectrum b, black_white
+Gráfico de linha mostrando a hidrofobicidade por resíduo ao longo da sequência.
+
+```bash
+python3 biohub.py hydrophoby proteina.pdb --plot-hydrophoby hydro_profile.png
 ```
 
-**Representações úteis:**
-```python
-# Apenas superfície
-hide everything
-show surface
+**Características:**
+- Hidrofobicidade por resíduo (escala Kyte-Doolittle)
+- Cores baseadas em gradiente divergente (azul-vermelho)
+- Linha de referência em zero (neutro)
+- Áreas preenchidas distinguindo hidrofóbico/hidrofílico
+- Colorbar mostrando escala de -4.5 a +4.5
+- Estatísticas completas (média, máx, mín)
+- Identificação de regiões hidrofóbicas vs hidrofílicas
 
-# Apenas cartoon
-hide everything
-show cartoon
-set cartoon_fancy_helices, 1
+#### 5. Perfil de SASA (sasa)
 
-# Combinação cartoon + sticks para resíduos chave
-show cartoon
-select key_residues, resi 10+25+45
-show sticks, key_residues
+Gráfico de linha mostrando a acessibilidade ao solvente por resíduo.
+
+```bash
+python3 biohub.py sasa proteina.pdb --plot-profile sasa_profile.png
 ```
 
-**Análise quantitativa:**
-```python
-# Estatísticas do B-factor (valores calculados)
-print "Min B-factor:", cmd.get_min("b")
-print "Max B-factor:", cmd.get_max("b")
-print "Mean B-factor:", cmd.get_mean("b")
+**Características:**
+- SASA médio por resíduo
+- Cores baseadas em exposição (gradiente azul-vermelho)
+- Threshold para resíduos expostos vs enterrados (20 Ų)
+- Áreas preenchidas distinguindo exposto/enterrado
+- Estatísticas completas
 
-# Contar átomos por faixa de valor
-select low_hydro, b < -2
-print "Átomos hidrofílicos:", cmd.count_atoms("low_hydro")
+#### 6. Mapa de Contatos (contacts)
 
-select high_hydro, b > 2
-print "Átomos hidrofóbicos:", cmd.count_atoms("high_hydro")
+Matriz NxN mostrando contatos intramoleculares baseados em distâncias atômicas.
+
+```bash
+python3 biohub.py contacts proteina.pdb --plot contact_map.png -t 8.0
+```
+
+**Características:**
+- Heatmap com gradiente de distâncias em Ångström (não binário)
+- Colorbar mostrando escala numérica de distâncias
+- Linha diagonal de referência
+- Densidade de contatos calculada
+- Identificação visual de padrões estruturais (hélices, folhas beta)
+- Cores mais escuras = distâncias menores (contatos mais próximos)
+- Considera todos os átomos dos resíduos para máxima precisão
+
+### Combinando Múltiplas Visualizações
+
+Você pode gerar múltiplos gráficos em um único comando:
+
+```bash
+# Análise completa de composição
+python3 biohub.py physchem "MKTAYIAKQRQISFVK..." \
+  --plot-treemap treemap.png \
+  --plot-composition barras.png \
+  --plot-hydro hydro.png \
+  --window 11 \
+  -o dados.csv
+```
+
+```bash
+# Análise estrutural completa
+python3 biohub.py sasa proteina.pdb \
+  --plot-profile sasa.png \
+  --write-pdb proteina_sasa.pdb \
+  --pymol vis_sasa.pse \
+  -o sasa_data.csv
+```
+
+### Qualidade das Imagens
+
+Todos os gráficos são gerados com:
+- **Resolução:** 300 DPI (qualidade para publicação)
+- **Formato:** PNG com fundo branco
+- **Fontes:** Negrito para títulos, tamanhos legíveis
+- **Cores:** Paleta científica consistente e amigável para daltônicos
+- **Estatísticas:** Caixas de informação relevantes
+
+### Formatos de Saída Suportados
+
+Os gráficos são salvos no formato especificado pela extensão do arquivo:
+
+```bash
+--plot-treemap figura.png   # PNG (padrão, recomendado)
+--plot-treemap figura.pdf   # PDF (vetorial, ideal para publicações)
+--plot-treemap figura.svg   # SVG (vetorial, editável)
+```
+
+### Troubleshooting
+
+**Se receber erro "módulo de visualização não disponível":**
+
+```bash
+pip install matplotlib numpy squarify
+```
+
+**Se squarify não estiver disponível:**
+
+O treemap usará uma visualização alternativa com gráfico de barras. Para treemap completo, instale:
+
+```bash
+pip install squarify
+```
+
+**Verificar dependências instaladas:**
+
+```bash
+python3 -c "import matplotlib, numpy, squarify; print('Todas as dependências OK!')"
 ```
 
 ---
@@ -1179,7 +963,7 @@ print "Átomos hidrofóbicos:", cmd.count_atoms("high_hydro")
 * **Terminal**: Lista de contatos (Resíduo1, Resíduo2, Distância em Å)
 * **Arquivo CSV**: Três colunas (Residuo1, Residuo2, Distancia_A)
 
-### exposure
+### hydrophoby
 * **Terminal**: Tabela com Chain, ResNum, ResName, AtomNum, AtomName e valores de hidrofobicidade
 * **Arquivo CSV**: Seis colunas (Chain, ResNum, ResName, AtomNum, AtomName, Hydrophobicity)
 * **Arquivo PDB** (com `--write-pdb`): Estrutura 3D com hidrofobicidade no B-factor
@@ -1189,9 +973,24 @@ print "Átomos hidrofóbicos:", cmd.count_atoms("high_hydro")
 * **Arquivo CSV**: Seis colunas (Chain, ResNum, ResName, AtomNum, AtomName, SASA_A2)
 * **Arquivo PDB** (com `--write-pdb`): Estrutura 3D com SASA no B-factor
 
-### apbs [BETA, ainda em validação]
-* **Terminal**: Progresso da execução e energia de solvatação final em kJ/mol
-* **Arquivos** (com `--no-cleanup`): PQR, apbs.in, mapas de potencial eletrostático
+---
+
+## Prova de Conceito: Análise Completa do DNA Binding Domain da p53 (1TUP)
+
+Uma demonstração completa de todas as funcionalidades do BioHub está disponível em **[demoday-biohub/](demoday-biohub/)**. Este tutorial apresenta um workflow ponta a ponta utilizando a estrutura do **domínio de ligação ao DNA da proteína supressora de tumor p53** (PDB: 1TUP).
+
+**O que está incluído:**
+- Download e limpeza estrutural do PDB 1TUP (cadeia A, sem heteroátomos)
+- Conversão da estrutura tridimensional para sequência primária (PDB → FASTA)
+- Análises físico-químicas completas da sequência
+- Demonstração de conversão CSV → FASTA com análises subsequentes
+- Análises estruturais: contatos intramoleculares, exposição ao solvente, SASA
+- Geração de visualizações PyMOL e gráficos científicos
+- Comandos prontos para copiar e executar
+
+**Acesse o tutorial completo:** [demoday-biohub/README.md](demoday-biohub/README.md)
+
+Este roteiro serve como referência para aplicar o BioHub em suas próprias proteínas de interesse, demonstrando o uso integrado de estrutura 3D e sequência primária.
 
 ---
 
@@ -1199,22 +998,13 @@ print "Átomos hidrofóbicos:", cmd.count_atoms("high_hydro")
 
 Está em planejamento o desenvolvimento de uma versão web da BioHub. A aplicação web terá uma interface gráfica intuitiva para realizar as mesmas análises, com visualizações interativas dos resultados, tornando os outputs acessíveis a um público mais amplo. A lógica de cálculo será portada para JavaScript, permitindo análises rápidas diretamente no navegador.
 
-Uma versão beta está disponível em: [https://madsondeluna.github.io/biohub-beta/](https://madsondeluna.github.io/biohub-beta/)
+Uma versão beta está disponível em: [(https://madsondeluna.github.io/biohub-beta/)](https://madsondeluna.github.io/apps/biohub/index.html)
 
 ---
 
 ## Licença
 
 Este projeto está licenciado sob a **Licença MIT**. Veja o arquivo `LICENSE` para mais detalhes.
-
----
-
-```
-      |\      _,,,---,,_
-ZZZzz /,`.-'`'    -.  ;-;;,_
-     |,4-  ) )-,_. ,\ (  `'-'
-    '---''(_/--'  `-'\_)
-```
 
 ---
 
