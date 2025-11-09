@@ -1,18 +1,50 @@
-# BioHub - Dependências Opcionais para Visualizações
-#
-# O BioHub funciona sem essas dependências, mas as visualizações
-# gráficas requerem os pacotes abaixo.
-#
-# Para instalar todas as dependências de visualização:
-#   pip install -r requirements.txt
-#
-# Ou instale individualmente conforme necessidade:
-#   pip install matplotlib numpy        # Para a maioria dos gráficos
-#   pip install squarify                # Para treemaps (opcional)
+# BioHub - Dependências para Visualizações
 
-# Dependências principais para visualização
+# IMPORTANTE: Instale estas dependências APÓS criar e ativar seu ambiente virtual (venv)
+
+# Instruções de instalação:
+#   1. Clone o repositório: git clone https://github.com/madsondeluna/biohub.git
+#   2. Entre no diretório: cd biohub
+#   3. Crie o venv: python3 -m venv venv
+#   4. Ative o venv: source venv/bin/activate (macOS/Linux) ou venv\Scripts\activate (Windows)
+#   5. Instale as dependências: pip install -r requirements.txt
+#   6. Verifique: python biohub.py -h
+#
+# O BioHub (biohub.py) funciona SEM essas dependências usando apenas a biblioteca padrão do Python.
+# As visualizações (biohub_viz.py) são OPCIONAIS e requerem os pacotes abaixo.
+#
+# Se você não instalar estas bibliotecas:
+# Todas as análises continuam funcionando normalmente
+# Os gráficos não serão gerados (--plot-treemap, --plot-composition, --plot-hydro, etc.)
+
+# DEPENDÊNCIAS OBRIGATÓRIAS PARA VISUALIZAÇÕES
+
+# matplotlib - Biblioteca principal para geração de gráficos
+# Usada em: treemaps, gráficos de barras, perfis de hidrofobicidade, perfis de SASA, mapas de contatos
+
 matplotlib>=3.5.0
+
+# numpy - Biblioteca para computação numérica
+# Usada em: cálculos de matrizes, processamento de dados para visualizações, mapas de contatos, perfis de SASA
+
 numpy>=1.21.0
 
-# Dependência opcional para treemaps
+# squarify - Biblioteca para criar treemaps
+# Usada em: visualização hierárquica de composição de aminoácidos
+# Nota: Se não estiver instalada, o BioHub usa um gráfico de barras alternativo
+
 squarify>=0.4.3
+
+# BIBLIOTECAS USADAS PELO BIOHUB.PY (JÁ INCLUÍDAS NO PYTHON PADRÃO)
+
+# Estas NÃO precisam ser instaladas - São nativas do Python 3:
+#   - sys (entrada/saída sistema)
+#   - math (funções matemáticas)
+#   - argparse (interface de linha de comando)
+#   - subprocess (executar programas externos)
+#   - os (manipulação de arquivos e diretórios)
+#   - tempfile (arquivos temporários)
+#   - shutil (operações de alto nível em arquivos)
+#   - csv (leitura e escrita de CSV)
+#   - urllib.request (download de arquivos da web)
+#   - collections (estruturas de dados especializadas)

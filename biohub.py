@@ -716,7 +716,7 @@ def generate_pymol_session(pdb_path, output_pse, property_type="hydrophobicity",
     except Exception as e:
         print(f"Erro ao gerar script PyMOL: {e}", file=sys.stderr)
 
-def predict_solvent_exposure(args):
+def predict_solvent_hydrophoby(args):
     """Prevê a exposição ao solvente usando hidrofobicidade (Kyte-Doolittle) por átomo."""
     atoms = parse_pdb_atoms(args.pdb_file)
     if not atoms: return
@@ -762,6 +762,13 @@ def predict_solvent_exposure(args):
             print(f"{row[0]:<5} | {row[1]:<6} | {row[2]:<7} | {row[3]:<7} | {row[4]:<8} | {row[5]}")
         if len(results_data) > 20:
             print(f"... e mais {len(results_data) - 20} átomos. Use -o para salvar todos os dados.")
+    
+    # Gera visualização se solicitado
+    if hasattr(args, 'plot_hydrophoby') and args.plot_hydrophoby:
+        if HAS_VIZ:
+            biohub_viz.plot_hydrophoby_profile(results, args.plot_hydrophoby)
+        else:
+            print("Aviso: Módulo de visualização não disponível. Instale matplotlib e numpy.", file=sys.stderr)
     
     # Gera PDB anotado se solicitado
     if args.write_pdb:
@@ -1029,12 +1036,13 @@ def main():
     parser_contacts.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
     parser_contacts.add_argument("--plot", metavar="ARQUIVO_PNG", help="Gera mapa de contatos (contact map) (requer matplotlib e numpy).")
 
-    # Comando exposure 
-    parser_exposure = subparsers.add_parser("exposure", help="Calcula hidrofobicidade por átomo (escala Kyte-Doolittle).", formatter_class=argparse.RawTextHelpFormatter)
-    parser_exposure.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
-    parser_exposure.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
-    parser_exposure.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com a hidrofobicidade escrita no B-factor.")
-    parser_exposure.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de hidrofobicidade.")
+    # Comando hydrophoby 
+    parser_hydrophoby = subparsers.add_parser("hydrophoby", help="Calcula hidrofobicidade por átomo (escala Kyte-Doolittle).", formatter_class=argparse.RawTextHelpFormatter)
+    parser_hydrophoby.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
+    parser_hydrophoby.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados em um arquivo CSV.")
+    parser_hydrophoby.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com a hidrofobicidade escrita no B-factor.")
+    parser_hydrophoby.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de hidrofobicidade.")
+    parser_hydrophoby.add_argument("--plot-hydrophoby", metavar="ARQUIVO_PNG", help="Gera perfil de hidrofobicidade por resíduo (requer matplotlib e numpy).")
     
     # Comando sasa
     parser_sasa = subparsers.add_parser("sasa", help="Calcula a Área de Superfície Acessível ao Solvente (SASA).", formatter_class=argparse.RawTextHelpFormatter)
@@ -1063,7 +1071,7 @@ def main():
     command_functions = {
         "fetchpdb": handle_fetch_pdb, "fasta": handle_pdb_to_fasta, "csv2fasta": handle_csv_to_fasta,
         "physchem": calculate_physicochemical_properties, "contacts": calculate_intramolecular_contacts,
-        "exposure": predict_solvent_exposure, "sasa": calculate_sasa, "apbs": run_apbs_analysis
+        "hydrophoby": predict_solvent_hydrophoby, "sasa": calculate_sasa, "apbs": run_apbs_analysis
     }
     
     # Chamo a função correspondente ao comando que o usuário escolheu.

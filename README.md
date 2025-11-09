@@ -65,7 +65,7 @@ O BioHub foi **intencionalmente desenvolvido com código hardcoded**, utilizando
 
 * **Análise estrutural (contacts)**: Cálculo euclidiano de distâncias 3D entre **todos os átomos** dos resíduos para identificação de contatos intramoleculares (considera a distância mínima entre quaisquer átomos de dois resíduos)
 
-* **Hidrofobicidade (exposure)**: Aplicação da **escala de Kyte-Doolittle** (1982) por resíduo
+* **Hidrofobicidade (hydrophoby)**: Aplicação da **escala de Kyte-Doolittle** (1982) por resíduo
 
 * **SASA (sasa)**: Implementação do **algoritmo de Shrake-Rupley** (1973) com esferas de pontos e raios de Van der Waals tabelados
 
@@ -135,7 +135,7 @@ Identifica e lista contatos intramoleculares com base na **distância mínima en
 
 **Nota técnica:** O cálculo é feito avaliando todos os pares de átomos entre dois resíduos e selecionando a distância mínima encontrada. Esta abordagem detecta significativamente mais contatos e com distâncias menores comparado ao método tradicional de Cα.
 
-### 6. `exposure`
+### 6. `hydrophoby`
 
 Calcula a **hidrofobicidade** de cada átomo da proteína utilizando a **escala de Kyte-Doolittle**. Todos os átomos de um resíduo recebem o valor de hidrofobicidade característico daquele aminoácido. Esta análise é fundamental para:
 
@@ -168,55 +168,95 @@ Calcula a **Área de Superfície Acessível ao Solvente (SASA)** usando o algori
 
 * Python 3.x (biblioteca padrão)
 
-1. Verifique a instalação:
+---
 
+## Instalação
+
+**RECOMENDADO: Siga esta ordem para configurar o BioHub corretamente**
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/madsondeluna/biohub.git
+cd biohub
 ```
-python3 --version
+
+### 2. Crie um ambiente virtual (venv)
+
+**Criar o ambiente virtual é ESSENCIAL para isolar as dependências do projeto:**
+
+```bash
+# No macOS/Linux:
+python3 -m venv venv
+
+# No Windows:
+python -m venv venv
 ```
+
+### 3. Ative o ambiente virtual
+
+```bash
+# No macOS/Linux:
+source venv/bin/activate
+
+# No Windows:
+venv\Scripts\activate
 ```
-python --version
-```
 
-2. Instale python3 caso o comando não retorne a versão.
+**Você verá `(venv)` no início do seu prompt quando o ambiente estiver ativado.**
 
-### Dependências Opcionais
-
-**Para funcionalidade básica:** Nenhuma biblioteca externa é necessária.
-
-**Para visualizações gráficas (opcional):**
+### 4. Instale as dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Ou instale manualmente:
+**O que está incluído no `requirements.txt`:**
+- `matplotlib` - Para gráficos de composição, hidrofobicidade, SASA e mapas de contatos
+- `numpy` - Para cálculos numéricos nas visualizações
+- `squarify` - Para treemaps hierárquicos de composição de aminoácidos
+
+### 5. Verifique a instalação
 
 ```bash
-# Para a maioria dos gráficos
-pip install matplotlib numpy
-
-# Para treemaps de composição (opcional, mas recomendado)
-pip install squarify
+python biohub.py -h
 ```
 
-As visualizações são completamente opcionais. O BioHub funciona normalmente sem elas, mas os gráficos não serão gerados se as dependências não estiverem instaladas. 
+Se você ver o banner do BioHub e a ajuda, está tudo certo! ✅
 
 ---
 
-## Instalação
+### Dependências do Projeto
 
-1. Clone este repositório:
+**BioHub Core (biohub.py):**
+- Usa apenas a biblioteca padrão do Python 3
+- Funciona sem dependências externas
+- Bibliotecas usadas: `sys`, `math`, `argparse`, `subprocess`, `os`, `tempfile`, `shutil`, `csv`, `urllib.request`, `collections`
 
-   ```bash
-   git clone https://github.com/madsondeluna/biohub.git
-   cd biohub
-   ```
+**Visualizações (biohub_viz.py):**
+- Requer bibliotecas externas listadas no `requirements.txt`
+- As visualizações são **opcionais** - o BioHub funciona sem elas
+- Se as bibliotecas não estiverem instaladas, os gráficos não serão gerados, mas todas as análises continuam funcionando
 
-2. Torne o script executável (opcional, para conveniência):
+### Notas Importantes
 
-   ```bash
-   chmod +x biohub.py
-   ```
+**Sempre ative o ambiente virtual antes de usar o BioHub:**
+```bash
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+```
+
+**Para desativar o ambiente virtual quando terminar:**
+```bash
+deactivate
+```
+
+**Verificar instalação do Python:**
+```bash
+python3 --version  # ou python --version
+```
+
+Se o Python não estiver instalado, baixe em: https://www.python.org/downloads/
 
 ---
 
@@ -252,19 +292,19 @@ python3 biohub.py -h
 
 **Saída:**
 ```
-biohub.py [-h] {fetchpdb,fasta,csv2fasta,physchem,contacts,exposure,sasa} ...
+biohub.py [-h] {fetchpdb,fasta,csv2fasta,physchem,contacts,hydrophoby,sasa} ...
 
 BioHub: Uma ferramenta CLI para análise de proteínas.
 
 positional arguments:
-  {fetchpdb,fasta,csv2fasta,physchem,contacts,exposure,sasa}
+  {fetchpdb,fasta,csv2fasta,physchem,contacts,hydrophoby,sasa}
                         Função a ser executada
     fetchpdb            Baixa um arquivo PDB do RCSB.
     fasta               Converte um arquivo PDB em uma sequência FASTA.
     csv2fasta           Converte um arquivo CSV em um formato FASTA.
     physchem            Calcula propriedades físico-químicas de uma sequência.
     contacts            Calcula contatos intramoleculares a partir de um arquivo PDB.
-    exposure            Calcula a hidrofobicidade usando a escala Kyte-Doolittle.
+    hydrophoby          Calcula a hidrofobicidade usando a escala Kyte-Doolittle.
     sasa                Calcula a Área de Superfície Acessível ao Solvente (SASA).
 
 optional arguments:
@@ -459,46 +499,60 @@ python3 biohub.py contacts -h
 
 ---
 
-### 6) Calcular Hidrofobicidade (ou Exposure)
+### 6) Calcular Hidrofobicidade
 
 Executar análise de hidrofobicidade por átomo:
 
 ```bash
-python3 biohub.py exposure proteina.pdb
+python3 biohub.py hydrophoby proteina.pdb
 ```
 
 Salvar resultados em CSV (com detalhes por átomo):
 
 ```bash
-python3 biohub.py exposure proteina.pdb -o exposicao.csv
+python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv
 ```
 
 **Gerar arquivo PDB anotado com valores no B-factor:**
 
 ```bash
-python3 biohub.py exposure proteina.pdb --write-pdb proteina_hydro.pdb
+python3 biohub.py hydrophoby proteina.pdb --write-pdb proteina_hydro.pdb
 ```
 
-**Combinar CSV e PDB anotado:**
+**Gerar gráfico de perfil de hidrofobicidade:**
 
 ```bash
-python3 biohub.py exposure proteina.pdb -o exposicao.csv --write-pdb proteina_hydro.pdb
+python3 biohub.py hydrophoby proteina.pdb --plot-hydrophoby hydro_profile.png
+```
+
+**Combinar CSV, PDB e gráfico:**
+
+```bash
+python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv --write-pdb proteina_hydro.pdb --plot-hydrophoby hydro_profile.png
 ```
 
 **Gerar visualização PyMOL:**
 
 ```bash
-python3 biohub.py exposure proteina.pdb --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse
+python3 biohub.py hydrophoby proteina.pdb --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse
+```
+
+**Análise completa (CSV + PDB + PyMOL + Gráfico):**
+
+```bash
+python3 biohub.py hydrophoby proteina.pdb -o exposicao.csv --write-pdb proteina_hydro.pdb --pymol proteina_hydro.pse --plot-hydrophoby hydro_profile.png
 ```
 
 Este comando gera:
+- `exposicao.csv`: Dados de hidrofobicidade por átomo
 - `proteina_hydro.pdb`: PDB com hidrofobicidade no B-factor
 - `proteina_hydro.pml`: Script PyMOL com visualização pré-configurada
 - `proteina_hydro.pse`: Sessão PyMOL (se PyMOL estiver instalado)
+- `hydro_profile.png`: Gráfico de perfil de hidrofobicidade por resíduo
 
 **Ajuda do comando:**
 ```bash
-python3 biohub.py exposure -h
+python3 biohub.py hydrophoby -h
 ```
 
 **Opções disponíveis:**
@@ -506,6 +560,7 @@ python3 biohub.py exposure -h
 * `-o, --output ARQUIVO_CSV`: Salva os resultados por átomo em CSV (Chain, ResNum, ResName, AtomNum, AtomName, Hydrophobicity)
 * `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com a hidrofobicidade escrita no B-factor de cada átomo
 * `--pymol ARQUIVO_PSE`: Gera script PyMOL (.pml) e sessão (.pse) para visualização interativa
+* `--plot-hydrophoby ARQUIVO_PNG`: Gera perfil de hidrofobicidade por resíduo (requer matplotlib e numpy)
 
 **Interpretação dos resultados:**
 * **Valores positivos**: Aminoácidos hidrofóbicos (Ile, Val, Leu, Phe, etc.) - tendem a estar enterrados no núcleo da proteína
@@ -698,7 +753,24 @@ python3 biohub.py physchem "MKTAYIAKQRQISFVK..." --plot-hydro hydro.png --window
 **Parâmetros:**
 - `--window INT`: Tamanho da janela (padrão: 9, clássico Kyte-Doolittle; use 19-21 para proteínas de membrana)
 
-#### 4. Perfil de SASA (sasa)
+#### 4. Perfil de Hidrofobicidade (hydrophoby)
+
+Gráfico de linha mostrando a hidrofobicidade por resíduo ao longo da sequência.
+
+```bash
+python3 biohub.py hydrophoby proteina.pdb --plot-hydrophoby hydro_profile.png
+```
+
+**Características:**
+- Hidrofobicidade por resíduo (escala Kyte-Doolittle)
+- Cores baseadas em gradiente divergente (azul-vermelho)
+- Linha de referência em zero (neutro)
+- Áreas preenchidas distinguindo hidrofóbico/hidrofílico
+- Colorbar mostrando escala de -4.5 a +4.5
+- Estatísticas completas (média, máx, mín)
+- Identificação de regiões hidrofóbicas vs hidrofílicas
+
+#### 5. Perfil de SASA (sasa)
 
 Gráfico de linha mostrando a acessibilidade ao solvente por resíduo.
 
@@ -713,7 +785,7 @@ python3 biohub.py sasa proteina.pdb --plot-profile sasa_profile.png
 - Áreas preenchidas distinguindo exposto/enterrado
 - Estatísticas completas
 
-#### 5. Mapa de Contatos (contacts)
+#### 6. Mapa de Contatos (contacts)
 
 Matriz NxN mostrando contatos intramoleculares baseados em distâncias atômicas.
 
@@ -818,7 +890,7 @@ python3 -c "import matplotlib, numpy, squarify; print('Todas as dependências OK
 * **Terminal**: Lista de contatos (Resíduo1, Resíduo2, Distância em Å)
 * **Arquivo CSV**: Três colunas (Residuo1, Residuo2, Distancia_A)
 
-### exposure
+### hydrophoby
 * **Terminal**: Tabela com Chain, ResNum, ResName, AtomNum, AtomName e valores de hidrofobicidade
 * **Arquivo CSV**: Seis colunas (Chain, ResNum, ResName, AtomNum, AtomName, Hydrophobicity)
 * **Arquivo PDB** (com `--write-pdb`): Estrutura 3D com hidrofobicidade no B-factor

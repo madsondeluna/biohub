@@ -362,6 +362,102 @@ def plot_hydropathy_profile(sequence, kyte_doolittle_scale, output_file='hydropa
     plt.close()
 
 
+def plot_hydrophoby_profile(hydrophoby_per_atom, output_file='hydrophoby_profile.png'):
+    """
+    Plota o perfil de hidrofobicidade médio por resíduo ao longo da sequência.
+
+    Args:
+        hydrophoby_per_atom: Lista de dicionários com chain_id, res_num, hydrophobicity
+        output_file: Caminho do arquivo de saída
+    """
+    if not check_dependencies(require_numpy=True):
+        return
+
+    from collections import defaultdict
+
+    # Calcula hidrofobicidade média por resíduo (todos os átomos de um resíduo têm o mesmo valor)
+    residue_hydro = {}
+    for atom in hydrophoby_per_atom:
+        residue_key = (atom['chain_id'], atom['res_num'])
+        # Como todos os átomos do resíduo têm o mesmo valor, basta pegar o primeiro
+        if residue_key not in residue_hydro:
+            residue_hydro[residue_key] = atom['hydrophobicity']
+
+    # Ordena por número de resíduo
+    sorted_residues = sorted(residue_hydro.keys(), key=lambda x: x[1])
+    residue_numbers = [res_num for _, res_num in sorted_residues]
+    hydro_values = [residue_hydro[key] for key in sorted_residues]
+
+    # Cria o gráfico
+    fig, ax = plt.subplots(figsize=(14, 6))
+
+    # Plot com cores baseadas em hidrofobicidade
+    # Usa colormap divergente: azul (hidrofílico) -> branco -> vermelho (hidrofóbico)
+    scatter = ax.scatter(residue_numbers, hydro_values, c=hydro_values, cmap='RdBu_r',
+                         s=40, alpha=0.7, edgecolors='black', linewidths=0.5, 
+                         vmin=-4.5, vmax=4.5, zorder=3)
+    ax.plot(residue_numbers, hydro_values, linewidth=1.5, color='#264653', alpha=0.6, zorder=2)
+
+    # Linha de referência em zero (neutro)
+    ax.axhline(y=0, color='black', linestyle='--', linewidth=1.5,
+               label='Neutro (0.0)', alpha=0.7, zorder=1)
+
+    # Preenche áreas hidrofóbicas e hidrofílicas
+    ax.fill_between(residue_numbers, hydro_values, 0,
+                     where=[h > 0 for h in hydro_values],
+                     alpha=0.2, color='#E63946', label='Hidrofóbico', zorder=0)
+    ax.fill_between(residue_numbers, hydro_values, 0,
+                     where=[h < 0 for h in hydro_values],
+                     alpha=0.2, color='#2A9D8F', label='Hidrofílico', zorder=0)
+
+    # Configurações
+    ax.set_xlabel('Número do Resíduo', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Hidrofobicidade (Kyte-Doolittle)', fontsize=12, fontweight='bold')
+    ax.set_title('Perfil de Hidrofobicidade por Resíduo', fontsize=14, fontweight='bold')
+    ax.grid(True, alpha=0.3, linestyle=':')
+    ax.set_ylim(-5, 5)  # Range da escala Kyte-Doolittle
+
+    # Colorbar - ANTES da legenda para posicionar corretamente
+    cbar = plt.colorbar(scatter, ax=ax, pad=0.02, fraction=0.046)
+    cbar.set_label('Hidrofobicidade', fontsize=10, fontweight='bold')
+    cbar.set_ticks([-4.5, -2.25, 0, 2.25, 4.5])
+    cbar.set_ticklabels(['-4.5\n(Hidrofílico)', '-2.25', '0\n(Neutro)', '2.25', '4.5\n(Hidrofóbico)'])
+
+    # Estatísticas - calculadas primeiro
+    num_hydrophobic = sum(1 for h in hydro_values if h > 0)
+    num_hydrophilic = sum(1 for h in hydro_values if h < 0)
+    num_neutral = len(hydro_values) - num_hydrophobic - num_hydrophilic
+    mean_hydro = sum(hydro_values) / len(hydro_values)
+    max_hydro = max(hydro_values)
+    min_hydro = min(hydro_values)
+    max_pos = residue_numbers[hydro_values.index(max_hydro)]
+    min_pos = residue_numbers[hydro_values.index(min_hydro)]
+
+    # Legenda - Alinhada à direita, bem afastada do gráfico
+    ax.legend(loc='upper left',
+             bbox_to_anchor=(1.3, 0.98),
+             **LEGEND_STYLE)
+
+    # Estatísticas - Alinhada à direita, logo abaixo da legenda
+    textstr = f'Total: {len(hydro_values)} resíduos\n'
+    textstr += f'Hidrofóbicos (>0): {num_hydrophobic}\n'
+    textstr += f'Hidrofílicos (<0): {num_hydrophilic}\n'
+    textstr += f'Neutros (=0): {num_neutral}\n'
+    textstr += f'Média: {mean_hydro:.3f}\n'
+    textstr += f'Máx: {max_hydro:.3f} (res {max_pos})\n'
+    textstr += f'Mín: {min_hydro:.3f} (res {min_pos})'
+
+    ax.text(1.33, 0.80, textstr,
+           transform=ax.transAxes, fontsize=INFO_BOX_FONT_SIZE,
+           verticalalignment='top', bbox=INFO_BOX_STYLE,
+           family=INFO_BOX_FAMILY)
+
+    plt.tight_layout(rect=LAYOUT_MARGINS_WITH_COLORBAR)
+    plt.savefig(output_file, dpi=300, bbox_inches='tight', facecolor='white')
+    print(f"Perfil de hidrofobicidade salvo em '{output_file}'", file=sys.stderr)
+    plt.close()
+
+
 def plot_sasa_profile(sasa_per_atom, output_file='sasa_profile.png'):
     """
     Plota o perfil de SASA médio por resíduo ao longo da sequência.

@@ -245,52 +245,59 @@ T2,M4,3.79
 
 ---
 
-## 6. Análise de Exposição ao Solvente (Predição)
+## 6. Análise de Hidrofobicidade
 
-### 6.1 Predizer exposição ao solvente
+### 6.1 Predizer a exposição ao solvente baseada em hidrofobicidade
 
 ```bash
-python ../biohub.py exposure 1TUP_clean.pdb --output 1TUP_exposure.csv --write-pdb 1TUP_exposure.pdb --pymol 1TUP_exposure.pse
+python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --write-pdb 1TUP_hydrophoby.pdb --pymol 1TUP_hydrophoby.pse --plot-hydrophoby 1TUP_hydrophoby_profile.png
 ```
 
 **O que este comando faz:**
-- Prediz exposição ao solvente baseado em vizinhança
-- Calcula número de contatos por resíduo
-- Classifica como: Buried (enterrado), Intermediate (intermediário), Exposed (exposto)
+- Prediz exposição ao solvente baseado em hidrofobicidade (Kyte-Doolittle)
+- Calcula hidrofobicidade por átomo
+- Classifica como: hidrofóbico ou hidrofílico
 
 **Arquivos gerados:**
-- `1TUP_exposure.csv` - Dados de exposição por resíduo
-- `1TUP_exposure.pdb` - PDB com B-factors ajustados
-- `1TUP_exposure.pse` - Sessão PyMOL colorida por exposição
+- `1TUP_hydrophoby.csv` - Dados de hidrofobicidade por resíduo
+- `1TUP_hydrophoby.pdb` - PDB com B-factors ajustados
+- `1TUP_hydrophoby.pse` - Sessão PyMOL colorida por hidrofobicidade
+- `1TUP_hydrophoby_profile.png` - Gráfico de perfil de hidrofobicidade
 
-#### Saída do CSV de Exposição
+#### Saída do CSV de Hidrofobicidade
 
 ```bash
-head -20 1TUP_exposure.csv
+head -20 1TUP_hydrophoby.csv
 ```
 
 **Exemplo:**
 ```
-Residue,Contacts,Exposure
-M1,5,Exposed
-T2,12,Intermediate
-A3,18,Buried
-M4,15,Intermediate
+Chain,ResNum,ResName,AtomNum,AtomName,Hydrophobicity
+A,1,MET,1,N,1.9
+A,2,THR,2,CA,-0.7
+A,3,ALA,3,C,1.8
+A,4,MET,4,CB,1.9
 ...
 ```
 
 [ADD IMAGEM AQUI]
 
-#### Visualização PyMOL da Exposição
+#### Perfil de Hidrofobicidade
+
+![Perfil Hidrofobicidade](1TUP_hydrophoby_profile.png)
+
+[ADD IMAGEM AQUI]
+
+#### Visualização PyMOL da Hidrofobicidade
 
 ```bash
-pymol 1TUP_exposure.pse
+pymol 1TUP_hydrophoby.pse
 ```
 
 **Esquema de cores:**
-- **Azul**: Resíduos enterrados (Buried)
-- **Verde**: Resíduos intermediários (Intermediate)
-- **Vermelho**: Resíduos expostos (Exposed)
+- **Azul**: Resíduos hidrofílicos (valores negativos)
+- **Branco**: Neutros
+- **Vermelho**: Resíduos hidrofóbicos (valores positivos)
 
 [ADD IMAGEM AQUI - SCREENSHOT DO PYMOL]
 
@@ -374,7 +381,7 @@ ls -lh
 #### CSVs de Análises
 - `1TUP_properties.csv` - Propriedades físico-químicas
 - `1TUP_contacts.csv` - Contatos intramoleculares
-- `1TUP_exposure.csv` - Predição de exposição ao solvente
+- `1TUP_hydrophoby.csv` - Predição de hidrofobicidade
 - `1TUP_sasa.csv` - SASA por resíduo
 - `seq1_properties.csv` - Propriedades da seq1 (KRAS)
 - `seq2_properties.csv` - Propriedades da seq2 (p53)
@@ -384,16 +391,17 @@ ls -lh
 - `1TUP_treemap.png` - Treemap da composição
 - `1TUP_hydropathy.png` - Perfil de hidropaticidade
 - `1TUP_contact_map.png` - Mapa de contatos
+- `1TUP_hydrophoby_profile.png` - Perfil de hidrofobicidade
 - `1TUP_sasa_profile.png` - Perfil de SASA
 - `seq1_composition.png`, `seq1_treemap.png`, `seq1_hydropathy.png`
 - `seq2_composition.png`, `seq2_treemap.png`, `seq2_hydropathy.png`
 
 #### Sessões PyMOL (.pse)
-- `1TUP_exposure.pse` - Visualização de exposição
+- `1TUP_hydrophoby.pse` - Visualização de hidrofobicidade
 - `1TUP_sasa.pse` - Visualização de SASA
 
 #### PDBs Modificados
-- `1TUP_exposure.pdb` - PDB com B-factors de exposição
+- `1TUP_hydrophoby.pdb` - PDB com B-factors de hidrofobicidade
 - `1TUP_sasa.pdb` - PDB com B-factors de SASA
 
 [ADD IMAGEM AQUI - LISTAGEM COMPLETA]
@@ -408,7 +416,7 @@ ls -lh
 - [ ] Conversão CSV para FASTA
 - [ ] Análise de propriedades físico-químicas das sequências do CSV
 - [ ] Análise de contatos intramoleculares (CSV + mapa)
-- [ ] Predição de exposição ao solvente (CSV + PDB + PyMOL)
+- [ ] Predição de hidrofobicidade (CSV + PDB + PyMOL)
 - [ ] Cálculo de SASA (CSV + gráfico + PDB + PyMOL)
 
 ---
@@ -447,8 +455,8 @@ python ../biohub.py physchem SEQUENCIA_SEQ2_AQUI --output seq2_properties.csv --
 # 7. Contatos intramoleculares
 python ../biohub.py contacts 1TUP_clean.pdb --threshold 8.0 --output 1TUP_contacts.csv --plot 1TUP_contact_map.png
 
-# 8. Exposição ao solvente
-python ../biohub.py exposure 1TUP_clean.pdb --output 1TUP_exposure.csv --write-pdb 1TUP_exposure.pdb --pymol 1TUP_exposure.pse
+# 8. Hidrofobicidade
+python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --write-pdb 1TUP_hydrophoby.pdb --pymol 1TUP_hydrophoby.pse --plot-hydrophoby 1TUP_hydrophoby_profile.png
 
 # 9. SASA
 python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv --write-pdb 1TUP_sasa.pdb --pymol 1TUP_sasa.pse --plot-profile 1TUP_sasa_profile.png
