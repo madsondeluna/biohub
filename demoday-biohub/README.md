@@ -96,6 +96,14 @@ python ../biohub.py fasta 1TUP_clean.pdb --output 1TUP.fasta
 FASTA file written to: 1TUP.fasta
 ```
 
+---
+
+<p align="center">
+  <img src="imgs/6.png" alt="Workflow" width="100%"/>
+</p> 
+
+---
+
 ### 2.2 Visualizar o arquivo FASTA gerado
 
 ```bash
@@ -108,7 +116,11 @@ cat 1TUP.fasta
 MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVEEFFEGPSEALRVSGAPAAQDPVTETPGPVAPAPATPWPLSSFVPSQKTYQGNYGFHLGFLQSGTAKSVMCTYSPPLNKLFI...
 ```
 
-[ADD IMAGEM AQUI]
+---
+
+<p align="center">
+  <img src="imgs/7.png" alt="Workflow" width="100%"/>
+</p> 
 
 ---
 
