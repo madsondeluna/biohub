@@ -170,17 +170,17 @@ Resultado das análises com o BioHub para a proteína 1TUP (CSV):
 
 ````bash
 Propriedade,Valor
-Comprimento,132
-Peso Molecular (Da),14308.08
-Ponto Isoelétrico (pI),3.93
-GRAVY (Hidropaticidade),-0.156
-Índice Alifático,76.14
-Índice de Instabilidade,-112.73 (Estável)
+Comprimento,196
+Peso Molecular (Da),22003.86
+Ponto Isoelétrico (pI),8.03
+GRAVY (Hidropaticidade),-0.503
+Índice Alifático,65.56
+Índice de Instabilidade,-105.87 (Estável)
 "Meia-Vida (Mamíferos, in vitro)",>10 horas
-Total de Resíduos Ácidos (Asp+Glu),16
-Total de Resíduos Básicos (Arg+Lys+His),7
-Total de Resíduos Polares,36
-Total de Resíduos Apolares,73
+Total de Resíduos Ácidos (Asp+Glu),19
+Total de Resíduos Básicos (Arg+Lys+His),29
+Total de Resíduos Polares,67
+Total de Resíduos Apolares,81
 ````
 
 #### Gráfico de Composição de Aminoácidos
@@ -271,6 +271,12 @@ This classifies the protein as unstable.
 Aliphatic index: 65.56
 Grand average of hydropathicity (GRAVY):-0.503
 ````
+
+---
+
+# BioHub vs. ProtParam (ExPASy)
+
+
 
 ---
 
