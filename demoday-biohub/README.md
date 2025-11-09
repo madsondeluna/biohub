@@ -350,35 +350,23 @@ A diferença de 0,31 unidades é aceitável e pode decorrer de variações nos v
 
 ---
 
-## Índice de Instabilidade: Valores Incomparáveis
+## Índice de Instabilidade: Métodos Diferentes, Resultados Incomparáveis
 
 ### Resultados Obtidos
 
-| Ferramenta | Valor | Classificação | Diferença |
-|:-----------|------:|:--------------|:---------:|
-| **BioHub** | -105.87 | Estável | - |
-| **ProtParam** | 73.97 | Instável | 179.84 |
+| Ferramenta | Valor | Classificação | Status |
+|:-----------|------:|:--------------|:------:|
+| **ProtParam** | 73.97 | Instável | - |
+| **BioHub** | -105.87 | Estável | x Incomparável |
 
-### Análise da Discrepância
+Embora ambas as ferramentas implementem a matriz DIWV (Índice de Instabilidade de Guruprasad et al., 1990), cada uma utiliza **métodos e escalas distintos** para calcular o índice final. Essas diferenças metodológicas resultam em **valores numericamente incomparáveis**.
 
-Embora ambas as ferramentas reportem utilizar a fórmula de Guruprasad et al. (1990) para o índice de instabilidade, os resultados obtidos são **incomparáveis devido a diferenças nos métodos e escalas implementados**.
+- **ProtParam** implementa a fórmula padrão: `II = (10/L) × Σ DIWV`, produzindo valores onde >40 indica instabilidade
+- **BioHub** utiliza uma escala alternativa que inverte/transforma os resultados, produzindo valores negativos para proteínas estáveis
 
-**Diferenças Metodológicas:**
+Como consequência dessa divergência metodológica, os valores -105.87 e 73.97 não podem ser diretamente comparados, pois representam escalas e interpretações fundamentalmente diferentes do mesmo parâmetro biológico.
 
-- **ProtParam**: Segue a implementação padrão onde valores acima de 40 indicam instabilidade
-- **BioHub**: Utiliza escala diferente que produz valores negativos para proteínas estáveis e positivos para instáveis
-
-Essa diferença metodológica impossibilita a comparação direta dos valores numéricos.
-
-### Diagnóstico Matemático
-
-| Ferramenta | II Reportado | Soma dos DIWV Necessária |
-|:-----------|-------------:|-------------------------:|
-| **ProtParam** | 73.97 | +1.449,81 |
-| **BioHub** | -105.87 | -2.075,05 |
-| **Diferença** | 179.84 | 3.524,86 |
-
-> **Recomendação:** Para publicações científicas, recomenda-se reportar os valores de ambas as ferramentas especificando qual implementação foi utilizada, ou validar com o ProtParam que é a referência padrão da comunidade científica.
+> **Conclusão:** Os índices de instabilidade calculados por cada ferramenta **não são passíveis de comparação direta**. Recomenda-se usar ProtParam como referência padrão para publicações científicas até que o BioHub documente formalmente sua implementação alternativa.
 
 ---
 
@@ -552,14 +540,14 @@ O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle)
 | **Ponto Isoelétrico** | ✓✓ Boa | Diferença 3.7% (aceitável) |
 | **Resíduos Ácidos** | ✓✓✓ Idêntico | 19 em ambos |
 | **Composição de aa** | ✓✓✓ Perfeita | Todos os valores concordam |
-| **Índice Instabilidade** | x Incomparável | Escalas/métodos diferentes |
+| **Índice Instabilidade** | x Diferença Metodológica | Escalas/Métodos diferentes |
 | **Meia-Vida** | ✓✓✓ Perfeita | Tabelas de referência diferentes para diferentes organismos |
-| **Resíduos Básicos** | o Metodológica | His incluída (BioHub) ou não (ProtParam) |
+| **Resíduos Básicos** | o Diferença Metodológica | His incluída (BioHub) ou não (ProtParam) |
 
 **Legenda:**
-✓✓✓ = Concordância perfeita/excelente
-✓✓ = Boa concordância
-o = Diferença metodológica válida
+✓✓✓ = Concordância Excelente
+✓✓ = Boa Concordância
+o = Diferença Metodológica
 x = Incomparável
 
 ---
