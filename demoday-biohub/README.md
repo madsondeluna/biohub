@@ -727,8 +727,6 @@ T2,M4,3.79
 
 #### Mapa de Contatos
 
-![Mapa de Contatos](1TUP_contact_map.png)
-
 <p align="center">
   <img src="imgs/1TUP_contact_map.png" alt="XXXXXXX" width="100%"/>
 </p> 
@@ -744,7 +742,7 @@ python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --wri
 ```
 
 <p align="center">
-  <img src="imgs/XXXXXXXXXX.png" alt="XXXXXXX" width="100%"/>
+  <img src="imgs/13.png" alt="XXXXXXX" width="100%"/>
 </p> 
 
 **O que este comando faz:**
@@ -776,24 +774,24 @@ A,4,MET,4,CB,1.9
 > CSV com hidrofobicidade por átomo (valores Kyte-Doolittle)
 
 <p align="center">
-  <img src="imgs/XXXXXXXXXX.png" alt="XXXXXXX" width="100%"/>
+  <img src="imgs/14.png" alt="XXXXXXX" width="100%"/>
 </p> 
 
 > Arquivo PDB com B-factors ajustados para refletir hidrofobicidade por resíduo
 
 <p align="center">
-  <img src="imgs/XXXXXXXXXX.png" alt="XXXXXXX" width="100%"/>
+  <img src="imgs/15.png" alt="XXXXXXX" width="100%"/>
 </p> 
 
 
 #### Visualização PyMOL da Hidrofobicidade
 
 ```bash
-pymol pdb + pse
+pymol pdb + pml
 ```
 
 <p align="center">
-  <img src="imgs/XXXXXXXXXX.png" alt="XXXXXXX" width="100%"/>
+  <img src="imgs/16.png" alt="XXXXXXX" width="100%"/>
 </p> 
 
 **Esquema de cores:**
@@ -850,7 +848,7 @@ E5,125.43
 #### Visualização PyMOL do SASA
 
 ```bash
-pymol pdb + pse
+pymol pdb + pml
 ```
 
 **Esquema de cores (gradiente):**
