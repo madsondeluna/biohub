@@ -100,13 +100,13 @@ def print_banner():
     print("Uma Plataforma para Análise de Sequências e Estruturas de Proteínas", file=sys.stderr)
     print("Versão: 0.2.0 | UFMG - Bioinformática", file=sys.stderr)
     print("Autores: ACDS, AKNNA, LSRS, LHS & MADLA", file=sys.stderr)
-    print("-" * 65, file=sys.stderr)
+    print("-" * 68, file=sys.stderr)
 
 def print_exit_message():
     """Exibe uma mensagem de agradecimento ao final da execução..."""
-    print("\n" + "=" * 67, file=sys.stderr)
+    print("\n" + "=" * 68, file=sys.stderr)
     print("Obrigado por usar o BioHub! Essa aplicação foi feita com <3 e café...", file=sys.stderr)
-    print("=" * 67, file=sys.stderr)
+    print("=" * 68, file=sys.stderr)
 
 def parse_pdb_atoms(pdb_filepath: str):
     """Lê um arquivo PDB e extrai as coordenadas e informações de cada átomo."""
