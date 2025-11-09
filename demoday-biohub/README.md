@@ -50,6 +50,14 @@ head -20 1TUP_clean.pdb
   <img src="imgs/1.png" alt="Workflow" width="100%"/>
 </p>
 
+```bash
+tail -20 1TUP_clean.pdb
+```
+
+<p align="center">
+  <img src="imgs/3.png" alt="Workflow" width="100%"/>
+</p>
+
 ---
 
 ## 2. Conversão PDB para FASTA
