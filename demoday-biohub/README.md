@@ -1,10 +1,12 @@
 # BioHub - DEMODAY
 
+Este roteiro demonstra as funcionalidades do BioHub de ponta a ponta usando o PDB **1TUP** (p53 Tumor Suppressor), como alvo de validação.
+
 <p align="justify">
   <img src="imgs/hello-ezgif.com-speed.gif" alt="Workflow" width="50%"/>
 </p> 
 
-Este roteiro demonstra **TODAS** as funcionalidades do BioHub de ponta a ponta usando o PDB **1TUP** (p53 Tumor Suppressor).
+> *So let's get started!*
 
 ## Índice
 
