@@ -921,12 +921,6 @@ A discrepância no índice de instabilidade ocorre porque BioHub implementa uma 
 
 ---
 
-**Elaborado por:** Madson Aragão
-**Data:** 09 de novembro de 2025  
-**Proteína:** 1TUP (196 aminoácidos)
-
----
-
 ## Contato
 
 Para dúvidas ou sugestões sobre o BioHub, entre em contato.
