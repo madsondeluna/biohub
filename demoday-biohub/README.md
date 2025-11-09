@@ -41,13 +41,13 @@ Filtered PDB saved to: 1TUP_clean.pdb
 > Visualização do 1TUP.pdb no PyMOL (bruto):
 
 <p align="center">
-  <img src="imgs/1.png" alt="Workflow" width="100%"/>
+  <img src="imgs/4.png" alt="Workflow" width="100%"/>
 </p> 
 
 > Visualização do 1TUP_clean.pdb no PyMOL (limpo):
 
 <p align="center">
-  <img src="imgs/1.png" alt="Workflow" width="100%"/>
+  <img src="imgs/5.png" alt="Workflow" width="100%"/>
 </p> 
 
 ---
@@ -55,6 +55,8 @@ Filtered PDB saved to: 1TUP_clean.pdb
 <p align="center">
   <img src="imgs/1.png" alt="Workflow" width="100%"/>
 </p> 
+
+---
 
 ### 1.2 Informações do PDB Baixado e Limpo (Início e Fim)
 
