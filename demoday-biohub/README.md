@@ -132,6 +132,14 @@ MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVEEFFEGPSEALRVSGAPAAQDPVTETPGPV
 python ../biohub.py physchem MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVEEFFEGPSEALRVSGAPAAQDPVTETPGPVAPAPATPWPLSSFVPSQKTYQGNYGFHLGFLQSGTAKSVMCTYSPPLNKLFI --output 1TUP_properties.csv --plot-composition 1TUP_composition.png --plot-treemap 1TUP_treemap.png --plot-hydro 1TUP_hydropathy.png --window 9
 ```
 
+---
+
+<p align="center">
+  <img src="imgs/8.png" alt="Workflow" width="100%"/>
+</p> 
+
+---
+
 **NOTA:** Cole a sequência completa extraída do arquivo FASTA no lugar da sequência de exemplo acima.
 
 **O que este comando calcula:**
@@ -156,25 +164,111 @@ python ../biohub.py physchem MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVE
 cat 1TUP_properties.csv
 ```
 
-[ADD IMAGEM AQUI]
+Resultado das análises com o BioHub para a proteína 1TUP: 
+
+````bash
+Propriedade,Valor
+Comprimento,132
+Peso Molecular (Da),14308.08
+Ponto Isoelétrico (pI),3.93
+GRAVY (Hidropaticidade),-0.156
+Índice Alifático,76.14
+Índice de Instabilidade,-112.73 (Estável)
+"Meia-Vida (Mamíferos, in vitro)",>10 horas
+Total de Resíduos Ácidos (Asp+Glu),16
+Total de Resíduos Básicos (Arg+Lys+His),7
+Total de Resíduos Polares,36
+Total de Resíduos Apolares,73
+````
 
 #### Gráfico de Composição de Aminoácidos
 
-![Composição de Aminoácidos](1TUP_composition.png)
-
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/1TUP_composition.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 #### Treemap da Composição
 
-![Treemap](1TUP_treemap.png)
-
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/1TUP_treemap.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 #### Perfil de Hidropaticidade
 
-![Hidropaticidade](1TUP_hydropathy.png)
+<p align="center">
+  <img src="imgs/1TUP_hydropathy.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
-[ADD IMAGEM AQUI]
+---
+
+## Para níveis de comparação, aqui temos os resultados com o ProtParam (ExPASy):
+
+````bash
+Number of amino acids: 196
+Theoretical pI: 8.34
+Molecular weight: 22003.93
+
+Amino acid composition: 
+Ala (A)   7	  3.6%
+Arg (R)  17	  8.7%
+Asn (N)   9	  4.6%
+Asp (D)   8	  4.1%
+Cys (C)  10	  5.1%
+Gln (Q)   7	  3.6%
+Glu (E)  11	  5.6%
+Gly (G)  13	  6.6%
+His (H)   7	  3.6%
+Ile (I)   6	  3.1%
+Leu (L)  14	  7.1%
+Lys (K)   5	  2.6%
+Met (M)   6	  3.1%
+Phe (F)   5	  2.6%
+Pro (P)  14	  7.1%
+Ser (S)  19	  9.7%
+Thr (T)  14	  7.1%
+Trp (W)   1	  0.5%
+Tyr (Y)   8	  4.1%
+Val (V)  15	  7.7%
+Pyl (O)   0	  0.0%
+Sec (U)   0	  0.0%
+
+
+Total number of negatively charged residues (Asp + Glu): 19
+Total number of positively charged residues (Arg + Lys): 22
+
+Atomic composition:
+Carbon      C	       945
+Hydrogen    H	      1493
+Nitrogen    N	       283
+Oxygen      O	       292
+Sulfur      S	        16
+
+Formula: C945H1493N283O292S16
+Total number of atoms: 3029
+
+Extinction coefficients:
+Extinction coefficients are in units of  M-1 cm-1, at 280 nm measured in water.
+Ext. coefficient    18045
+Abs 0.1% (=1 g/l)   0.820, assuming all pairs of Cys residues form cystines
+
+
+
+Ext. coefficient    17420
+Abs 0.1% (=1 g/l)   0.792, assuming all Cys residues are reduced
+
+Estimated half-life:
+The N-terminal of the sequence considered is S (Ser).
+The estimated half-life is: 1.9 hours (mammalian reticulocytes, in vitro).
+                            >20 hours (yeast, in vivo).
+                            >10 hours (Escherichia coli, in vivo).
+
+Instability index:
+The instability index (II) is computed to be 73.97
+This classifies the protein as unstable.
+
+Aliphatic index: 65.56
+Grand average of hydropathicity (GRAVY):-0.503
+````
 
 ---
 
