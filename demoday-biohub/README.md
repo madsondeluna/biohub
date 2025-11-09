@@ -166,7 +166,7 @@ python ../biohub.py physchem MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVE
 cat 1TUP_properties.csv
 ```
 
-Resultado das análises com o BioHub para a proteína 1TUP: 
+Resultado das análises com o BioHub para a proteína 1TUP (CSV): 
 
 ````bash
 Propriedade,Valor
