@@ -274,7 +274,7 @@ Grand average of hydropathicity (GRAVY):-0.503
 
 ---
 
-# Review Completo: Análise Comparativa BioHub vs ProtParam (ExPASy)
+# Análise Comparativa BioHub vs ProtParam (ExPASy)
 
 **Data da Análise:** 09 de novembro de 2025  
 **Sequência Analisada:** 196 aminoácidos  
