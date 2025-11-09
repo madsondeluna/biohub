@@ -1,16 +1,38 @@
 # BioHub - Roteiro Completo de Demonstração
 
+<p align="center">
+  <img src="imgs/dwight.gif" alt="Workflow" width="100%"/>
+</p> 
+
 Este roteiro demonstra **TODAS** as funcionalidades do BioHub de ponta a ponta usando o PDB **1TUP** (p53 Tumor Suppressor).
 
 ## Índice
+
+### Parte 1: Demonstração das Funcionalidades BioHub
 1. [Download e Limpeza do PDB](#1-download-e-limpeza-do-pdb)
 2. [Conversão PDB para FASTA](#2-conversão-pdb-para-fasta)
 3. [Análises com FASTA](#3-análises-com-fasta)
 4. [Conversão CSV para FASTA](#4-conversão-csv-para-fasta)
 5. [Análise de Contatos Intramoleculares](#5-análise-de-contatos-intramoleculares)
-6. [Análise de Exposição ao Solvente (Predição)](#6-análise-de-exposição-ao-solvente-predição)
-7. [Cálculo de SASA (Solvent Accessible Surface Area)](#7-cálculo-de-sasa-solvent-accessible-surface-area)
+6. [Análise de Hidrofobicidade](#6-análise-de-hidrofobicidade)
+7. [Cálculo de SASA](#7-cálculo-de-sasa-solvent-accessible-surface-area)
 8. [Todas as Visualizações](#8-todas-as-visualizações)
+
+### Parte 2: Análise Comparativa BioHub vs ProtParam (ExPASy)
+- [Introdução](#análise-comparativa-biohub-vs-protparam-expasy)
+- [Parâmetros com Concordância Excelente](#parâmetros-com-concordância-excelente-≤0001)
+  - Peso Molecular, GRAVY, Índice Alifático, Comprimento
+- [Parâmetros com Concordância Boa](#parâmetros-com-concordância-boa-3-5)
+  - Ponto Isoelétrico (pI)
+- [Índice de Instabilidade](#índice-de-instabilidade-métodos-diferentes-resultados-incomparáveis)
+- [Meia-Vida](#meia-vida-diferença-metodológica)
+- [Composição de Aminoácidos](#composição-de-aminoácidos-concordância-total)
+- [Distribuição de Resíduos por Categoria](#distribuição-de-resíduos-por-categoria)
+- [Parâmetros Adicionais (ProtParam)](#parâmetros-adicionais-somente-protparam)
+- [Perfil de Hidrofobicidade](#perfil-de-hidrofobicidade-análise-dos-gráficos)
+- [Resumo Comparativo Final](#resumo-comparativo-final)
+- [Ressalvas e Recomendações](#ressalvas-e-recomendações)
+- [Conclusão Final](#conclusão-final-da-comparação-biohub-vs-protparam)
 
 ---
 
@@ -815,6 +837,10 @@ pymol pdb + pml
 python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv --write-pdb 1TUP_sasa.pdb --pymol 1TUP_sasa.pse --plot-profile 1TUP_sasa_profile.png
 ```
 
+<p align="center">
+  <img src="imgs/17.png" alt="XXXXXXX" width="100%"/>
+</p> 
+
 **O que este comando faz:**
 - Calcula SASA usando algoritmo de Shrake-Rupley
 - Usa 500 pontos distribuídos em uma esfera ao redor de cada átomo
@@ -825,6 +851,12 @@ python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv 
 - `1TUP_sasa.pdb` - PDB com B-factors = SASA
 - `1TUP_sasa.pse` - Sessão PyMOL colorida por SASA
 - `1TUP_sasa_profile.png` - Gráfico do perfil de SASA
+
+> Uma das principais saídas da função SASA é o gráfico do perfil de acessibilidade ao solvente ao longo da sequência, que ajuda a identificar regiões expostas ou enterradas ao meio.
+
+<p align="center">
+  <img src="imgs/1TUP_sasa_profile.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 #### Saída do CSV de SASA
 
@@ -843,19 +875,31 @@ E5,125.43
 ...
 ```
 
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/18.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
-#### Perfil de SASA ao longo da sequência
+#### Perfil de SASA inputado no PDB
 
-![Perfil SASA](1TUP_sasa_profile.png)
-
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/19.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 #### Visualização PyMOL do SASA
+
+> Mostrando alguns detalhes das configurações de um script PML gerado automaticamente para visualização no PyMOL, usando o BioHub
+
+<p align="center">
+  <img src="imgs/20.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 ```bash
 pymol pdb + pml
 ```
+
+<p align="center">
+  <img src="imgs/sasa-pymol.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 **Esquema de cores (gradiente):**
 - **Azul**: SASA baixo (resíduos enterrados)
@@ -954,6 +998,12 @@ python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv 
 ```
 
 ---
+
+> Just one more thing...
+
+<p align="center">
+  <img src="imgs/just-one-more-thing.gif" alt="Workflow" width="100%"/>
+</p> 
 
 ## Contato
 
