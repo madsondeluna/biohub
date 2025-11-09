@@ -552,7 +552,7 @@ O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle)
 
 ---
 
-## Conclusões e Recomendações
+## Ressalvas e Recomendações
 
 ### Pontos Fortes do BioHub
 
@@ -593,7 +593,7 @@ Os gráficos do BioHub (treemap, hidrofobicidade) são superiores ao ProtParam p
 
 ---
 
-## Conclusão Final
+## Conclusão Final da Comparação BioHub vs ProtParam
 
 O BioHub demonstra ser uma **ferramenta confiável e precisa** para análise de propriedades físico-químicas de proteínas, com concordância excelente (<0.001%) com o ProtParam (referência internacional) em **6 dos 7 parâmetros principais**. As visualizações gráficas produzidas pelo BioHub superam significativamente o ProtParam em termos de interpretabilidade e identificação de padrões biológicos.
 
@@ -689,11 +689,11 @@ python ../biohub.py physchem MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVE
 ### 5.1 Calcular contatos com distância de 8.0 Å
 
 ```bash
-python ../biohub.py contacts 1TUP_clean.pdb --threshold 8.0 --output 1TUP_contacts.csv --plot 1TUP_contact_map.png
+python ../biohub.py contacts 1TUP_clean.pdb --threshold 40.0 --output 1TUP_contacts.csv --plot 1TUP_contact_map.png
 ```
 
 **O que este comando faz:**
-- Identifica todos os pares de resíduos com distância entre Cα ≤ 8.0 Å
+- Identifica todos os pares de resíduos com distância ≤ 40.0 Å
 - Gera matriz de contatos
 - Cria visualizações
 
@@ -717,13 +717,17 @@ T2,M4,3.79
 ...
 ```
 
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/xxxxxxx.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 #### Mapa de Contatos
 
 ![Mapa de Contatos](1TUP_contact_map.png)
 
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/xxxxxxx.png" alt="XXXXXXX" width="100%"/>
+</p> 
 
 ---
 
