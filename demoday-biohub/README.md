@@ -22,14 +22,6 @@ Este roteiro demonstra **TODAS** as funcionalidades do BioHub de ponta a ponta u
 python ../biohub.py fetchpdb 1TUP --chains A --protein-only --output 1TUP_clean.pdb
 ```
 
----
-
-<p align="center">
-  <img src="imgs/6.png" alt="Workflow" width="100%"/>
-</p> 
-
----
-
 **O que este comando faz:**
 - Baixa o PDB 1TUP do RCSB
 - Filtra apenas a cadeia A
@@ -103,6 +95,12 @@ python ../biohub.py fasta 1TUP_clean.pdb --output 1TUP.fasta
 ```
 FASTA file written to: 1TUP.fasta
 ```
+
+---
+
+<p align="center">
+  <img src="imgs/6.png" alt="Workflow" width="100%"/>
+</p> 
 
 ---
 
