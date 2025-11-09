@@ -756,6 +756,12 @@ python ../biohub.py hydrophoby 1TUP_clean.pdb --output 1TUP_hydrophoby.csv --wri
 - `1TUP_hydrophoby.pse` - Sessão PyMOL colorida por hidrofobicidade
 - `1TUP_hydrophoby_profile.png` - Gráfico de perfil de hidrofobicidade
 
+> Uma das principais saídas da função de hidrofobicidade é o gráfico do perfil de hidrofobicidade ao longo da sequência, que ajuda a identificar regiões hidrofóbicas e hidrofílicas.
+
+<p align="center">
+  <img src="imgs/1TUP_hydrophoby_profile.png" alt="XXXXXXX" width="100%"/>
+</p> 
+
 #### Saída do CSV de Hidrofobicidade
 
 ```bash
