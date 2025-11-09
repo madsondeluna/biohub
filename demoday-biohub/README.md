@@ -545,10 +545,10 @@ O perfil de hidrofobicidade usando janela de 9 resíduos (escala Kyte-Doolittle)
 | **Resíduos Básicos** | 29 (com His) | 22 (sem His) | -- | Metodologia diferente |
 
 **Legenda:**
-== = Idêntico;
-~= = Variou Pouco;
--- = Diferença Metodológica;
--x = Incomparável;
+== -> Idêntico;
+~= -> Variou Pouco;
+-- -> Diferença Metodológica;
+-x -> Incomparável;
 
 ---
 
