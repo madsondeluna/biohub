@@ -36,7 +36,9 @@ Filtering PDB content...
 Filtered PDB saved to: 1TUP_clean.pdb
 ```
 
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/1.png" alt="Workflow" width="100%"/>
+</p>
 
 ### 1.2 Informações do PDB baixado
 
@@ -44,7 +46,9 @@ Filtered PDB saved to: 1TUP_clean.pdb
 head -20 1TUP_clean.pdb
 ```
 
-[ADD IMAGEM AQUI]
+<p align="center">
+  <img src="imgs/2.png" alt="Workflow" width="100%"/>
+</p>
 
 ---
 
