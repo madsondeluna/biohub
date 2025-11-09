@@ -901,27 +901,14 @@ ls -lh
 - `seq2_composition.png`, `seq2_treemap.png`, `seq2_hydropathy.png`
 
 #### Sessões PyMOL (.pse)
-- `1TUP_hydrophoby.pse` - Visualização de hidrofobicidade
-- `1TUP_sasa.pse` - Visualização de SASA
+- `1TUP_hydrophoby.pml` - Visualização de hidrofobicidade
+- `1TUP_sasa.pml` - Visualização de SASA
 
 #### PDBs Modificados
 - `1TUP_hydrophoby.pdb` - PDB com B-factors de hidrofobicidade
 - `1TUP_sasa.pdb` - PDB com B-factors de SASA
 
 [ADD IMAGEM AQUI - LISTAGEM COMPLETA]
-
----
-
-## Checklist de Demonstração Completa
-
-- [ ] Download do PDB 1TUP limpo (cadeia A, sem heteroátomos)
-- [ ] Conversão PDB para FASTA
-- [ ] Análise de propriedades físico-químicas do 1TUP (CSV + 3 gráficos)
-- [ ] Conversão CSV para FASTA
-- [ ] Análise de propriedades físico-químicas das sequências do CSV
-- [ ] Análise de contatos intramoleculares (CSV + mapa)
-- [ ] Predição de hidrofobicidade (CSV + PDB + PyMOL)
-- [ ] Cálculo de SASA (CSV + gráfico + PDB + PyMOL)
 
 ---
 
@@ -973,3 +960,5 @@ python ../biohub.py sasa 1TUP_clean.pdb --num-points 500 --output 1TUP_sasa.csv 
 Para dúvidas ou sugestões sobre o BioHub, entre em contato.
 
 **BioHub** - Uma plataforma completa para análise de sequências e estruturas de proteínas
+
+Acesse o repositório no GitHub: [https://github.com/madsondeluna/biohub/tree/main] para mais informações e detalhes.
