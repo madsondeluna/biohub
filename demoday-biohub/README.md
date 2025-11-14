@@ -688,7 +688,7 @@ Ambas as ferramentas implementam a matriz DIWV (Índice de Instabilidade de Guru
 - **ProtParam**: 73.97 → Classifica como **Instável**
 - **BioHub**: 69.59 → Classifica como **Instável**
 
-Apesar da diferença de ~6% nos valores absolutos (4.38 unidades), **ambas as ferramentas convergem para a mesma classificação biológica: proteína INSTÁVEL**. Esta concordância na interpretação é o resultado mais relevante do ponto de vista científico.
+Apesar da diferença de ~6% nos valores absolutos (4.38 unidades), **ambas as ferramentas convergem para a mesma classificação biológica: proteína instável**. Esta concordância na interpretação é o resultado mais relevante do ponto de vista científico.
 
 ### Análise da Diferença
 
