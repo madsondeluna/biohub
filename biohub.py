@@ -421,7 +421,7 @@ def calculate_physicochemical_properties(args):
         ("Comprimento", length), ("Peso Molecular (Da)", f"{mw:.2f}"),
         ("Ponto Isoelétrico (pI)", f"{pi:.2f}"), ("GRAVY (Hidropaticidade)", f"{gravy:.3f}"),
         ("Índice Alifático", f"{aliphatic_index:.2f}"), ("Índice de Instabilidade", f"{instability_index:.2f} ({stability})"),
-        ("Meia-Vida (Mamíferos, in vitro)", half_life_mammal), ("Total de Resíduos Ácidos (Asp+Glu)", acidic),
+        ("Meia-Vida (E. coli, in vitro)", half_life_mammal), ("Total de Resíduos Ácidos (Asp+Glu)", acidic),
         ("Total de Resíduos Básicos (Arg+Lys+His)", basic), ("Total de Resíduos Polares", polar),
         ("Total de Resíduos Apolares", non_polar)
     ]
