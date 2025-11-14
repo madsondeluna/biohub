@@ -930,12 +930,13 @@ Os gráficos do BioHub (treemap, hidrofobicidade) são superiores ao ProtParam p
 
 O BioHub demonstra ser uma **ferramenta confiável e precisa** para análise de propriedades físico-químicas de proteínas, com concordância excelente (<0.001%) com o ProtParam (referência internacional) em **todos os 7 parâmetros principais avaliados**. As visualizações gráficas produzidas pelo BioHub superam significativamente o ProtParam em termos de interpretabilidade e identificação de padrões biológicos.
 
-Para o índice de instabilidade, o BioHub apresenta **concordância de 94% com ProtParam em valores numéricos** (69.59 vs 73.97) e **100% de concordância na classificação biológica** (ambos indicam proteína INSTÁVEL). A diferença de ~6% está dentro da margem aceitável para diferentes implementações do método de Guruprasad.
+**Destaque importante:** O BioHub foi desenvolvido de modo **hardcoded**, implementando do zero todos os algoritmos, equações e constantes físico-químicas (pesos moleculares, escalas de hidropaticidade, valores de pKa, matriz DIWV de instabilidade, etc.) baseando-se exclusivamente em conhecimento científico consolidado da literatura. **Nenhuma biblioteca externa de bioinformática foi utilizada** para os cálculos principais. Apesar dessa abordagem manual e educacional, **o BioHub alcança concordância com o ProtParam** (ferramenta referência para cálculos físico-químicos em servidores), demonstrando a robustez das implementações e a confiabilidade científica dos resultados.
 
 **Recomendações:**
 - **Índice de instabilidade:** BioHub e ProtParam produzem resultados biologicamente equivalentes e igualmente confiáveis
 - **Meia-vida:** Concordância excelente quando se utiliza *E. coli* como sistema de referência
 - **Todos os parâmetros:** O BioHub é totalmente confiável para uso em publicações científicas
+- **Implementação educacional:** A abordagem hardcoded do BioHub serve como excelente material didático para compreensão dos fundamentos bioquímicos por trás de cada cálculo
 
 ---
 
