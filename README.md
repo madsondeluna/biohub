@@ -57,7 +57,7 @@ Este projeto foi desenvolvido com o objetivo de fornecer uma solução simples, 
 
 ## Validação e Testes 
 
-### Testes Extensivos na Pasta `debug/`
+### Testes: `debug/`
 
 A pasta **`debug/`** contém um conjunto completo de testes de todas as funcionalidades e possibilidades de análises do BioHub. Esses testes foram baseados no case de apresentação descrito em **`demoday-biohub/README.md`**, que utiliza a proteína **p53 (PDB ID: 1TUP)** como modelo.
 
