@@ -988,7 +988,7 @@ O BioHub foi validado contra **ProtParam (ExPASy)**, a referência internacional
 | **Ponto Isoelétrico** | 8.03 | 8.34 | ~= | Diferença 3.7% |
 | **Resíduos Ácidos** | 19 | 19 | == | Idêntico |
 | **Composição de aa** | 20 tipos | 20 tipos | == | Idêntico |
-| **Índice Instabilidade** | -105.87 | 73.97 | -x | Escalas diferentes |
+| **Índice Instabilidade** | 69.59 | 73.97 | ~= | Valores próximos, classificação concordante (ambos classificam como instável)|
 | **Meia-Vida** | >10 h (E. coli) | >10 h (E. coli) | == | Idêntico para E. coli |
 | **Resíduos Básicos** | 29 (com His) | 22 (sem His) | -- | Metodologia diferente |
 
