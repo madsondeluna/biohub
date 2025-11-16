@@ -1,10 +1,48 @@
 # BioHub - Guia Detalhado de Funções para Apresentação
 
 Este documento organiza todas as funções do BioHub ([biohub.py](../biohub.py) e [biohub_viz.py](../biohub_viz.py)) de forma didática para apresentação, separando:
+
 1. **Dicionários e Constantes** - Dados científicos necessários
 2. **Função de Cálculo** - Implementação do algoritmo
 3. **Formatação de Output** - Como os resultados são apresentados
 4. **Argumentos CLI** - Parâmetros que o usuário pode usar
+5. **Detalhes de Implementação** - Como cada flag/argumento funciona internamente
+
+## Resumo Executivo
+
+### Visao Geral das Funcoes
+
+| Funcao | Proposito | Flags Principais | Codigo Chamado |
+|--------|-----------|------------------|----------------|
+| fetchpdb | Download de estruturas PDB | --chains, --protein-only | handle_fetch_pdb() + filter_pdb_content() |
+| fasta | Conversao PDB para FASTA | -o | get_sequence_from_pdb() |
+| csv2fasta | Conversao CSV para FASTA | --header, --delimiter | handle_csv_to_fasta() |
+| physchem | Propriedades fisico-quimicas | --plot-treemap, --plot-hydro | calculate_physicochemical_properties() |
+| contacts | Analise de contatos | -t, --plot | calculate_intramolecular_contacts() |
+| hydrophoby | Perfil de hidrofobicidade | --write-pdb, --pymol | predict_solvent_hydrophoby() |
+| sasa | Superficie acessivel ao solvente | --probe-radius, --num-points | calculate_sasa() (Shrake-Rupley) |
+
+### Fluxo Tipico de Uso
+
+```bash
+# 1. Download da estrutura PDB, filtrando cadeia A e removendo agua
+python biohub.py fetchpdb 1TUP --chains A --protein-only -o 1TUP_clean.pdb
+
+# 2. Extrair sequencia em formato FASTA
+python biohub.py fasta 1TUP_clean.pdb -o 1TUP.fasta
+
+# 3. Calcular propriedades fisico-quimicas da sequencia
+python biohub.py physchem $(grep -v ">" 1TUP.fasta) -o propriedades.csv
+
+# 4. Calcular SASA e gerar visualizacao PyMOL
+python biohub.py sasa 1TUP_clean.pdb --write-pdb 1TUP_sasa.pdb --pymol sasa.pse
+
+# 5. Calcular hidrofobicidade e gerar perfil
+python biohub.py hydrophoby 1TUP_clean.pdb --write-pdb 1TUP_hydro.pdb --plot-hydrophoby perfil.png
+
+# 6. Analisar contatos intramoleculares
+python biohub.py contacts 1TUP_clean.pdb -t 8.0 --plot contact_map.png
+```
 
 ---
 
@@ -87,6 +125,100 @@ Exibição no terminal:
 ```bash
 python biohub.py fetchpdb 1TUP -o proteina.pdb --chains A --protein-only
 ```
+
+### 5. Detalhes de Implementacao de Cada Flag
+
+#### Flag: `--chains`
+**Arquivo**: [biohub.py:1006](../biohub.py#L1006)
+**Parser**: [biohub.py:289-290](../biohub.py#L289-L290)
+**Funcao chamada**: `filter_pdb_content()` em [biohub.py:212-267](../biohub.py#L212-L267)
+
+**Como funciona**:
+1. O argumento eh parseado na linha 289: `chains_list = [c.strip().upper() for c in args.chains.split(',')]`
+   - Divide a string por virgula (ex: "A,B" vira ['A', 'B'])
+   - Remove espacos em branco (.strip())
+   - Converte para maiusculo (.upper())
+
+2. A funcao `filter_pdb_content()` recebe a lista de cadeias e:
+   - Le o arquivo PDB linha por linha (linha 228)
+   - Para cada linha ATOM ou HETATM (linha 233):
+     - Extrai o chain_id da coluna 21 do formato PDB (linha 246)
+     - Verifica se o chain_id esta na lista de cadeias desejadas (linha 247)
+     - Se NAO estiver, marca keep_line = False (linha 248)
+     - Incrementa contador atoms_removed (linha 249)
+
+3. Apenas linhas com keep_line = True sao mantidas (linha 260-261)
+4. O arquivo eh reescrito com o conteudo filtrado (linha 264-265)
+
+**Formato PDB relevante**:
+```
+ATOM      1  N   MET A   1      20.154  29.699   5.276  1.00 49.05           N
+                    ^
+                    Coluna 21 = Chain ID
+```
+
+#### Flag: `--protein-only`
+**Arquivo**: [biohub.py:1007](../biohub.py#L1007)
+**Funcao chamada**: `filter_pdb_content()` em [biohub.py:212-267](../biohub.py#L212-L267)
+
+**Como funciona**:
+1. Quando protein_only=True, a funcao aplica dois filtros:
+
+   **Filtro 1 - Remove HETATM** (linhas 235-237):
+   - Se a linha comeca com "HETATM", marca keep_line = False
+   - HETATM = heteroatomos (ligantes, ions, moleculas pequenas)
+   - ATOM = atomos da cadeia polipeptidica principal
+
+   **Filtro 2 - Remove agua (HOH)** (linhas 240-242):
+   - Extrai o nome do residuo das colunas 17-20 do formato PDB
+   - Se for "HOH" (agua), marca keep_line = False
+   - HOH = codigo PDB para molecula de agua
+
+2. Tambem remove linhas HETATM do cabecalho (linhas 255-258)
+
+**Exemplo de linhas removidas**:
+```
+HETATM 3046  O   HOH A 301      15.234  28.123  10.456  1.00 30.12           O  <- Agua (removida)
+HETATM 3047 MG    MG A 302      25.678  32.901   8.234  1.00 25.67          MG  <- Ion magnesio (removido)
+HETATM 3048  C1  ATP A 303      18.456  35.234  12.567  1.00 40.23           C  <- Ligante ATP (removido)
+ATOM   3049  N   ALA A  45      22.345  30.123   9.876  1.00 35.45           N  <- Proteina (MANTIDA)
+```
+
+#### Flag: `-o, --output`
+**Arquivo**: [biohub.py:1005](../biohub.py#L1005)
+**Uso**: [biohub.py:277](../biohub.py#L277)
+
+**Como funciona**:
+- Linha 277: `output_file = args.output if args.output else f"{pdb_id}.pdb"`
+- Se o usuario NAO especificar -o, usa o padrao: {PDB_ID}.pdb
+- Se o usuario especificar, usa o nome fornecido
+- Exemplo: `fetchpdb 1TUP` salva como "1TUP.pdb"
+- Exemplo: `fetchpdb 1TUP -o minha_proteina.pdb` salva como "minha_proteina.pdb"
+
+#### Argumento: `pdb_id`
+**Arquivo**: [biohub.py:1004](../biohub.py#L1004)
+**Validacao**: [biohub.py:271-275](../biohub.py#L271-L275)
+**Download**: [biohub.py:276-284](../biohub.py#L276-L284)
+
+**Como funciona**:
+1. Converte para maiusculo (linha 271): `pdb_id = args.pdb_id.upper()`
+2. Valida tamanho (linhas 273-275):
+   - Deve ter exatamente 4 caracteres
+   - Se invalido, exibe erro e retorna
+
+3. Monta URL do RCSB PDB (linha 276):
+   - Template: `https://files.rcsb.org/download/{PDB_ID}.pdb`
+   - Exemplo: `https://files.rcsb.org/download/1TUP.pdb`
+
+4. Faz download usando urllib (linhas 281-284):
+   - Abre conexao HTTP com urllib.request.urlopen()
+   - Le todos os bytes (response.read())
+   - Verifica se arquivo nao esta vazio
+   - Escreve no arquivo de saida em modo binario ('wb')
+
+5. Trata erros (linhas 311-316):
+   - HTTPError 404: PDB ID nao encontrado
+   - Remove arquivo vazio se download falhar
 
 ---
 
@@ -171,6 +303,73 @@ MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLF
 ```bash
 python biohub.py fasta 1TUP.pdb -o sequencia.fasta
 ```
+
+### 5. Detalhes de Implementacao
+
+#### Argumento: `pdb_file`
+
+**Parser CLI**: [biohub.py:1011](../biohub.py#L1011)
+**Handler**: [biohub.py:318-330](../biohub.py#L318-L330)
+**Funcao de extracao**: `get_sequence_from_pdb()` em [biohub.py:136-160](../biohub.py#L136-L160)
+
+**Como funciona**:
+
+1. A funcao `get_sequence_from_pdb()` le o arquivo PDB linha por linha (linha 143)
+
+2. Para cada linha que comeca com "ATOM" (linha 144):
+   - Extrai chain_id da coluna 21 (linha 145)
+   - Na primeira linha ATOM, define first_chain_id (linha 147)
+   - **Apenas processa atomos da primeira cadeia encontrada** (linha 150)
+
+3. Evita duplicacao de residuos (linhas 139, 152):
+   - Cria um set() chamado processed_residues
+   - Usa tupla (res_num, chain_id) como identificador unico
+   - Cada residuo tem varios atomos (N, CA, C, O, CB, etc.)
+   - Adiciona o residuo apenas uma vez a sequencia
+
+4. Conversao 3 letras para 1 letra (linhas 153-157):
+   - Extrai res_name das colunas 17-20 (ex: "ALA")
+   - Busca no dicionario THREE_TO_ONE (ex: "ALA" -> "A")
+   - Concatena na string sequence
+
+5. Formato PDB relevante:
+```
+ATOM      1  N   MET A   1      20.154  29.699   5.276  1.00 49.05           N
+ATOM      2  CA  MET A   1      21.489  30.263   5.552  1.00 48.12           C
+ATOM      3  C   MET A   1      22.374  29.134   6.089  1.00 47.89           C
+             ^      ^   ^   ^
+          Col 17  Col 21 Col 22-26
+          (res)  (chain) (res_num)
+```
+   - Colunas 17-20: Nome do residuo (MET)
+   - Coluna 21: Chain ID (A)
+   - Colunas 22-26: Numero do residuo (1)
+
+**Por que apenas a primeira cadeia?**
+- Arquivos PDB podem ter multiplas cadeias (A, B, C, etc.)
+- Evita sequencias duplicadas em estruturas oligomericas
+- Usuario pode filtrar cadeias com `fetchpdb --chains A` antes
+
+#### Flag: `-o, --output`
+
+**Parser CLI**: [biohub.py:1012](../biohub.py#L1012)
+**Uso**: [biohub.py:326-330](../biohub.py#L326-L330)
+
+**Como funciona**:
+
+1. Se args.output existe (linha 326):
+   - Abre arquivo em modo escrita (linha 327)
+   - Escreve cabecalho FASTA + sequencia
+   - Exibe mensagem de confirmacao no stderr (linha 328)
+
+2. Se args.output nao existe (linha 329-330):
+   - Imprime diretamente no stdout
+   - Permite uso com pipes: `python biohub.py fasta 1TUP.pdb | grep ">"``
+
+3. Formato do cabecalho FASTA (linha 323):
+   - Template: `>sequence_from_{nome_do_arquivo}`
+   - Usa os.path.basename() para extrair apenas o nome do arquivo
+   - Exemplo: `>sequence_from_1TUP.pdb`
 
 ---
 
@@ -328,6 +527,212 @@ python biohub.py physchem MTAMEESQSDISLELPLSQETF \
   --plot-hydro hidrofobicidade.png --window 9
 ```
 
+### 5. Detalhes de Implementacao de Cada Calculo
+
+#### Argumento: `sequence`
+
+**Parser CLI**: [biohub.py:1025](../biohub.py#L1025)
+**Handler**: [biohub.py:371-456](../biohub.py#L371-L456)
+
+**Como funciona**:
+
+1. Conversao e validacao (linhas 373-376):
+   - Converte para maiusculo: `sequence = args.sequence.upper()`
+   - Verifica se nao esta vazia
+
+2. Calculo de composicao (linha 379):
+   - Dictionary comprehension: `{aa: sequence.count(aa) for aa in MOLECULAR_WEIGHT.keys()}`
+   - Conta quantas vezes cada aminoacido aparece na sequencia
+
+#### Calculo: Peso Molecular (linha 382)
+
+**Dicionario usado**: MOLECULAR_WEIGHT [biohub.py:38-43](../biohub.py#L38-L43)
+
+**Formula**:
+```python
+mw = sum(MOLECULAR_WEIGHT[aa] * count for aa, count in aa_composition.items()) - (length - 1) * 18.015
+```
+
+**Como funciona**:
+1. Soma o peso de todos os aminoacidos
+2. Subtrai o peso da agua perdida em cada ligacao peptidica
+3. N aminoacidos formam N-1 ligacoes peptidicas
+4. Cada ligacao libera 1 H2O (18.015 Da)
+
+**Exemplo**:
+- Sequencia: "AAA" (3 alaninas)
+- Peso de cada ALA: 89.09 Da
+- Peso total: 3 × 89.09 = 267.27 Da
+- Ligacoes peptidicas: 2
+- Agua perdida: 2 × 18.015 = 36.03 Da
+- Peso molecular final: 267.27 - 36.03 = 231.24 Da
+
+#### Calculo: GRAVY (linha 385)
+
+**Dicionario usado**: KYTE_DOOLITTLE [biohub.py:44-49](../biohub.py#L44-L49)
+
+**Formula**:
+```python
+gravy = sum(KYTE_DOOLITTLE[aa] for aa in sequence) / length
+```
+
+**Como funciona**:
+1. Para cada aminoacido na sequencia, busca seu valor de hidropaticidade
+2. Soma todos os valores
+3. Divide pelo comprimento da sequencia (media aritmetica)
+
+**Interpretacao**:
+- GRAVY > 0: Proteina hidrofobica (tende a estar no interior ou membrana)
+- GRAVY < 0: Proteina hidrofilica (tende a estar exposta ao solvente)
+- Range tipico: -2.0 a +2.0
+
+#### Calculo: Ponto Isoeletrico (pI) (linhas 387-400)
+
+**Dicionario usado**: PKA_VALUES [biohub.py:50-54](../biohub.py#L50-L54)
+
+**Algoritmo**:
+1. Busca exaustiva de pH 0.00 a 14.00 com passo de 0.01 (1401 iteracoes)
+2. Para cada pH, calcula a carga liquida da proteina
+3. Guarda o pH onde |carga liquida| eh minima
+
+**Formula de carga liquida** (equacao de Henderson-Hasselbalch):
+```python
+# Carga do N-terminal (sempre positiva)
+net_charge = (10**pKa_N) / (10**pKa_N + 10**pH)
+
+# Carga do C-terminal (sempre negativa)
+net_charge -= (10**pH) / (10**pKa_C + 10**pH)
+
+# Para cada aminoacido ionizavel:
+# Basicos (R, H, K): contribuem positivamente
+net_charge += count * (10**pKa) / (10**pKa + 10**pH)
+
+# Acidos (D, E, C, Y): contribuem negativamente
+net_charge -= count * (10**pH) / (10**pKa + 10**pH)
+```
+
+**Grupos ionizaveis**:
+- N-terminal: pKa = 8.0 (base)
+- C-terminal: pKa = 3.65 (acido)
+- Asp (D): pKa = 3.9 (acido)
+- Glu (E): pKa = 4.07 (acido)
+- His (H): pKa = 6.5 (base)
+- Cys (C): pKa = 8.5 (acido)
+- Tyr (Y): pKa = 10.0 (acido)
+- Lys (K): pKa = 10.0 (base)
+- Arg (R): pKa = 12.0 (base)
+
+#### Calculo: Indice Alifatico (linha 404)
+
+**Formula**:
+```python
+aliphatic_index = (A + 2.9*V + 3.9*(I + L)) / length * 100
+```
+
+**Como funciona**:
+1. Pondera o numero de residuos alifaticos pelo volume relativo
+2. A (Ala): peso 1.0
+3. V (Val): peso 2.9
+4. I (Ile) e L (Leu): peso 3.9
+5. Divide pelo comprimento e multiplica por 100
+
+**Interpretacao**:
+- Valor alto (>80): Proteina termoestavel
+- Relacionado com estabilidade termica
+- Proteinas mesofitas: ~50-80
+- Proteinas termofitas: >80
+
+#### Calculo: Indice de Instabilidade (linha 407)
+
+**Dicionario usado**: DIWV [biohub.py:60-82](../biohub.py#L60-L82)
+
+**Formula**:
+```python
+instability_index = (10 / length) * sum(DIWV[seq[i]][seq[i+1]] for i in range(length-1))
+```
+
+**Como funciona**:
+1. Para cada dipeptideo (par de aminoacidos adjacentes):
+   - Busca o peso DIWV[AA1][AA2] na matriz
+   - DIWV = Dipeptide Instability Weight Values
+2. Soma todos os pesos
+3. Multiplica por 10/L (L = comprimento)
+
+**Interpretacao**:
+- II < 40: Proteina estavel in vivo
+- II >= 40: Proteina instavel in vivo
+- Baseado em dados experimentais de E. coli
+
+**Exemplo**:
+- Sequencia: "MET-ALA"
+- DIWV['M']['A'] = valor da matriz
+- Se sequencia tem muitos dipeptideos "raros" ou "desfavoraveis", II aumenta
+
+#### Calculo: Meia-vida (linhas 410-412)
+
+**Regra do N-terminal** (N-end rule):
+
+```python
+n_term = sequence[0]
+if n_term in ['A','C','G','M','P','S','T','V']:
+    half_life = ">10 horas"
+elif n_term in ['I','L','F','W','Y','D','E','N','Q']:
+    half_life = "2-30 min"
+else:
+    half_life = "Desconhecido"
+```
+
+**Como funciona**:
+1. Extrai o primeiro aminoacido da sequencia
+2. Consulta tabela empirica baseada no aminoacido N-terminal
+3. Estimativa para E. coli in vitro
+
+**Grupos**:
+- **Estabilizadores** (>10h): Ala, Cys, Gly, Met, Pro, Ser, Thr, Val
+- **Desestabilizadores** (2-30min): Ile, Leu, Phe, Trp, Tyr, Asp, Glu, Asn, Gln
+- **Outros**: Arg, Lys, His (variaveis)
+
+**Limitacao**: Estimativa muito grosseira, nao considera:
+- Modificacoes pos-traducionais
+- Estrutura 3D
+- Sequencia interna
+- Sistema biologico especifico
+
+#### Flag: `--plot-treemap`
+
+**Parser CLI**: [biohub.py:1027](../biohub.py#L1027)
+**Verificacao**: [biohub.py:439-443](../biohub.py#L439-L443)
+**Funcao chamada**: `plot_aa_composition_treemap()` em [biohub_viz.py:107-207](../biohub_viz.py#L107-L207)
+
+**Como funciona**:
+1. Verifica se modulo biohub_viz esta disponivel (linha 440)
+2. Se nao estiver, exibe aviso sobre dependencias (matplotlib, numpy, squarify)
+3. Chama funcao de visualizacao passando:
+   - aa_composition: dicionario com contagem de cada AA
+   - length: comprimento da sequencia
+   - output_file: caminho para salvar PNG
+
+#### Flag: `--plot-hydro`
+
+**Parser CLI**: [biohub.py:1029](../biohub.py#L1029)
+**Funcao chamada**: `plot_hydropathy_profile()` em [biohub_viz.py:281-362](../biohub_viz.py#L281-L362)
+
+**Como funciona**:
+1. Usa janela deslizante de tamanho especificado (--window, padrao 9)
+2. Para cada posicao i:
+   - Extrai substrings de tamanho window: seq[i:i+window]
+   - Calcula media de Kyte-Doolittle da janela
+   - Plota score vs posicao
+3. Preenche areas:
+   - Vermelho: hidrofobico (score > 0)
+   - Azul: hidrofilico (score < 0)
+
+**Parametro --window**:
+- Padrao: 9 (recomendado por Kyte & Doolittle, 1982)
+- Janela maior: perfil mais suave (menos detalhes)
+- Janela menor: perfil mais ruidoso (mais detalhes)
+- Janela 19-21: ideal para detectar helices transmembrana
+
 ---
 
 ## Visualizações (biohub_viz.py)
@@ -451,6 +856,136 @@ python biohub.py csv2fasta proteinas.csv \
   --seq-col Sequencia
 ```
 
+### 5. Detalhes de Implementacao
+
+#### Argumento: `csv_file`
+
+**Parser CLI**: [biohub.py:1016](../biohub.py#L1016)
+**Handler**: [biohub.py:332-369](../biohub.py#L332-L369)
+
+**Como funciona**:
+
+1. Abertura do arquivo CSV (linha 335-336):
+   - Usa modulo csv.reader com delimitador especificado
+   - Suporta diferentes encodings (UTF-8 por padrao)
+
+2. Identificacao de colunas (linhas 339-354):
+
+   **Caso 1: CSV com cabecalho** (--header presente):
+   - Le primeira linha como header_row (linha 340)
+   - Tenta interpretar id_col e seq_col como indices numericos (linha 342)
+   - Se falhar (ValueError), interpreta como NOMES de colunas (linha 344-345)
+   - Busca indice da coluna pelo nome usando .index()
+
+   **Caso 2: CSV sem cabecalho**:
+   - id_col e seq_col DEVEM ser indices numericos (linha 351)
+   - Se nao forem, exibe erro (linha 353)
+
+3. Conversao para FASTA (linha 357):
+```python
+fasta_records = [
+    f">{row[id_col_idx].strip()}\n{row[seq_col_idx].strip().replace(' ', '')}"
+    for row in reader if row and len(row) > max(id_col_idx, seq_col_idx)
+]
+```
+   - Para cada linha do CSV:
+     - Extrai ID da coluna id_col_idx
+     - Extrai sequencia da coluna seq_col_idx
+     - Remove espacos em branco (.strip())
+     - Remove espacos DENTRO da sequencia (.replace(' ', ''))
+     - Formata como ">ID\nSEQUENCIA"
+
+#### Flag: `--header`
+
+**Parser CLI**: [biohub.py:1020](../biohub.py#L1020)
+**Tipo**: Flag booleana (action="store_true")
+
+**Como funciona**:
+- Se presente: args.header = True
+- Se ausente: args.header = False
+- Quando True, primeira linha eh tratada como cabecalho (linha 339)
+- Permite usar nomes de colunas em vez de indices
+
+**Exemplo com header**:
+```csv
+ID,Sequencia,Organismo
+P53_HUMAN,MEEPQSDPSVEPPLSQETFSDLWKLLPEN,Homo sapiens
+P53_MOUSE,MTAMEESQSDISLELPLSQETFSGLWKLLP,Mus musculus
+```
+
+Comando:
+```bash
+python biohub.py csv2fasta data.csv --header --id-col ID --seq-col Sequencia
+```
+
+**Exemplo sem header**:
+```csv
+P53_HUMAN,MEEPQSDPSVEPPLSQETFSDLWKLLPEN,Homo sapiens
+P53_MOUSE,MTAMEESQSDISLELPLSQETFSGLWKLLP,Mus musculus
+```
+
+Comando:
+```bash
+python biohub.py csv2fasta data.csv --id-col 0 --seq-col 1
+```
+
+#### Flag: `--delimiter`
+
+**Parser CLI**: [biohub.py:1021](../biohub.py#L1021)
+**Uso**: [biohub.py:336](../biohub.py#L336)
+**Padrao**: `,` (virgula)
+
+**Como funciona**:
+- Define o caractere separador de campos no CSV
+- Passado para csv.reader: `csv.reader(infile, delimiter=args.delimiter)`
+
+**Valores comuns**:
+- `,` : CSV padrao (comma-separated values)
+- `\t` : TSV (tab-separated values)
+- `;` : Comum em locales europeus
+- `|` : Pipe-separated
+
+**Exemplo TSV**:
+```bash
+python biohub.py csv2fasta data.tsv --delimiter $'\t' --header
+```
+
+#### Flags: `--id-col` e `--seq-col`
+
+**Parser CLI**: [biohub.py:1018-1019](../biohub.py#L1018-L1019)
+**Padroes**: id_col=0, seq_col=1
+
+**Como funciona**:
+
+1. Podem ser especificados como:
+   - **Indices numericos** (base 0): `--id-col 0 --seq-col 1`
+   - **Nomes de colunas** (requer --header): `--id-col ID --seq-col Sequencia`
+
+2. Logica de interpretacao (linhas 341-345):
+```python
+try:
+    id_col_idx = int(args.id_col)  # Tenta converter para int
+except ValueError:
+    # Se falhar, busca pelo nome (requer --header)
+    id_col_idx = header_row.index(args.id_col)
+```
+
+3. Validacao (linhas 346-348):
+   - Se coluna nao for encontrada, exibe erro
+   - Verifica se cada linha tem colunas suficientes (linha 357)
+
+**Exemplos**:
+```bash
+# Usando indices (coluna 0 e 1)
+python biohub.py csv2fasta data.csv --id-col 0 --seq-col 1
+
+# Usando nomes (requer --header)
+python biohub.py csv2fasta data.csv --header --id-col ID --seq-col Sequencia
+
+# CSV com colunas fora de ordem
+python biohub.py csv2fasta data.csv --header --id-col Protein --seq-col Seq
+```
+
 ---
 
 ## 04 - contacts: Análise de Contatos Intramoleculares
@@ -556,6 +1091,90 @@ python biohub.py contacts 1TUP.pdb \
   -o contatos.csv \
   --plot contact_map.png
 ```
+
+### 5. Detalhes de Implementacao
+
+#### Argumento: `pdb_file`
+
+**Parser CLI**: [biohub.py:1034](../biohub.py#L1034)
+**Handler**: [biohub.py:458-514](../biohub.py#L458-L514)
+
+**Como funciona**:
+
+1. Leitura e agrupamento de atomos (linhas 465-476):
+   - Le arquivo PDB linha por linha
+   - Para cada linha ATOM da primeira cadeia:
+     - Extrai res_num (colunas 22-26)
+     - Extrai coordenadas x, y, z (colunas 30-38, 38-46, 46-54)
+     - Agrupa todos os atomos do mesmo residuo em uma lista
+   - Estrutura: `residue_atoms = {res_num: [(x,y,z), (x,y,z), ...]}`
+
+2. Calculo de distancias minimas (linhas 482-498):
+   - Para cada par de residuos (r1, r2):
+     - Ignora pares adjacentes na sequencia (|r1-r2| <= 1) (linha 485)
+     - Calcula distancia entre TODOS os pares de atomos
+     - Guarda a distancia MINIMA entre qualquer atomo de r1 e r2
+
+3. Formula da distancia euclidiana (linha 492):
+```python
+dist = math.sqrt(sum((c1-c2)**2 for c1,c2 in zip(atom1, atom2)))
+# Equivalente a: sqrt((x1-x2)^2 + (y1-y2)^2 + (z1-z2)^2)
+```
+
+**Por que distancia minima?**
+- Residuos podem estar em contato mesmo se C-alfa estao longe
+- Exemplo: cadeias laterais longas (Lys, Arg) podem interagir
+- Considera geometria real da interacao
+
+**Por que ignora vizinhos diretos?**
+- Residuos adjacentes (i, i+1) sempre estao proximos por definicao
+- Ligacao peptidica conecta diretamente
+- Foco em contatos nao-locais (estrutura terciaria)
+
+#### Flag: `-t, --threshold`
+
+**Parser CLI**: [biohub.py:1035](../biohub.py#L1035)
+**Uso**: [biohub.py:497](../biohub.py#L497)
+**Padrao**: 8.0 Angstrom
+
+**Como funciona**:
+
+1. Compara distancia minima com threshold (linha 497):
+```python
+if min_dist <= args.threshold:
+    contacts.append((r1, r2, round(min_dist, 3)))
+```
+
+2. Apenas pares com distancia <= threshold sao considerados contatos
+
+**Valores tipicos**:
+- 4.0 A: Contatos muito fortes (ponte de hidrogenio, ponte salina)
+- 6.0 A: Contatos fortes (interacoes Van der Waals)
+- 8.0 A: Threshold padrao (cobre maioria das interacoes nao-covalentes)
+- 10.0 A: Contatos fracos ou proximos
+
+**Interpretacao**:
+- Threshold baixo: menos contatos, mais especificos
+- Threshold alto: mais contatos, menos especificos
+
+#### Flag: `--plot`
+
+**Parser CLI**: [biohub.py:1037](../biohub.py#L1037)
+**Verificacao**: [biohub.py:509-514](../biohub.py#L509-L514)
+**Funcao chamada**: `plot_contact_map()` em [biohub_viz.py:545-628](../biohub_viz.py#L545-L628)
+
+**Como funciona**:
+
+1. Gera mapa de contatos (contact map) como heatmap
+2. Cria matriz NxN onde N = numero de residuos
+3. Preenche matriz com distancias entre residuos
+4. Matriz eh simetrica: dist(i,j) = dist(j,i)
+5. Visualizacao:
+   - Eixo X: residuo i
+   - Eixo Y: residuo j
+   - Cor: distancia (escala viridis invertida)
+   - Pontos escuros: contatos proximos
+   - Pontos claros: residuos distantes
 
 ---
 
@@ -707,6 +1326,114 @@ python biohub.py hydrophoby 1TUP.pdb \
   --pymol visualizacao_hydro.pse \
   --plot-hydrophoby perfil_hydro.png
 ```
+
+### 5. Detalhes de Implementacao
+
+#### Argumento: `pdb_file`
+
+**Parser CLI**: [biohub.py:1041](../biohub.py#L1041)
+**Handler**: [biohub.py:719-788](../biohub.py#L719-L788)
+**Funcao auxiliar**: `parse_pdb_atoms()` em [biohub.py:111-134](../biohub.py#L111-L134)
+
+**Como funciona**:
+
+1. Parse do arquivo PDB (linhas 721-722):
+   - Chama `parse_pdb_atoms()` que le todas as linhas ATOM e HETATM
+   - Extrai para cada atomo:
+     - atom_num (colunas 6-11)
+     - atom_name (colunas 12-16)
+     - res_name (colunas 17-20)
+     - chain_id (coluna 21)
+     - res_num (colunas 22-26)
+     - coordenadas x, y, z (colunas 30-38, 38-46, 46-54)
+     - element (colunas 76-78)
+
+2. Atribuicao de hidrofobicidade (linhas 727-746):
+   - Para cada atomo:
+     - Extrai res_name (ex: "ALA", "VAL")
+     - Converte para codigo 1 letra usando THREE_TO_ONE (ex: "A", "V")
+     - Busca score no dicionario KYTE_DOOLITTLE
+     - TODOS os atomos do mesmo residuo recebem o MESMO score
+     - Se nao for aminoacido padrao (ligante), score = 0.0
+
+**Por que atribuir por residuo?**
+- Hidrofobicidade eh propriedade do aminoacido, nao do atomo
+- Facilita visualizacao em PyMOL/VMD
+- Permite colorir toda a cadeia lateral uniformemente
+
+#### Flag: `--write-pdb`
+
+**Parser CLI**: [biohub.py:1043](../biohub.py#L1043)
+**Uso**: [biohub.py:774-777](../biohub.py#L774-L777)
+**Funcao chamada**: `write_pdb_with_bfactor()` em [biohub.py:516-564](../biohub.py#L516-L564)
+
+**Como funciona**:
+
+1. Prepara dados (linha 776):
+```python
+atom_values = [{'atom_num': atom['atom_num'], 'value': atom['hydrophobicity']} for atom in results]
+```
+
+2. Funcao `write_pdb_with_bfactor()`:
+   - Le arquivo PDB original linha por linha
+   - Para linhas ATOM/HETATM:
+     - Extrai atom_num (colunas 6-11)
+     - Busca valor calculado no dicionario atom_values
+     - Substitui colunas 61-66 (B-factor) pelo novo valor
+     - Formato: `f"{valor:6.2f}"` (6 caracteres, 2 decimais)
+   - Mantem todas as outras linhas inalteradas
+
+**Formato B-factor no PDB**:
+```
+ATOM      1  N   MET A   1      20.154  29.699   5.276  1.00 49.05           N
+                                                           ^^^^^^
+                                                       Colunas 61-66
+                                                       (B-factor original)
+```
+
+Apos processamento:
+```
+ATOM      1  N   MET A   1      20.154  29.699   5.276  1.00  1.90           N
+                                                           ^^^^^^
+                                                        Hidrofobicidade
+```
+
+#### Flag: `--pymol`
+
+**Parser CLI**: [biohub.py:1044](../biohub.py#L1044)
+**Uso**: [biohub.py:780-781](../biohub.py#L780-L781)
+**Funcao chamada**: `generate_pymol_session()` em [biohub.py:566-717](../biohub.py#L566-L717)
+
+**Como funciona**:
+
+1. Verifica dependencias (linha 780):
+   - Requer --write-pdb (arquivo PDB com valores no B-factor)
+   - Se --pymol sem --write-pdb, cria PDB temporario
+
+2. Parametros passados (linha 781):
+   - property_type="hydrophobicity"
+   - min_val=-4.5 (Arg, mais hidrofilico)
+   - max_val=4.5 (Ile, mais hidrofobico)
+
+3. Script PyMOL gerado:
+```python
+load arquivo.pdb
+show cartoon
+show surface
+set transparency, 0.5
+spectrum b, blue_white_red, minimum=-4.5, maximum=4.5
+```
+
+**Esquema de cores**:
+- Azul: hidrofilico (B-factor = -4.5)
+- Branco: neutro (B-factor = 0.0)
+- Vermelho: hidrofobico (B-factor = +4.5)
+
+4. Salva sessao .pse:
+   - Executa PyMOL em modo batch
+   - Aplica comandos do script
+   - Salva estado como arquivo .pse
+   - Usuario pode abrir diretamente no PyMOL
 
 ---
 
@@ -907,6 +1634,159 @@ python biohub.py sasa 1TUP.pdb \
 - **SASA > 20 Ų**: Resíduo exposto ao solvente
 - **SASA ≤ 20 Ų**: Resíduo enterrado no interior
 - **SASA total**: Indica compactação da estrutura
+
+### 5. Detalhes de Implementacao - Algoritmo de Shrake-Rupley
+
+#### Argumento: `pdb_file`
+
+**Parser CLI**: [biohub.py:1049](../biohub.py#L1049)
+**Handler**: [biohub.py:790-943](../biohub.py#L790-L943)
+**Algoritmo**: Shrake-Rupley (1973)
+
+**Como funciona - Etapa por etapa**:
+
+1. Parse de atomos (linha 792):
+   - Usa `parse_pdb_atoms()` para extrair todos os atomos
+   - Obtem coordenadas x,y,z e elemento quimico de cada atomo
+
+2. Geracao de pontos na esfera (linha 795):
+   - Chama `generate_sphere_points(num_points)` [biohub.py:197-208](../biohub.py#L197-L208)
+   - Algoritmo: Fibonacci Sphere
+   - Distribui uniformemente num_points na superficie de esfera unitaria
+   - Pontos servem como "direcoes" para testar acessibilidade
+
+**Algoritmo Fibonacci Sphere**:
+```python
+phi = (1 + sqrt(5)) / 2  # Proporcao aurea
+for i in range(n_points):
+    y = 1 - (2 * i / (n_points - 1))
+    radius = sqrt(1 - y**2)
+    theta = 2*pi * i / phi
+    points.append((cos(theta)*radius, y, sin(theta)*radius))
+```
+
+3. Para CADA atomo i (linhas 800-829):
+
+   **Passo 3.1** - Calcula raio estendido (linhas 801-802):
+   ```python
+   radius_i = VDW_RADII[elemento]  # Ex: C=1.70, N=1.55, O=1.52
+   extended_radius = radius_i + probe_radius  # Ex: 1.70 + 1.4 = 3.10 A
+   ```
+
+   **Passo 3.2** - Para cada ponto na esfera (linhas 805-815):
+   - Calcula coordenadas do ponto de teste (linha 807):
+     ```python
+     point = (atom_x + extended_radius * sp_x,
+              atom_y + extended_radius * sp_y,
+              atom_z + extended_radius * sp_z)
+     ```
+   - Verifica se ponto esta ocluido por outros atomos (linhas 809-814):
+     - Para cada OUTRO atomo j:
+       - Calcula distancia do ponto ao centro do atomo j
+       - Se distancia < (radius_j + probe_radius), ponto esta OCLUIDO
+       - Se ocluido, break (nao precisa testar outros atomos)
+   - Se nao ocluido, ponto esta ACESSIVEL (linha 815)
+
+   **Passo 3.3** - Calcula SASA do atomo (linha 818):
+   ```python
+   atom_sasa = (accessible_points / num_points) * 4*pi * extended_radius^2
+   ```
+   - Formula: (fracao acessivel) × (area da esfera)
+   - Area da esfera: 4πr²
+   - Se todos os pontos acessiveis: SASA = area total da esfera
+   - Se metade acessivel: SASA = metade da area
+
+**Exemplo numerico**:
+- Atomo: Carbono (radius = 1.70 A)
+- Probe radius: 1.4 A
+- Extended radius: 3.10 A
+- Num points: 960
+- Accessible points: 480 (metade)
+- Area total: 4π × 3.10² = 120.76 A²
+- SASA: (480/960) × 120.76 = 60.38 A²
+
+#### Flag: `--probe-radius`
+
+**Parser CLI**: [biohub.py:1050](../biohub.py#L1050)
+**Uso**: [biohub.py:802](../biohub.py#L802)
+**Padrao**: 1.4 Angstrom
+
+**Como funciona**:
+- Raio da molecula de agua: 1.4 A
+- Define o tamanho da "sonda" que testa acessibilidade
+- Extended radius = VDW radius + probe radius
+- Simula a menor distancia que agua pode se aproximar
+
+**Valores alternativos**:
+- 1.2 A: Sonda menor (aumenta SASA calculado)
+- 1.4 A: Padrao (agua)
+- 1.6 A: Sonda maior (diminui SASA calculado)
+
+#### Flag: `--num-points`
+
+**Parser CLI**: [biohub.py:1051](../biohub.py#L1051)
+**Uso**: [biohub.py:795, 818](../biohub.py#L795)
+**Padrao**: 960
+
+**Como funciona**:
+- Numero de pontos distribuidos na esfera de cada atomo
+- Mais pontos = maior precisao, mas mais lento
+- Complexidade: O(N² × M) onde N=atomos, M=pontos
+
+**Valores tipicos**:
+- 92 pontos: Rapido, baixa precisao
+- 240 pontos: Balanceado
+- 960 pontos: Padrao recomendado (precisao boa)
+- 3840 pontos: Alta precisao, muito lento
+
+**Trade-off**:
+- 960 -> 3840: melhora ~2% na precisao, 4x mais lento
+- 240 -> 960: melhora ~5% na precisao, 4x mais lento
+
+#### Flag: `--write-pdb`
+
+**Parser CLI**: [biohub.py:1053](../biohub.py#L1053)
+**Uso**: [biohub.py:858-892](../biohub.py#L858-L892)
+
+**Como funciona**:
+
+1. Calcula SASA medio por residuo (linhas 860-875):
+   - Agrupa todos os atomos de cada residuo
+   - Calcula media dos valores SASA
+   - Por que media? SASA total por residuo seria muito alto
+
+2. Exemplo:
+   - Residuo ALA tem 5 atomos: N, CA, C, O, CB
+   - SASA dos atomos: 10, 5, 8, 20, 15 A²
+   - SASA medio: (10+5+8+20+15)/5 = 11.6 A²
+
+3. Escreve no B-factor (similar a hydrophoby):
+   - TODOS os atomos do mesmo residuo recebem o mesmo valor (a media)
+   - Facilita visualizacao uniforme do residuo
+
+#### Flag: `--plot-profile`
+
+**Parser CLI**: [biohub.py:1055](../biohub.py#L1055)
+**Funcao chamada**: `plot_sasa_profile()` em [biohub_viz.py:461-542](../biohub_viz.py#L461-L542)
+
+**Como funciona**:
+1. Calcula SASA medio por residuo
+2. Plota grafico: posicao do residuo (eixo X) vs SASA (eixo Y)
+3. Linha horizontal no threshold (20 A²)
+4. Preenche areas:
+   - Azul: SASA > 20 (exposto ao solvente)
+   - Vermelho: SASA <= 20 (enterrado)
+5. Colorbar mostra escala de exposicao
+
+**Interpretacao biologica**:
+- Residuos expostos (SASA alto):
+  - Candidatos para mutagenese dirigida
+  - Epitopos para anticorpos
+  - Sites de modificacao pos-traducional
+- Residuos enterrados (SASA baixo):
+  - Nucleo hidrofobico
+  - Sites cataliticos protegidos
+  - Residuos estruturais
 
 ---
 
