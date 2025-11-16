@@ -1,6 +1,6 @@
-# BioHub - Guia Detalhado de Funções para Apresentação
+# BioHub - Guia de Funções
 
-Este documento organiza todas as funções do BioHub ([biohub.py](../biohub.py) e [biohub_viz.py](../biohub_viz.py)) de forma didática para apresentação, separando:
+Este documento organiza todas as funções do BioHub ([biohub.py](../biohub.py) e [biohub_viz.py](../biohub_viz.py)) em seções claras para fácil referência. Cada seção detalha:
 
 1. **Dicionários e Constantes** - Dados científicos necessários
 2. **Função de Cálculo** - Implementação do algoritmo
@@ -22,7 +22,7 @@ Este documento organiza todas as funções do BioHub ([biohub.py](../biohub.py) 
 | hydrophoby | Perfil de hidrofobicidade | --write-pdb, --pymol | predict_solvent_hydrophoby() |
 | sasa | Superficie acessivel ao solvente | --probe-radius, --num-points | calculate_sasa() (Shrake-Rupley) |
 
-### Fluxo Tipico de Uso
+### Fluxo de Uso
 
 ```bash
 # 1. Download da estrutura PDB, filtrando cadeia A e removendo agua
@@ -1970,7 +1970,7 @@ Para cada função, mostrar:
 
 ---
 
-## Referências Científicas
+## Referências
 
 1. **Kyte-Doolittle Scale**: Kyte, J., & Doolittle, R. F. (1982). Journal of Molecular Biology, 157(1), 105-132.
 
@@ -1988,7 +1988,7 @@ Para cada função, mostrar:
 
 O BioHub demonstra como:
 - **Hardcoded implementations** podem ser educacionais e funcionais
-- **Zero dependências externas** para análises básicas (apenas stdlib)
+- **Zero dependências externas** para análises básicas facilita portabilidade
 - **Visualizações opcionais** adicionam valor sem comprometer a funcionalidade core
 - **CLI bem estruturado** facilita automação e integração com pipelines
 
