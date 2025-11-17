@@ -22,6 +22,62 @@ Este documento organiza todas as funções do BioHub ([biohub.py](../biohub.py) 
 | hydrophoby | Perfil de hidrofobicidade | --write-pdb, --pymol | predict_solvent_hydrophoby() |
 | sasa | Superficie acessivel ao solvente | --probe-radius, --num-points | calculate_sasa() (Shrake-Rupley) |
 
+---
+
+## 0. Avisos Importantes
+
+### Requisito 1: Sempre use `fetchpdb` com filtros para preparar o PDB
+
+**Antes de usar qualquer função de análise (`physchem`, `contacts`, `hydrophoby`, `sasa`), você deve:**
+
+1. **Baixar a estrutura PDB usando `fetchpdb`**
+2. **Filtrar para uma única cadeia** usando `--chains A` (ou cadeia desejada)
+3. **Remover heteroátomos** (água, ligantes, íons) usando `--protein-only`
+
+**Não use arquivos PDB brutos** baixados manualmente ou de outras fontes.
+
+**Exemplo correto**:
+
+```bash
+# Sempre comece assim:
+python biohub.py fetchpdb 1TUP --chains A --protein-only -o 1TUP_clean.pdb
+```
+
+**Por quê?**
+
+- Cadeias múltiplas causam erros de `KeyError`
+- Heteroátomos (água, ligantes) corrompem os cálculos
+- PDBs não filtrados podem fazer o programa travar
+
+---
+
+### Requisito 2: Flags de output são obrigatórias
+
+**Todos os módulos (`physchem`, `contacts`, `hydrophoby`, `sasa`) requerem especificação de output.**
+
+**Sem flags de output, o módulo vai rodar indefinidamente sem retornar resultados.**
+
+**Flags de output obrigatórias** (use pelo menos uma):
+
+| Módulo | Flags de Output Disponíveis | Exemplo Mínimo |
+|--------|----------------------------|----------------|
+| `physchem` | `-o`, `--plot-treemap`, `--plot-composition`, `--plot-hydro` | `-o phys.csv` |
+| `contacts` | `-o`, `--plot` | `-o contacts.csv` |
+| `hydrophoby` | `-o`, `--write-pdb`, `--pymol`, `--plot-hydrophoby` | `-o hydro.csv` |
+| `sasa` | `-o`, `--write-pdb`, `--pymol`, `--plot-profile` | `-o sasa.csv` |
+
+**Exemplo correto**:
+
+```bash
+# Correto - especifica output
+python biohub.py sasa 1TUP_clean.pdb -o sasa.csv
+
+# Errado - vai rodar indefinidamente sem output
+python biohub.py sasa 1TUP_clean.pdb
+```
+
+---
+
 ### Fluxo de Uso
 
 ```bash
@@ -1456,7 +1512,7 @@ VDW_RADII = {
 
 **Constantes de cálculo**:
 - **Probe radius** (raio da sonda de água): 1.4 Å
-- **Número de pontos na esfera** (Fibonacci sphere): 960 (padrão)
+- **Número de pontos na esfera** (Fibonacci sphere): 200 (padrão na v0.1.3, reduzido de 960 por questões de performance)
 
 ### 2. Função de Cálculo
 
@@ -1471,7 +1527,7 @@ def calculate_sasa(args):
     atoms = parse_pdb_atoms(args.pdb_file)
 
     # 1. Gera pontos uniformemente distribuídos na esfera (Fibonacci sphere)
-    sphere_points = generate_sphere_points(args.num_points)  # Ex: 960 pontos
+    sphere_points = generate_sphere_points(args.num_points)  # Padrão: 200 pontos (v0.1.3), pode usar 500-960 para maior precisão
 
     total_sasa = 0.0
     sasa_per_atom = []
@@ -1613,7 +1669,7 @@ def plot_sasa_profile(sasa_per_atom, output_file):
 |-----------|------|--------|-----------|
 | `pdb_file` | Posicional | - | Arquivo PDB de entrada |
 | `--probe-radius` | Opcional | 1.4 | Raio da sonda (Å) |
-| `--num-points` | Opcional | 960 | Pontos na esfera Fibonacci |
+| `--num-points` | Opcional | 200 | Pontos na esfera Fibonacci (v0.1.3: reduzido de 960 por performance) |
 | `-o, --output` | Opcional | stdout | Salva em CSV |
 | `--write-pdb` | Opcional | - | PDB com SASA no B-factor |
 | `--pymol` | Opcional | - | Sessão PyMOL (.pse) |
@@ -1621,13 +1677,19 @@ def plot_sasa_profile(sasa_per_atom, output_file):
 
 **Exemplo de uso**:
 ```bash
+# Uso padrão (200 pontos, rápido ~2-8 min)
 python biohub.py sasa 1TUP.pdb \
   --probe-radius 1.4 \
-  --num-points 960 \
   -o sasa.csv \
   --write-pdb 1TUP_sasa.pdb \
   --pymol visualizacao_sasa.pse \
   --plot-profile perfil_sasa.png
+
+# Para maior precisão (500-960 pontos, mais lento)
+python biohub.py sasa 1TUP.pdb \
+  --num-points 960 \
+  -o sasa.csv \
+  --write-pdb 1TUP_sasa.pdb
 ```
 
 **Interpretação**:
@@ -1700,10 +1762,10 @@ for i in range(n_points):
 - Atomo: Carbono (radius = 1.70 A)
 - Probe radius: 1.4 A
 - Extended radius: 3.10 A
-- Num points: 960
-- Accessible points: 480 (metade)
+- Num points: 200 (padrão v0.1.3, mas pode usar 500-960 para maior precisão)
+- Accessible points: 100 (metade, como exemplo)
 - Area total: 4π × 3.10² = 120.76 A²
-- SASA: (480/960) × 120.76 = 60.38 A²
+- SASA: (100/200) × 120.76 = 60.38 A²
 
 #### Flag: `--probe-radius`
 
@@ -1724,9 +1786,9 @@ for i in range(n_points):
 
 #### Flag: `--num-points`
 
-**Parser CLI**: [biohub.py:1051](../biohub.py#L1051)
+**Parser CLI**: [biohub.py:1055](../biohub.py#L1055)
 **Uso**: [biohub.py:795, 818](../biohub.py#L795)
-**Padrao**: 960
+**Padrao**: 200 (v0.1.3 - reduzido de 960 por questões de performance)
 
 **Como funciona**:
 - Numero de pontos distribuidos na esfera de cada atomo
@@ -1735,17 +1797,21 @@ for i in range(n_points):
 
 **Valores tipicos**:
 - 92 pontos: Rapido, baixa precisao
-- 240 pontos: Balanceado
-- 960 pontos: Padrao recomendado (precisao boa)
-- 3840 pontos: Alta precisao, muito lento
+- 200 pontos: Padrao atual (v0.1.3) - bom balanceamento precisao/performance (~2-8 min)
+- 500 pontos: Maior precisao (~5-15 min)
+- 960 pontos: Alta precisao, muito lento (>20 min em estruturas grandes)
+- 3840 pontos: Precisao maxima, extremamente lento
 
 **Trade-off**:
+- 200 -> 500: melhora ~3-5% na precisao, ~2-3x mais lento
+- 500 -> 960: melhora ~2-3% na precisao, ~2-4x mais lento
 - 960 -> 3840: melhora ~2% na precisao, 4x mais lento
-- 240 -> 960: melhora ~5% na precisao, 4x mais lento
+
+**Nota (v0.1.3)**: Padrão foi reduzido de 960 para 200 pontos devido a problemas de performance. Com 960 pontos, estruturas médias/grandes podem levar >20 minutos ou travar. Para maior precisão, aumente manualmente: `--num-points 500` ou `--num-points 960`
 
 #### Flag: `--write-pdb`
 
-**Parser CLI**: [biohub.py:1053](../biohub.py#L1053)
+**Parser CLI**: [biohub.py:1057](../biohub.py#L1057)
 **Uso**: [biohub.py:858-892](../biohub.py#L858-L892)
 
 **Como funciona**:
@@ -1766,7 +1832,7 @@ for i in range(n_points):
 
 #### Flag: `--plot-profile`
 
-**Parser CLI**: [biohub.py:1055](../biohub.py#L1055)
+**Parser CLI**: [biohub.py:1059](../biohub.py#L1059)
 **Funcao chamada**: `plot_sasa_profile()` em [biohub_viz.py:461-542](../biohub_viz.py#L461-L542)
 
 **Como funciona**:
@@ -1931,9 +1997,10 @@ def check_dependencies(require_numpy=False, require_squarify=False):
 
 ### 4. SASA (Shrake-Rupley)
 - **Probe radius**: 1.4 Å (raio da molécula de água)
-- **Pontos na esfera**: 960 (compromisso precisão/performance)
+- **Pontos na esfera**: 200 (padrão v0.1.3, balanceamento performance/precisão; pode usar 500-960 para maior precisão)
 - **Threshold**: 20 Ų = limiar típico para exposto vs enterrado
 - **Complexidade**: O(N² × M) onde N=átomos, M=pontos
+- **Nota**: Padrão reduzido de 960→200 na v0.1.3 para evitar travamentos em estruturas grandes
 
 ### 5. Contatos Intramoleculares
 - **Threshold**: 8.0 Å (distância típica para interações não-covalentes)
