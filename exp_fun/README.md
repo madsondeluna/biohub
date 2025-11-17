@@ -8,9 +8,9 @@ Este documento organiza todas as funções do BioHub ([biohub.py](../biohub.py) 
 4. **Argumentos CLI** - Parâmetros que o usuário pode usar
 5. **Detalhes de Implementação** - Como cada flag/argumento funciona internamente
 
-## Resumo Executivo
+## Resumo de Execução
 
-### Visao Geral das Funcoes
+### Visao Geral das Funções
 
 | Funcao | Proposito | Flags Principais | Codigo Chamado |
 |--------|-----------|------------------|----------------|
