@@ -192,10 +192,10 @@ A BioHub foi intencionalmente construída utilizando apenas a biblioteca padrão
    python3 biohub.py sasa 3E9C_clean.pdb -o sasa.csv --plot-profile sasa.png
    ```
 
-**IMPORTANTE: Não seguir estas diretrizes pode resultar em:**
-- Erros de `KeyError` (caracteres inválidos na sequência)
+**Importante: Não seguir estas diretrizes pode resultar em:**
+- Erros de `KeyError` 
 - Cálculos que nunca finalizam ou travamentos
-- Resultados incorretos ou ausentes
+- Resultados ausentes
 
 ---
 
