@@ -1,4 +1,4 @@
-# BioHub - Guia de Funções
+# BioHub - Guia de Apresentação de Funções
 
 Este documento organiza todas as funções do BioHub ([biohub.py](../biohub.py) e [biohub_viz.py](../biohub_viz.py)) em seções claras para fácil referência. Cada seção detalha:
 
