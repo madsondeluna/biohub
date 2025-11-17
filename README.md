@@ -31,17 +31,17 @@
 
 ## Equipe Desenvolvedora (Programa de Pós Graduação em Bioinformática - UFMG)
 
-- Alisson Clementino da Silva
-- Ana Karoline da Nóbrega Nunes Alves
-- Laura da Silva Ribeiro de Souza
-- Leonardo Henrique da Silva
-- Madson Allan de Luna Aragão
+- Alisson Clementino da Silva (ACDS)
+- Ana Karoline da Nóbrega Nunes Alves (AKNA)
+- Laura da Silva Ribeiro de Souza (LSRS)
+- Leonardo Henrique da Silva (LHS)
+- Madson Allan de Luna Aragão (MADLA)
 
 ### Disclaimer
 
 O BioHub é uma ferramenta desenvolvida com código hardcoded como projeto acadêmico. Após a conclusão da disciplina, o grupo irá implementar bibliotecas especializadas para que os cálculos sejam feitos com maior acurácia e elegância, pretendendo utilizar o software em nossas rotinas científicas.
 
-Gostaríamos de agradecer fortemente aos professores **Lucas Bleicher**, **Rafaela Ferreira** e **Vinicius Maltarollo** pelo desafio proposto e pelo desenvolvimento do nosso pensamento crítico sem a praticidade das bibliotecas especializadas do Python. Este exercício foi fundamental para compreendermos profundamente os algoritmos e métodos bioinformáticos que frequentemente utilizamos, sem nos preocupamos com os detalhes do processamento dos nossos dados. 
+Gostaríamos de agradecer aos professores **Lucas Bleicher**, **Rafaela Ferreira** e **Vinicius Maltarollo** pelo desafio proposto e pelo desenvolvimento do nosso pensamento crítico sem a praticidade das bibliotecas especializadas do Python. Este exercício foi fundamental para compreendermos profundamente os algoritmos e métodos bioinformáticos que frequentemente utilizamos, sem nos preocupamos com os detalhes do processamento dos nossos dados. 
 
 ---
 
