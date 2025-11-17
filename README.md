@@ -32,7 +32,7 @@
 ## Equipe Desenvolvedora (Programa de Pós Graduação em Bioinformática - UFMG)
 
 - Alisson Clementino da Silva (ACDS)
-- Ana Karoline da Nóbrega Nunes Alves (AKNA)
+- Ana Karoline da Nóbrega Nunes Alves (AKNNA)
 - Laura da Silva Ribeiro de Souza (LSRS)
 - Leonardo Henrique da Silva (LHS)
 - Madson Allan de Luna Aragão (MADLA)
