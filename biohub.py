@@ -98,7 +98,7 @@ def print_banner():
     # Uso sys.stderr para que a interface não seja misturada com a saída de dados (stdout).
     print(banner, file=sys.stderr)
     print("Uma Plataforma para Análise de Sequências e Estruturas de Proteínas", file=sys.stderr)
-    print("Versão: 0.1.2 | UFMG - Bioinformática", file=sys.stderr)
+    print("Versão: 0.1.3 | UFMG - Bioinformática", file=sys.stderr)
     print("Autores: ACDS, AKNNA, LSRS, LHS & MADLA", file=sys.stderr)
     print("-" * 68, file=sys.stderr)
 
@@ -1048,7 +1048,11 @@ def main():
     parser_sasa = subparsers.add_parser("sasa", help="Calcula a Área de Superfície Acessível ao Solvente (SASA).", formatter_class=argparse.RawTextHelpFormatter)
     parser_sasa.add_argument("pdb_file", metavar="ARQUIVO_PDB", help="Caminho para o arquivo PDB de entrada.")
     parser_sasa.add_argument("--probe-radius", metavar="FLOAT", type=float, default=1.4, help="Raio da sonda do solvente em Angstroms (padrão: 1.4 para água).")
-    parser_sasa.add_argument("--num-points", metavar="INT", type=int, default=960, help="Número de pontos na superfície de cada átomo para o cálculo. Padrão: 960.")
+    # MUDANÇA v0.1.3: Reduzido de 960 para 200 pontos por questões de performance.
+    # Com 960 pontos, o cálculo fica muito pesado (O(N² × P)) e pode levar >20 minutos ou travar.
+    # 200 pontos oferece um bom balanceamento entre precisão e tempo de execução (~2-8 minutos).
+    # Usuários que precisarem de maior precisão podem aumentar manualmente com --num-points.
+    parser_sasa.add_argument("--num-points", metavar="INT", type=int, default=200, help="Número de pontos na superfície de cada átomo para o cálculo. Padrão: 200 (reduzido de 960 por performance).")
     parser_sasa.add_argument("-o", "--output", metavar="ARQUIVO_CSV", help="Salva os resultados por átomo em um arquivo CSV.")
     parser_sasa.add_argument("--write-pdb", metavar="ARQUIVO_PDB", help="Gera um arquivo PDB com o SASA escrito no B-factor.")
     parser_sasa.add_argument("--pymol", metavar="ARQUIVO_PSE", help="Gera um arquivo de sessão PyMOL (.pse) com visualização de SASA.")

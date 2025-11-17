@@ -18,6 +18,49 @@
 
 ---
 
+## AVISOS IMPORTANTES - BioHub v0.1.3
+
+### Requisitos Obrigatórios de Entrada
+
+**O BioHub na versão atual requer arquivos PDB pré-processados e limpos:**
+
+1. **Use SEMPRE o módulo `fetchpdb` para obter arquivos PDB limpos:**
+   ```bash
+   python3 biohub.py fetchpdb [PDB_ID] --chains A --protein-only -o arquivo_limpo.pdb
+   ```
+
+2. **Requisitos do arquivo PDB:**
+   - **Uma única cadeia** (`--chains A` ou cadeia específica)
+   - **Apenas proteína** (`--protein-only` remove água, ligantes e heteroátomos)
+   - **Não utilize arquivos PDB brutos** baixados manualmente ou de outras fontes sem processamento
+
+3. **Especificação de Output é OBRIGATÓRIA:**
+   - **TODOS os módulos** (`physchem`, `contacts`, `hydrophoby`, `sasa`) **requerem sinalização de output** através de flags apropriadas
+   - **Sem especificação de output**, os módulos podem **rodar indefinidamente sem retornar resultados**
+   - Sempre use: `-o arquivo.csv`, `--write-pdb`, `--plot-*`, ou outras flags de saída específicas
+
+4. **Exemplo de Workflow Correto:**
+   ```bash
+   # Passo 1: Obter PDB limpo
+   python3 biohub.py fetchpdb 3E9C --chains A --protein-only -o 3E9C_clean.pdb
+
+   # Passo 2: Extrair sequência
+   python3 biohub.py fasta 3E9C_clean.pdb -o 3E9C.fasta
+
+   # Passo 3: Análises (SEMPRE com flags de output)
+   python3 biohub.py physchem "SEQUENCIA" -o physchem.csv
+   python3 biohub.py contacts 3E9C_clean.pdb -o contacts.csv
+   python3 biohub.py hydrophoby 3E9C_clean.pdb -o hydro.csv --plot-hydrophoby hydro.png
+   python3 biohub.py sasa 3E9C_clean.pdb -o sasa.csv --plot-profile sasa.png
+   ```
+
+**IMPORTANTE: Não seguir estas diretrizes pode resultar em:**
+- Erros de `KeyError` (caracteres inválidos na sequência)
+- Cálculos que nunca finalizam ou travamentos
+- Resultados incorretos ou ausentes
+
+---
+
 ```
 ██████╗ ██╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗ 
 ██╔══██╗██║██╔═══██╗██║  ██║██║   ██║██╔══██╗
@@ -223,9 +266,15 @@ Calcula a **Área de Superfície Acessível ao Solvente (SASA)** usando o algori
 
 **Características do cálculo:**
 * Raio da sonda customizável (padrão: 1.4 Å para água)
-* Número de pontos ajustável para controle de precisão (padrão: 960 pontos)
+* Número de pontos ajustável para controle de precisão (padrão: 200 pontos)
 * Cálculo por resíduo e SASA total da molécula
 * Uso de raios de Van der Waals específicos para cada tipo de átomo
+
+**Nota sobre Performance (v0.1.3):**
+* O padrão foi reduzido de 960 para 200 pontos por questões de performance
+* Com 960 pontos, o cálculo pode ser extremamente lento (>10-20 minutos) ou travar em estruturas médias/grandes
+* 200 pontos oferece bom balanceamento entre precisão e tempo de execução (~2-8 minutos)
+* Para maior precisão, aumente manualmente com `--num-points` (ex: 500, 960, ou 2000)
 
 ---
 
@@ -661,16 +710,18 @@ spectrum b, red_white_blue, minimum=-4.5, maximum=4.5
 
 ### 7) Calcular SASA (Área de Superfície Acessível ao Solvente)
 
-Executar com parâmetros padrão (sonda de 1.4 Å, 960 pontos):
+**IMPORTANTE:** Este comando **REQUER** flags de output (`-o`, `--write-pdb`, ou `--plot-profile`). Sem elas, o cálculo pode não retornar resultados.
+
+Executar com parâmetros padrão (sonda de 1.4 Å, 200 pontos):
 
 ```bash
-python3 biohub.py sasa proteina.pdb
+python3 biohub.py sasa proteina.pdb -o sasa_resultados.csv
 ```
 
 Ajustar a precisão e o raio da sonda:
 
 ```bash
-python3 biohub.py sasa proteina.pdb --probe-radius 1.5 --num-points 2000
+python3 biohub.py sasa proteina.pdb --probe-radius 1.5 --num-points 500 -o sasa.csv
 ```
 
 Salvar resultados por átomo em CSV:
@@ -712,10 +763,11 @@ python3 biohub.py sasa -h
 
 - `ARQUIVO_PDB`: Caminho para o arquivo PDB de entrada (obrigatório)
 - `--probe-radius FLOAT`: Raio da sonda do solvente em Angstroms (padrão: 1.4 para água)
-- `--num-points INT`: Número de pontos na superfície de cada átomo (padrão: 960)
-- `-o, --output ARQUIVO_CSV`: Salva os resultados por átomo em CSV (Chain, ResNum, ResName, AtomNum, AtomName, SASA_A2)
+- `--num-points INT`: Número de pontos na superfície de cada átomo (padrão: 200, reduzido de 960 por performance)
+- `-o, --output ARQUIVO_CSV`: Salva os resultados por átomo em CSV (Chain, ResNum, ResName, AtomNum, AtomName, SASA_A2) **[RECOMENDADO]**
 - `--write-pdb ARQUIVO_PDB`: Gera um arquivo PDB com o SASA médio por resíduo escrito no B-factor
 - `--pymol ARQUIVO_PML`: Gera script PyMOL (.pml) para visualização interativa
+- `--plot-profile ARQUIVO_PNG`: Gera perfil de SASA por resíduo (requer matplotlib e numpy)
 
 **Novidades e Observações:**
 
@@ -749,14 +801,25 @@ spectrum b, red_white_blue, minimum=0, maximum=10.8
 **Exemplo prático:**
 
 ```bash
+# Primeiro: limpar o PDB
+python3 biohub.py fetchpdb 4HHB --chains A --protein-only -o 4HHB_clean.pdb
+
 # Gerar SASA por resíduo e visualização
-python3 biohub.py sasa 4HHB.pdb --write-pdb 4HHB_sasa.pdb --pymol 4HHB_sasa.pml --num-points 300
+python3 biohub.py sasa 4HHB_clean.pdb -o 4HHB_sasa.csv --write-pdb 4HHB_sasa.pdb --pymol 4HHB_sasa.pml
+
+# Para maior precisão (mais lento):
+python3 biohub.py sasa 4HHB_clean.pdb -o 4HHB_sasa.csv --num-points 500
 
 # Abrir no PyMOL
 pymol 4HHB_sasa.pml
 ```
 
 No PyMOL, resíduos enterrados aparecerão em vermelho, parcialmente expostos em branco, e totalmente expostos em azul.
+
+**Nota de Performance:**
+- 200 pontos (padrão): ~2-8 minutos (estruturas pequenas/médias)
+- 500 pontos: ~5-15 minutos (maior precisão)
+- 960 pontos: >10-20 minutos ou mais (precisão máxima, muito lento)
 
 ---
 
