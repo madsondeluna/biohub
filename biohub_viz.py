@@ -590,8 +590,8 @@ def plot_contact_map(contacts, max_residue, output_file='contact_map.png', thres
     ax.plot([0, max_residue-1], [0, max_residue-1], 'r--', linewidth=1, alpha=0.5, label='Diagonal')
 
     # Configurações
-    ax.set_xlabel('Resíduo i', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Resíduo j', fontsize=12, fontweight='bold')
+    ax.set_xlabel('Resíduo (posição na sequência)', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Resíduo (posição na sequência)', fontsize=12, fontweight='bold')
     ax.set_title(f'Mapa de Contatos Intramoleculares\n({len(contacts)} contatos)',
                  fontsize=14, fontweight='bold')
 
