@@ -16,50 +16,7 @@
 
 **BioHub** é uma ferramenta de linha de comando leve, prática e centralizadora, escrita em Python puro, para realizar análises bioinformáticas a partir de arquivos de estrutura de proteínas (PDB) e sequências de aminoácidos.
 
----
 
-## AVISOS IMPORTANTES - BioHub v0.1.3
-
-### Requisitos Obrigatórios de Entrada
-
-**O BioHub na versão atual requer arquivos PDB pré-processados e limpos:**
-
-1. **Use SEMPRE o módulo `fetchpdb` para obter arquivos PDB limpos:**
-   ```bash
-   python3 biohub.py fetchpdb [PDB_ID] --chains A --protein-only -o arquivo_limpo.pdb
-   ```
-
-2. **Requisitos do arquivo PDB:**
-   - **Uma única cadeia** (`--chains A` ou cadeia específica)
-   - **Apenas proteína** (`--protein-only` remove água, ligantes e heteroátomos)
-   - **Não utilize arquivos PDB brutos** baixados manualmente ou de outras fontes sem processamento
-
-3. **Especificação de Output é OBRIGATÓRIA:**
-   - **TODOS os módulos** (`physchem`, `contacts`, `hydrophoby`, `sasa`) **requerem sinalização de output** através de flags apropriadas
-   - **Sem especificação de output**, os módulos podem **rodar indefinidamente sem retornar resultados**
-   - Sempre use: `-o arquivo.csv`, `--write-pdb`, `--plot-*`, ou outras flags de saída específicas
-
-4. **Exemplo de Workflow Correto:**
-   ```bash
-   # Passo 1: Obter PDB limpo
-   python3 biohub.py fetchpdb 3E9C --chains A --protein-only -o 3E9C_clean.pdb
-
-   # Passo 2: Extrair sequência
-   python3 biohub.py fasta 3E9C_clean.pdb -o 3E9C.fasta
-
-   # Passo 3: Análises (SEMPRE com flags de output)
-   python3 biohub.py physchem "SEQUENCIA" -o physchem.csv
-   python3 biohub.py contacts 3E9C_clean.pdb -o contacts.csv
-   python3 biohub.py hydrophoby 3E9C_clean.pdb -o hydro.csv --plot-hydrophoby hydro.png
-   python3 biohub.py sasa 3E9C_clean.pdb -o sasa.csv --plot-profile sasa.png
-   ```
-
-**IMPORTANTE: Não seguir estas diretrizes pode resultar em:**
-- Erros de `KeyError` (caracteres inválidos na sequência)
-- Cálculos que nunca finalizam ou travamentos
-- Resultados incorretos ou ausentes
-
----
 
 ```
 ██████╗ ██╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗ 
@@ -196,6 +153,49 @@ O BioHub foi **intencionalmente desenvolvido com código hardcoded**, utilizando
 A BioHub foi intencionalmente construída utilizando apenas a biblioteca padrão do Python. Constantes físico-químicas, como pesos moleculares e escalas de hidropatia, são armazenadas localmente em dicionários.
 
 **Justificativa**: Esta abordagem garante a portabilidade e simplicidade para análise de estrutura de proteínas. Embora o uso de bancos de dados externos ou pacotes especializados pudesse oferecer maior precisão ou dados mais atualizados, a implementação atual é suficiente para fins demonstrativos e educacionais, focando na lógica algorítmica.
+
+---
+
+## AVISOS IMPORTANTES: BioHub v0.1.3
+
+### Requisitos Obrigatórios de Entrada
+
+**O BioHub na versão atual requer arquivos PDB pré-processados e limpos:**
+
+1. **Use SEMPRE o módulo `fetchpdb` para obter arquivos PDB limpos:**
+   ```bash
+   python3 biohub.py fetchpdb [PDB_ID] --chains A --protein-only -o arquivo_limpo.pdb
+   ```
+
+2. **Requisitos do arquivo PDB:**
+   - **Uma única cadeia** (`--chains A` ou cadeia específica)
+   - **Apenas proteína** (`--protein-only` remove água, ligantes e heteroátomos)
+   - **Não utilize arquivos PDB brutos** baixados manualmente ou de outras fontes sem processamento
+
+3. **Especificação de Output é OBRIGATÓRIA:**
+   - **TODOS os módulos** (`physchem`, `contacts`, `hydrophoby`, `sasa`) **requerem sinalização de output** através de flags apropriadas
+   - **Sem especificação de output**, os módulos podem **rodar indefinidamente sem retornar resultados**
+   - Sempre use: `-o arquivo.csv`, `--write-pdb`, `--plot-*`, ou outras flags de saída específicas
+
+4. **Exemplo de Workflow Correto:**
+   ```bash
+   # Passo 1: Obter PDB limpo
+   python3 biohub.py fetchpdb 3E9C --chains A --protein-only -o 3E9C_clean.pdb
+
+   # Passo 2: Extrair sequência
+   python3 biohub.py fasta 3E9C_clean.pdb -o 3E9C.fasta
+
+   # Passo 3: Análises (Sempre com flags de output)
+   python3 biohub.py physchem "SEQUENCIA" -o physchem.csv
+   python3 biohub.py contacts 3E9C_clean.pdb -o contacts.csv
+   python3 biohub.py hydrophoby 3E9C_clean.pdb -o hydro.csv --plot-hydrophoby hydro.png
+   python3 biohub.py sasa 3E9C_clean.pdb -o sasa.csv --plot-profile sasa.png
+   ```
+
+**IMPORTANTE: Não seguir estas diretrizes pode resultar em:**
+- Erros de `KeyError` (caracteres inválidos na sequência)
+- Cálculos que nunca finalizam ou travamentos
+- Resultados incorretos ou ausentes
 
 ---
 
