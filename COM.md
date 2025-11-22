@@ -172,13 +172,13 @@ Apesar de utilizar **implementação hardcoded** (sem dependências de bibliotec
 
 **Vantagens da Abordagem Hardcoded:**
 
-- ✅ **Zero dependências externas:** não requer instalação de bibliotecas pesadas como BioPython
-- ✅ **Controle total:** permite auditoria completa do código e validação de cada parâmetro
-- ✅ **Performance:** cálculos otimizados sem overhead de frameworks (mais rápido)
-- ✅ **Reprodutibilidade:** resultados consistentes independentes de versões de bibliotecas
-- ✅ **Transparência:** toda a lógica está explícita e documentada no código-fonte
-- ✅ **Portabilidade:** funciona em qualquer ambiente Python sem setup complexo
-- ✅ **Educacional:** código serve como referência didática dos algoritmos biofísicos
+-  **Zero dependências externas:** não requer instalação de bibliotecas pesadas como BioPython
+-  **Controle total:** permite auditoria completa do código e validação de cada parâmetro
+-  **Performance:** cálculos otimizados sem overhead de frameworks (mais rápido)
+-  **Reprodutibilidade:** resultados consistentes independentes de versões de bibliotecas
+-  **Transparência:** toda a lógica está explícita e documentada no código-fonte
+- **Portabilidade:** funciona em qualquer ambiente Python sem setup complexo
+-  **Educacional:** código serve como referência didática dos algoritmos biofísicos
 
 **Resultado Geral:**
 
