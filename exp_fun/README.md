@@ -366,24 +366,24 @@ python biohub.py fasta 1TUP.pdb -o sequencia.fasta
 
 **Parser CLI**: [biohub.py:1011](../biohub.py#L1011)
 **Handler**: [biohub.py:318-330](../biohub.py#L318-L330)
-**Funcao de extracao**: `get_sequence_from_pdb()` em [biohub.py:136-160](../biohub.py#L136-L160)
+**Função de extração**: `get_sequence_from_pdb()` em [biohub.py:136-160](../biohub.py#L136-L160)
 
 **Como funciona**:
 
-1. A funcao `get_sequence_from_pdb()` le o arquivo PDB linha por linha (linha 143)
+1. A função `get_sequence_from_pdb()` lê o arquivo PDB linha por linha (linha 143)
 
 2. Para cada linha que comeca com "ATOM" (linha 144):
    - Extrai chain_id da coluna 21 (linha 145)
    - Na primeira linha ATOM, define first_chain_id (linha 147)
-   - **Apenas processa atomos da primeira cadeia encontrada** (linha 150)
+   - **Apenas processa átomos da primeira cadeia encontrada** (linha 150)
 
-3. Evita duplicacao de residuos (linhas 139, 152):
+3. Evita duplicação de resíduos (linhas 139, 152):
    - Cria um set() chamado processed_residues
-   - Usa tupla (res_num, chain_id) como identificador unico
-   - Cada residuo tem varios atomos (N, CA, C, O, CB, etc.)
-   - Adiciona o residuo apenas uma vez a sequencia
+   - Usa tupla (res_num, chain_id) como identificador único
+   - Cada resíduo tem vários átomos (N, CA, C, O, CB, etc.)
+   - Adiciona o resíduo apenas uma vez na sequência
 
-4. Conversao 3 letras para 1 letra (linhas 153-157):
+4. Converãao 3 letras para 1 letra (linhas 153-157):
    - Extrai res_name das colunas 17-20 (ex: "ALA")
    - Busca no dicionario THREE_TO_ONE (ex: "ALA" -> "A")
    - Concatena na string sequence
@@ -397,14 +397,14 @@ ATOM      3  C   MET A   1      22.374  29.134   6.089  1.00 47.89           C
           Col 17  Col 21 Col 22-26
           (res)  (chain) (res_num)
 ```
-   - Colunas 17-20: Nome do residuo (MET)
+   - Colunas 17-20: Nome do resíduo (MET)
    - Coluna 21: Chain ID (A)
-   - Colunas 22-26: Numero do residuo (1)
+   - Colunas 22-26: Número do resíduo (1)
 
 **Por que apenas a primeira cadeia?**
-- Arquivos PDB podem ter multiplas cadeias (A, B, C, etc.)
-- Evita sequencias duplicadas em estruturas oligomericas
-- Usuario pode filtrar cadeias com `fetchpdb --chains A` antes
+- Arquivos PDB podem ter múltiplas cadeias (A, B, C, etc.)
+- Evita sequências duplicadas em estruturas oligomericas
+- Usuário pode filtrar cadeias com `fetchpdb --chains A` antes
 
 #### Flag: `-o, --output`
 
@@ -415,14 +415,14 @@ ATOM      3  C   MET A   1      22.374  29.134   6.089  1.00 47.89           C
 
 1. Se args.output existe (linha 326):
    - Abre arquivo em modo escrita (linha 327)
-   - Escreve cabecalho FASTA + sequencia
-   - Exibe mensagem de confirmacao no stderr (linha 328)
+   - Escreve cabeçalho FASTA + sequência
+   - Exibe mensagem de confirmação no stderr (linha 328)
 
-2. Se args.output nao existe (linha 329-330):
+2. Se args.output não existe (linha 329-330):
    - Imprime diretamente no stdout
    - Permite uso com pipes: `python biohub.py fasta 1TUP.pdb | grep ">"``
 
-3. Formato do cabecalho FASTA (linha 323):
+3. Formato do cabeçalho FASTA (linha 323):
    - Template: `>sequence_from_{nome_do_arquivo}`
    - Usa os.path.basename() para extrair apenas o nome do arquivo
    - Exemplo: `>sequence_from_1TUP.pdb`
@@ -2064,6 +2064,7 @@ O BioHub demonstra como:
 - Cálculo de estrutura secundária (DSSP-like)
 - Análise de dinâmica molecular (trajetórias)
 - Interface web (Flask/Streamlit)
+
 
 
 
