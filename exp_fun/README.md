@@ -10,9 +10,9 @@ Este documento organiza todas as funções do BioHub ([biohub.py](../biohub.py) 
 
 ## Resumo de Execução
 
-### Visao Geral das Funções
+### Visãoo Geral das Funções
 
-| Funcao | Proposito | Flags Principais | Codigo Chamado |
+| Função | Propósito | Flags Principais | Código Chamado |
 |--------|-----------|------------------|----------------|
 | fetchpdb | Download de estruturas PDB | --chains, --protein-only | handle_fetch_pdb() + filter_pdb_content() |
 | fasta | Conversao PDB para FASTA | -o | get_sequence_from_pdb() |
@@ -2064,5 +2064,6 @@ O BioHub demonstra como:
 - Cálculo de estrutura secundária (DSSP-like)
 - Análise de dinâmica molecular (trajetórias)
 - Interface web (Flask/Streamlit)
+
 
 
