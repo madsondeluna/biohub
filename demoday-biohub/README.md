@@ -302,7 +302,7 @@ python ../biohub.py physchem MTAMEESQSDISLELPLSQETFSGLWKLLPPEDILPSPHCMDDLLLPQDVE
 
 ## 5. Análise de Contatos Intramoleculares
 
-### 5.1 Calcular contatos com distância de 8.0 Å
+### 5.1 Calcular contatos (distância padrão de 8.0 Å)
 
 ```bash
 python ../biohub.py contacts 1TUP_clean.pdb --threshold 40.0 --output 1TUP_contacts.csv --plot 1TUP_contact_map.png
