@@ -31,8 +31,6 @@ As funções integradas foram representadas em oito módulos, cada um responsáv
 
 **Módulo sasa:** Representa uma implementação completa do algoritmo de Shrake-Rupley para cálculo de área de superfície acessível ao solvente. O módulo gera distribuição uniforme de pontos na esfera atômica através do método de Fibonacci (padrão 960 pontos), aplica raio de sonda configurável (padrão 1.4 Å para moléculas de água), executa teste geométrico de oclusão por átomos vizinhos para cada ponto de teste, calcula área acessível por átomo através de fração de pontos não oclusos, e agrega resultados por resíduo, fornecendo tanto SASA total da molécula quanto contribuições individuais por resíduo.
 
-**Módulo apbs:** Funciona como wrapper automatizado para o pipeline completo de cálculo eletrostático através da equação de Poisson-Boltzmann. O módulo integra PDB2PQR para adição de hidrogênios e atribuição de cargas parciais baseadas em campo de força AMBER; gera arquivos de configuração APBS com parâmetros de grid otimizados; executa cálculos de energia de solvatação em meio aquoso e meio de referência; extrai diferenças de energia através de parsing da saída; e fornece valor final de energia de solvatação eletrostática em kJ/mol, com opção de preservação de arquivos intermediários para análises adicionais ou depuração.
-
 # IV. Referências
 GASTEIGER, Elisabeth et al. ExPASy: the proteomics server for in-depth protein knowledge and analysis. Nucleic Acids Research, v. 31, n. 13, p. 3784–3788, 1 jul. 2003.
 
