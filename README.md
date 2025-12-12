@@ -1,4 +1,4 @@
-# BioHub
+# BioHub [DESCONTINUADO]
 
 *Uma Plataforma para Análise de Sequências e Estruturas de Proteínas*
 
